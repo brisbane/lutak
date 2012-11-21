@@ -1,0 +1,11 @@
+# selinux module
+# admin+puppetmodule@immerda.ch
+# GPLv3
+# Credits for ideas go to:
+# - Boone Bradley
+# - David Goldsmith
+# - Frank Sweeter
+
+This module is used to manage selinux stuff. Currently we mainly 
+use it to manage selinux stuff on centos, however there are as well
+some funtions for other distros.
