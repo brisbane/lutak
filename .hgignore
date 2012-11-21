@@ -1,0 +1,13 @@
+# use glob syntax
+syntax: glob
+
+# don't add ignore to svn
+auth.conf  
+autosign.conf  
+data  
+files  
+fileserver.conf  
+manifests  
+modules  
+namespace.auth  
+puppet.conf
