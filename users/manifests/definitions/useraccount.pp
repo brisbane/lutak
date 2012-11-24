@@ -44,6 +44,16 @@ define users::useraccount (
   if $password != '' {
     User <| title == "$username" |> { password => $password }
   }
+  # force user to set password if is empty on first login
+  if $password == '' {
+    exec { "setpassonlogin_$username":
+      command     => "usermod -p '' $username && chage -d 0 $username",
+      unless      => "grep $username /etc/shadow | cut -f 2 -d : | grep -v '!'  > /dev/null",
+      refreshonly => true,
+      subscribe   => User[$username],
+      require     => User[$username],
+    }
+  }
 
   # uid/gid management
   if $uid != '' {

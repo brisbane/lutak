@@ -126,6 +126,8 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
                     setting_long = 'interface-master'
                 when 'bonding_opts'
                     setting_long = 'bonding-opts'
+                when 'mac_address'
+                    setting_long = 'mac-address'
                 when 'ip_address'
                     setting_long = 'ip-address'
                 else

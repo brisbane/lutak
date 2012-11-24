@@ -81,7 +81,7 @@ EnableRemoteCommands=0
 # Mandatory: yes
 # Default:
 # Server=
-Server=<%= server %>
+Server=<%= server_name %>
 
 ### Option: ServerActive
 #	Comma-separated list of host:port pairs of Zabbix servers for active checks.
@@ -103,7 +103,7 @@ Server=<%= server %>
 # Mandatory: no
 # Default:
 # Hostname=
-Hostname=<%= fqdn %>
+Hostname=<%= client_name %>
 
 ### Option: HostnameItem
 #	Item used for generating Hostname if it is undefined.

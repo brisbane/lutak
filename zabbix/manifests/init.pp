@@ -4,6 +4,8 @@
 #
 class zabbix (
   $package_ensure = $zabbix::params::package_ensure,
+  $server_name    = $zabbix::params::server_name,
+  $client_name    = $zabbix::params::client_name,
 ) inherits zabbix::params {
   package { 'zabbix':
     ensure => $package_ensure,

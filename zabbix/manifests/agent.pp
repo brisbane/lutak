@@ -3,9 +3,10 @@
 # This module manages zabbix-agent
 #
 class zabbix::agent (
-  $package_ensure = $zabbix::params::package_ensure,
-  $server         = $zabbix::params::server,
-) inherits zabbix::params {
+  $package_ensure = $zabbix::package_ensure,
+  $server_name    = $zabbix::server_name,
+  $client_name    = $zabbix::client_name,
+) inherits zabbix {
   package { 'zabbix-agentd':
     ensure   => $package_ensure,
     require  => Class['yumreposd::srce'],
