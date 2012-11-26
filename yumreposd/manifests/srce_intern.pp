@@ -3,6 +3,15 @@
 # This module manages srce_intern repo files for $lsbdistrelease
 #
 class yumreposd::srce_intern {
+  file { '/etc/yum.repos.d/srce-intern.repo' :
+    ensure  => file,
+    mode    => '0644',
+    owner   => root,
+    group   => root,
+    source  => "puppet:///modules/yumreposd/${::operatingsystem}/${::operatingsystemrelease}/srce-intern.repo",
+    require => [ Package['srce-release-intern'], Class['yumreposd::base'] ],
+  }
+
   # install package depending on major version
   case $::operatingsystemrelease {
     default : { }

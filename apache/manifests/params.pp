@@ -71,6 +71,7 @@ class apache::params {
       'proxy_html'        => 'mod_proxy_html',
       'python'            => 'mod_python',
       'ssl'               => 'mod_ssl',
+      'passenger'         => 'mod_passenger',
       'wsgi'              => 'mod_wsgi',
       'extract_forwarded' => 'mod_extract_forwarded',
     }

@@ -49,4 +49,7 @@ class cobbler::params {
   $puppet_auto_setup                     = 1
   $sign_puppet_certs_automatically       = 1
   $remove_old_puppet_certs_automatically = 1
+
+  # depends on paache
+  $apache_service = 'httpd'
 }

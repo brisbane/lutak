@@ -17,4 +17,7 @@ class puppet::params {
   # subnets that are allowed to access "/files"
   # section from puppetmaster web server
   $fileserver_clients = ['127.0.0.0/8']
+  # type of puppet master server, one of:
+  #  puppetmaster, apache, nginx
+  $server_type = 'puppetmaster'
 }

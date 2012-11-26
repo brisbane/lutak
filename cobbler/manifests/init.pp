@@ -22,6 +22,7 @@ class cobbler (
   $nameservers        = $cobbler::params::nameservers,
   $dhcp_interfaces    = $cobbler::params::dhcp_interfaces,
   $defaultrootpw      = $cobbler::params::defaultrootpw,
+  $apache_service     = $cobbler::params::apache_service,
 ) inherits cobbler::params {
 
   # use apache modules

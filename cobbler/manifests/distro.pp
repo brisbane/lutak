@@ -8,7 +8,7 @@ class cobbler::distro (
       arch    => $arch,
       isolink => $isolink,
       destdir => $cobbler::distro_path,
-      require => Service[$cobbler::service_name],
+      require => [ Service[$cobbler::service_name], Service[$cobbler::apache_service] ],
     }
     $defaultrootpw = $cobbler::defaultrootpw
     file { "$cobbler::distro_path/kickstarts/$distro.ks":
@@ -23,7 +23,7 @@ class cobbler::distro (
     cobblerdistro { $distro :
       ensure  => absent,
       destdir => $cobbler::distro_path,
-      require => Service[$cobbler::service_name],
+      require => [ Service[$cobbler::service_name], Service[$cobbler::apache_service] ],
     }
     file { "$cobbler::distro_path/kickstarts/$distro.ks":
       ensure  => absent,

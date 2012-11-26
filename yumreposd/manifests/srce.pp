@@ -1,6 +1,6 @@
-# Class: yumreposd::atomic
+# Class: yumreposd::srce
 #
-# This module manages ATOMIC repo files for $lsbdistrelease
+# This module manages Srce repo files for $lsbdistrelease
 #
 class yumreposd::srce {
   file { '/etc/yum.repos.d/srce.repo' :
