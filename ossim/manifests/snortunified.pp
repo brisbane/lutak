@@ -1,6 +1,6 @@
 define ossim::snortunified (
-    $interface=$title,
-    $datadir="$snort::logdir/$title",
+  $interface = $title,
+  $datadir   = "$snort::logdir/$title/",
 ) {
   file {"/etc/ossim/agent/plugins/snortunified$interface.cfg":
     ensure  => file,

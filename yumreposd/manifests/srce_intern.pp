@@ -1,8 +1,8 @@
-# Class: yumreposd::srceintern
+# Class: yumreposd::srce_intern
 #
-# This module manages srce-intern repo files for $lsbdistrelease
+# This module manages srce_intern repo files for $lsbdistrelease
 #
-class yumreposd::srce-intern {
+class yumreposd::srce_intern {
   # install package depending on major version
   case $::operatingsystemrelease {
     default : { }
