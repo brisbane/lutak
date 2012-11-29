@@ -22,7 +22,10 @@ class snort::pulledpork (
     owner   => root,
     group   => root,
     mode    => '0644',
-    source  => "puppet:///files/snort/${::fqdn}/disablesid.conf",
+    source  => [
+      "puppet:///files/snort/${::fqdn}/disablesid.conf",
+      'puppet:///modules/snort/disablesid.conf',
+    ],
     require => Package['pulledpork'],
   }
   file { '/etc/cron.d/pulledpork':
@@ -38,7 +41,10 @@ class snort::pulledpork (
     owner   => root,
     group   => root,
     mode    => '0644',
-    source  => "puppet:///files/snort/${::fqdn}/VRT.conf",
+    source  => [
+      "puppet:///files/snort/${::fqdn}/VRT.conf",
+      'puppet:///modules/snort/VRT.conf',
+    ],
     require => File['/etc/cron.d/pulledpork'],
     notify  => Service['snortd'],
   }
@@ -47,8 +53,16 @@ class snort::pulledpork (
     owner   => root,
     group   => root,
     mode    => '0644',
-    source  => "puppet:///files/snort/${::fqdn}/emerging.conf",
+    source  => [
+      "puppet:///files/snort/${::fqdn}/emerging.conf",
+      'puppet:///modules/snort/emerging.conf',
+    ],
     require => File['/etc/cron.d/pulledpork'],
     notify  => Service['snortd'],
+  }
+  exec {'pulledporkfetch':
+    command => '/usr/bin/pulledpork.pl -c /etc/pulledpork/pulledpork.conf -o /etc/snort/rules -k -H -v >> /var/log/pulledpork.log',
+    creates => '/etc/snort/rules/VRT-backdoor.rules',
+    require => File['/etc/pulledpork/disablesid.conf'],
   }
 }

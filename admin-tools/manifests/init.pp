@@ -10,6 +10,7 @@ class admin-tools {
   package { 'rsync':        ensure => latest, }
   package { 'bind-utils':   ensure => latest, }
   # admin tools
+  package { 'man':          ensure => latest, }
   package { 'nmap':         ensure => latest, }
   package { 'screen':       ensure => latest, }
   package { 'zsh':          ensure => latest, }
@@ -25,6 +26,7 @@ class admin-tools {
   package { 'strace':       ensure => latest, }
   package { 'telnet':       ensure => latest, }
   package { 'lsof':         ensure => latest, }
+  package { 'expect':       ensure => latest, }
   # yum helpers
   package { 'yum-utils':    ensure => latest, }
   case $::operatingsystemrelease {

@@ -40,16 +40,10 @@ class puppet::master (
     }
     /^httpd|^apache/: {
       # include and set up apache
+      include yumreposd::passenger
+      include apache
       include apache::mod::ssl
       include apache::mod::passenger
-
-      # disable puppetmaster service
-      service { 'puppetmaster':
-        ensure   => 'stopped',
-        enable   => false,
-        provider => 'redhat',
-        require  => Package['puppet-server'],
-      }
 
       # puppet.conf with SSL settings
       file { '/etc/puppet/puppet.conf':
@@ -58,7 +52,7 @@ class puppet::master (
         owner   => 'root',
         group   => 'root',
         mode    => '0644',
-        require => Package['puppet'],
+        require => Package['puppet-server'],
       }
 
       # rack application setup
@@ -98,8 +92,16 @@ class puppet::master (
         group   => 'root',
         mode    => '0644',
         content => template('puppet/puppetmaster.conf.erb'),
-        require => [ File['/etc/puppet/rack/tmp'], Service['puppetmaster'], ],
-        notify  => Service['httpd'],
+        require => File['/etc/puppet/rack/tmp'],
+      }
+
+      # disable puppetmaster service & restart httpd
+      service { 'puppetmaster':
+        ensure   => 'stopped',
+        enable   => false,
+        provider => 'redhat',
+        require  => [ Package['puppet-server'], File['/etc/httpd/conf.d/puppetmaster.conf'], ],
+        notify   => Service['httpd'],
       }
     }
     /^nginx/: {

@@ -106,7 +106,9 @@ port=40002
 #netscreen-firewall=/etc/ossim/agent/plugins/netscreen-firewall.cfg
 #ntsyslog=/etc/ossim/agent/plugins/ntsyslog.cfg
 #osiris=/etc/ossim/agent/plugins/osiris.cfg
-#ossec=/etc/ossim/agent/plugins/ossec.cfg
+#ossec=/etc/ossim/agent/plugins/ossec.cfg<% if include_ossec == true %>
+ossec=/etc/ossim/agent/plugins/ossec.cfg
+<% end -%>
 #ossim-agent=/etc/ossim/agent/plugins/ossim-agent.cfg
 #p0f=/etc/ossim/agent/plugins/p0f.cfg
 #pads=/etc/ossim/agent/plugins/pads.cfg

@@ -16,12 +16,16 @@ class ossim (
   $sensor_ip        = $ossim::params::sensor_ip,
   $timezone         = $ossim::params::timezone,
   $include_snort    = $ossim::params::include_snort,
+  $include_ossec    = $ossim::params::include_ossec,
 ) inherits ossim::params {
   include geoip
   if $include_snort == true {
     include snort
     $snort_interfaces = $snort::interfaces
     snortunified{$snort_interfaces: }
+  }
+  if $include_ossec == true {
+    include ossim::ossec
   }
   package { 'ossim-agent':
     ensure  => $package_ensure,
@@ -31,5 +35,12 @@ class ossim (
     ensure  => file,
     content => template('ossim/config.cfg.erb'),
     require => Package['ossim-agent'],
+  }
+  service { 'ossim-agent':
+    ensure    => running,
+    enable    => true,
+    provider  => redhat,
+    require   => File['/etc/ossim/agent/config.cfg'],
+    subscribe => File['/etc/ossim/agent/config.cfg'],
   }
 }

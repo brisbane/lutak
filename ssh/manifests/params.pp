@@ -1,4 +1,5 @@
 class ssh::params {
+  $package_ensure = 'present'
   case $::osfamily {
     debian: {
       $server_package_name = 'openssh-server'

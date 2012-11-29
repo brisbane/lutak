@@ -17,4 +17,5 @@ class ossim::params {
   $sensor_ip       = '127.0.0.1'
   $timezone        = "${::timezone}"
   $include_snort   = false
+  $include_ossec   = false
 }
