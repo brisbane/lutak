@@ -20,7 +20,7 @@ class ntp::params {
       $client_package_name      = 'ntp'
       $server_package_name      = 'ntp'
       $needs_ntpdate            = true
-      $ntpdate_path		= '/sbin/ntpdate'
+      $ntpdate_path             = '/sbin/ntpdate'
     }
     default: {
       fail("Unsupported osfamily: ${::osfamily} operatingsystem: ${::operatingsystem}, module ${module_name} currently only supports osfamily RedHat")

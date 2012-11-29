@@ -14,8 +14,8 @@ class ntp (
   $client_servers = $ntp::params::client_servers,
 ) inherits ntp::params {
   package { 'ntp':
-    name    => $package_name,
     ensure  => $package_ensure,
+    name    => $package_name,
     require => Class['yumreposd::base'],
   }
   service { 'ntpd':

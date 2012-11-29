@@ -26,10 +26,10 @@ class geoip (
     require => File['/usr/share/GeoIP'],
   }
   file { '/usr/share/GeoIP/GeoIP.dat':
-    ensure => file,
-    owner  => root,
-    group  => root,
-    mode   => '0644',
+    ensure  => file,
+    owner   => root,
+    group   => root,
+    mode    => '0644',
     require => Exec['fetch-geoip'],
   }
   # fetch and manage GeoIP.dat
@@ -39,10 +39,10 @@ class geoip (
     require => File['/usr/share/GeoIP'],
   }
   file { '/usr/share/GeoIP/GeoLiteCity.dat':
-    ensure => file,
-    owner  => root,
-    group  => root,
-    mode   => '0644',
+    ensure  => file,
+    owner   => root,
+    group   => root,
+    mode    => '0644',
     require => Exec['fetch-geoip'],
   }
   # files are fetched via cron every month

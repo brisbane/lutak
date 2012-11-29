@@ -21,16 +21,16 @@ class multipath (
     source  => $template,
   }
   service { 'multipathd':
+    ensure    => running,
+    enable    => true,
     require   => File['/etc/multipath.conf'],
     subscribe => File['/etc/multipath.conf'],
     notify    => Exec['multipath'],
-    ensure    => 'running',
-    enable    => 'true',
   }
   exec { 'multipath':
     path        => '/bin:/usr/bin:/usr/sbin:/sbin',
     command     => 'multipath',
-    logoutput   => 'true',
-    refreshonly => 'true',
+    logoutput   => true,
+    refreshonly => true,
   }
 }

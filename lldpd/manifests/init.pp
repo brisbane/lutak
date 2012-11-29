@@ -3,7 +3,7 @@
 # This module deploys lldpd
 #
 class lldpd {
-  if $::is_virtual == 'false' {
+  if $::is_virtual == false {
     package { 'lldpd':
       ensure => present,
     }

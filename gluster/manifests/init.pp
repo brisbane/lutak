@@ -3,10 +3,10 @@
 # This module manages gluster
 #
 class gluster (
-  $glusterdir = $gluster::params::glusterdir,
-  $version    = $gluster::params::version,
+  $package_ensure = $gluster::params::package_ensure,
+  $glusterdir     = $gluster::params::glusterdir,
 ) inherits gluster::params {
   package { 'glusterfs':
-      ensure  => "$version",
+    ensure => $package_ensure,
   }
 }

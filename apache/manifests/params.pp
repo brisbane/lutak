@@ -102,6 +102,6 @@ class apache::params {
     }
     $mod_libs              = {}
   } else {
-    fail("Class['apache::params']: Unsupported operatingsystem: $operatingsystem")
+    fail("Class['apache::params']: Unsupported operatingsystem: $::operatingsystem")
   }
 }

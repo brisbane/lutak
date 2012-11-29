@@ -1,21 +1,23 @@
-define samba::server::share($ensure = present,
-                            $browsable = '',
-                            $comment = '',
-                            $copy = '',
-                            $create_mask = '',
-                            $directory_mask = '',
-                            $force_create_mask = '',
-                            $force_directory_mask = '',
-                            $force_group = '',
-                            $force_user = '',
-                            $valid_users = '',
-                            $guest_account = '',
-                            $guest_ok = '',
-                            $guest_only = '',
-                            $path = '',
-                            $read_only = '') {
+define samba::server::share (
+  $ensure               = present,
+  $browsable            = '',
+  $comment              = '',
+  $copy                 = '',
+  $create_mask          = '',
+  $directory_mask       = '',
+  $force_create_mask    = '',
+  $force_directory_mask = '',
+  $force_group          = '',
+  $force_user           = '',
+  $valid_users          = '',
+  $guest_account        = '',
+  $guest_ok             = '',
+  $guest_only           = '',
+  $path                 = '',
+  $read_only            = ''
+) {
 
-  $context = "/files/etc/samba/smb.conf"
+  $context = '/files/etc/samba/smb.conf'
   $target = "target[. = '${name}']"
 
   augeas { "${name}-section":
@@ -24,11 +26,11 @@ define samba::server::share($ensure = present,
       present => "set ${target} '${name}'",
       default => "rm ${target} '${name}'",
     },
-    require => Class["samba::server::config"],
-    notify => Class["samba::server::service"]
+    require => Class['samba::server::config'],
+    notify  => Class['samba::server::service']
   }
 
-  if $ensure == "present" {
+  if $ensure == 'present' {
     augeas { "${name}-browsable":
       context => $context,
       changes => $browsable ? {
@@ -37,7 +39,7 @@ define samba::server::share($ensure = present,
         default => "rm ${target}/browsable",
       },
       require => Augeas["${name}-section"],
-      notify => Class["samba::server::service"]
+      notify  => Class['samba::server::service']
     }
 
     augeas { "${name}-comment":
@@ -47,7 +49,7 @@ define samba::server::share($ensure = present,
         '' => "rm ${target}/comment",
       },
       require => Augeas["${name}-section"],
-      notify => Class["samba::server::service"]
+      notify  => Class['samba::server::service']
     }
 
     augeas { "${name}-copy":
@@ -57,7 +59,7 @@ define samba::server::share($ensure = present,
         '' => "rm ${target}/copy",
       },
       require => Augeas["${name}-section"],
-      notify => Class["samba::server::service"]
+      notify  => Class['samba::server::service']
     }
 
     augeas { "${name}-create_mask":
@@ -67,7 +69,7 @@ define samba::server::share($ensure = present,
         '' => "rm \"${target}/create mask\"",
       },
       require => Augeas["${name}-section"],
-      notify => Class["samba::server::service"]
+      notify  => Class['samba::server::service']
     }
 
     augeas { "${name}-directory_mask":
@@ -77,7 +79,7 @@ define samba::server::share($ensure = present,
         '' => "rm \"${target}/directory mask\"",
       },
       require => Augeas["${name}-section"],
-      notify => Class["samba::server::service"]
+      notify  => Class['samba::server::service']
     }
 
     augeas { "${name}-force_create_mask":
@@ -87,7 +89,7 @@ define samba::server::share($ensure = present,
         '' => "rm \"${target}/force create mask\"",
       },
       require => Augeas["${name}-section"],
-      notify => Class["samba::server::service"]
+      notify => Class['samba::server::service']
     }
 
     augeas { "${name}-force_directory_mask":
@@ -97,7 +99,7 @@ define samba::server::share($ensure = present,
         '' => "rm \"${target}/force directory mask\"",
       },
       require => Augeas["${name}-section"],
-      notify => Class["samba::server::service"]
+      notify  => Class['samba::server::service']
     }
 
     augeas { "${name}-force_group":
@@ -107,7 +109,7 @@ define samba::server::share($ensure = present,
         '' => "rm \"${target}/force group\"",
       },
       require => Augeas["${name}-section"],
-      notify => Class["samba::server::service"]
+      notify  => Class['samba::server::service']
     }
 
     augeas { "${name}-force_user":
@@ -117,7 +119,7 @@ define samba::server::share($ensure = present,
         '' => "rm \"${target}/force user\"",
       },
       require => Augeas["${name}-section"],
-      notify => Class["samba::server::service"]
+      notify  => Class['samba::server::service']
     }
 
     augeas { "${name}-guest_account":
@@ -127,7 +129,7 @@ define samba::server::share($ensure = present,
         '' => "rm \"${target}/guest account\"",
       },
       require => Augeas["${name}-section"],
-      notify => Class["samba::server::service"]
+      notify  => Class['samba::server::service']
     }
 
     augeas { "${name}-guest_ok":
@@ -138,7 +140,7 @@ define samba::server::share($ensure = present,
         default => "rm \"${target}/guest ok\"",
       },
       require => Augeas["${name}-section"],
-      notify => Class["samba::server::service"]
+      notify  => Class['samba::server::service']
     }
 
     augeas { "${name}-guest_only":
@@ -149,7 +151,7 @@ define samba::server::share($ensure = present,
         default => "rm \"${target}/guest only\"",
       },
       require => Augeas["${name}-section"],
-      notify => Class["samba::server::service"]
+      notify  => Class['samba::server::service']
     }
 
     augeas { "${name}-path":
@@ -159,7 +161,7 @@ define samba::server::share($ensure = present,
         '' => "rm ${target}/path",
       },
       require => Augeas["${name}-section"],
-      notify => Class["samba::server::service"]
+      notify  => Class['samba::server::service']
     }
 
     augeas { "${name}-read_only":
@@ -170,7 +172,7 @@ define samba::server::share($ensure = present,
         default => "rm \"${target}/read_only\"",
       },
       require => Augeas["${name}-section"],
-      notify => Class["samba::server::service"]
+      notify  => Class['samba::server::service']
     }
   }
 }

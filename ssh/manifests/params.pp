@@ -8,7 +8,7 @@ class ssh::params {
       $ssh_config = '/etc/ssh/ssh_config'
       $ssh_known_hosts = '/etc/ssh/ssh_known_hosts'
       $service_name = 'ssh'
-    }  
+    }
     redhat: {
       $server_package_name = 'openssh-server'
       $client_package_name = 'openssh-clients'
@@ -16,13 +16,13 @@ class ssh::params {
       $ssh_config = '/etc/ssh/ssh_config'
       $ssh_known_hosts = '/etc/ssh/ssh_known_hosts'
       $service_name = 'sshd'
-    }  
+    }
     default: {
       case $::operatingsystem {
         default: {
           fail("Unsupported platform: ${::osfamily}/${::operatingsystem}")
-        }  
-      }  
-    }  
-  }  
+        }
+      }
+    }
+  }
 }

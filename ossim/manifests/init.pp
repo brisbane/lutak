@@ -1,6 +1,6 @@
 # Class: ossim
 #
-# This module manages ossim agent 
+# This module manages ossim agent
 #
 # Requires:
 #

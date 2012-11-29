@@ -4,7 +4,8 @@
 # https://fedorahosted.org/cobbler/
 #
 # Requires:
-#   $cobbler_listen_ip be set in the nodes manifest, else defaults to $ipaddress_eth1
+#   $cobbler_listen_ip be set in the nodes manifest, else defaults
+#   to $ipaddress_eth1
 #
 class cobbler (
   $service_name       = $cobbler::params::service_name,
@@ -27,7 +28,9 @@ class cobbler (
 
   # use apache modules
   include apache::mod::wsgi
-  class { 'apache::mod::proxy': proxy_allow => "$server_ip $::ipaddress 127.0.0.1", }
+  class { 'apache::mod::proxy':
+    proxy_allow => "$server_ip $::ipaddress 127.0.0.1",
+  }
   class { 'apache::mod::proxy_http': }
 
   package { 'tftp-server':
@@ -38,7 +41,7 @@ class cobbler (
   }
   package { $package_name :
     ensure  => $package_ensure,
-    require => [ Package['syslinux'], Package['tftp-server'], ], 
+    require => [ Package['syslinux'], Package['tftp-server'], ],
   }
   service { $service_name :
     ensure  => running,
@@ -63,8 +66,8 @@ class cobbler (
     group   => root,
     mode    => '0644',
     content => template('cobbler/settings.erb'),
-    require => Package["$package_name"],
-    notify  => Service["$service_name"],
+    require => Package[$package_name],
+    notify  => Service[$service_name],
   }
   file { '/etc/cobbler/modules.conf':
     ensure  => present,
@@ -72,18 +75,18 @@ class cobbler (
     group   => root,
     mode    => '0644',
     content => template('cobbler/modules.conf.erb'),
-    require => Package["$package_name"],
-    notify  => Service["$service_name"],
+    require => Package[$package_name],
+    notify  => Service[$service_name],
   }
   file { '/etc/httpd/conf.d/distros.conf':
-    ensure  => present, 
+    ensure  => present,
     owner   => root,
     group   => root,
     mode    => '0644',
     content => template('cobbler/distros.conf.erb'),
   }
   file { '/etc/httpd/conf.d/cobbler.conf':
-    ensure  => present, 
+    ensure  => present,
     owner   => root,
     group   => root,
     mode    => '0644',
@@ -108,7 +111,7 @@ class cobbler (
       group   => root,
       mode    => '0644',
       content => template('cobbler/dhcp.template.erb'),
-      require => Package["$package_name"],
+      require => Package[$package_name],
       notify  => Exec['cobblersync'],
     }
   }

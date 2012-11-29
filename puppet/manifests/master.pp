@@ -30,7 +30,7 @@ class puppet::master (
 
   # install package depending on major version
   case $server_type {
-    default : { 
+    default : {
       service { 'puppetmaster':
         ensure   => 'running',
         enable   => true,

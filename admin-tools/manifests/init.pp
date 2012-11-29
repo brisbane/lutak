@@ -6,9 +6,9 @@
 class admin-tools {
   # centos 6 minimal
   package { 'openssh-clients': ensure => latest }
-  package { 'wget':         ensure => latest, }
-  package { 'rsync':        ensure => latest, }
-  package { 'bind-utils':   ensure => latest, }
+  package { 'wget':            ensure => latest, }
+  package { 'rsync':           ensure => latest, }
+  package { 'bind-utils':      ensure => latest, }
   # admin tools
   package { 'man':          ensure => latest, }
   package { 'nmap':         ensure => latest, }

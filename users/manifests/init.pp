@@ -1,5 +1,5 @@
 class users {
-  import "definitions/*.pp"
+  import 'definitions/*.pp'
 
   # Default ways to add administrators
   Users::Massuseraccount <| tag == 'administrators' |>

@@ -18,6 +18,6 @@ class fhgfs (
   }
   file { '/etc/fhgfs/fhgfs-client.conf':
     require => Package['fhgfs-utils'],
-    content  => template('fhgfs/fhgfs-client.conf.erb'),
+    content => template('fhgfs/fhgfs-client.conf.erb'),
   }
 }

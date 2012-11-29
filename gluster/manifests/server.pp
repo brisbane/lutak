@@ -3,10 +3,10 @@
 # This module manages gluster server
 #
 class gluster::server (
-  $version    = $gluster::params::version,
+  $package_ensure = $gluster::params::package_ensure,
 ) inherits gluster::params {
   package { 'glusterfs-server':
-      ensure  => "$version",
+    ensure  => $package_ensure,
   }
   service { 'glusterd':
     ensure   => running,
@@ -14,5 +14,4 @@ class gluster::server (
     provider => redhat,
     require  => Package['glusterfs-server'],
   }
-
 }

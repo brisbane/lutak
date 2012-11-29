@@ -32,8 +32,8 @@ class snort (
     owner   => root,
     group   => root,
     mode    => '0644',
-    source  => [ 
-      "puppet:///files/snort/${::fqdn}/threshold.conf", 
+    source  => [
+      "puppet:///files/snort/${::fqdn}/threshold.conf",
       'puppet:///modules/snort/threshold.conf',
     ],
     require => Package['snort'],
@@ -72,7 +72,7 @@ class snort (
     require => [ Package['snort'], File['/etc/snort/local.conf'] ],
     notify  => Service['snortd'],
   }
-  file { "$logdir":
+  file { $logdir:
     ensure  => directory,
     owner   => snortd,
     group   => snortd,
@@ -82,6 +82,6 @@ class snort (
   service { 'snortd':
     ensure  => running,
     enable  => true,
-    require => File["$logdir", '/etc/snort/rules/local.rules' ],
+    require => File[$logdir, '/etc/snort/rules/local.rules' ],
   }
 }

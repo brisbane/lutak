@@ -1,4 +1,7 @@
-class php::modules::pecl::xdebug inherits php {
+class php::modules::pecl::xdebug (
+  $major          = $php::major,
+  $package_ensure = $php::package_ensure,
+) inherits php {
   package { "php$major-pecl-xdebug":
     ensure => $package_ensure,
   }

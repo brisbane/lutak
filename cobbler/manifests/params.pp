@@ -23,8 +23,8 @@ class cobbler::params {
   $package_ensure = 'present'
 
   # general settings
-  $next_server_ip = "${::ipaddress}"
-  $server_ip      = "${::ipaddress}"
+  $next_server_ip = $::ipaddress
+  $server_ip      = $::ipaddress
   $distro_path    = '/distro'
   $nameservers    = '127.0.0.1'
 

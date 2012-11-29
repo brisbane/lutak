@@ -12,12 +12,12 @@ class fhgfs::meta (
   }
   file { '/etc/fhgfs/fhgfs-meta.conf':
     require => Package['fhgfs-meta'],
-    content  => template('fhgfs/fhgfs-meta.conf.erb'),
+    content => template('fhgfs/fhgfs-meta.conf.erb'),
   }
   service { 'fhgfs-meta':
     enable    => $enable,
     provider  => redhat,
     require   => Package['fhgfs-meta'],
-#    subscribe => Subscribe['/etc/fhgfs/fhgfs-meta.conf'];
+#   subscribe => Subscribe['/etc/fhgfs/fhgfs-meta.conf'];
   }
 }

@@ -11,7 +11,9 @@
 # Sample Usage:
 #   include mcollective
 #
-class mcollective::mqclient inherits mcollective::params {
+class mcollective::mqclient (
+  $package_ensure = $mcollective::params::package_ensure,
+) inherits mcollective::params {
   # set up client
   package { 'mcollective-client':
     ensure => $package_ensure,

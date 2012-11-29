@@ -1,5 +1,5 @@
 class apache::mod::proxy (
-  $proxy_requests = "Off",
+  $proxy_requests = 'Off',
   $proxy_allow    = '127.0.0.1/8',
 ) inherits apache::params {
   apache::mod { 'proxy': }

@@ -11,12 +11,12 @@ define apache::mod (
   $loadfile = $loadfiles[$mod] # 2.6 compatibility hack
   if $package {
     $package_REAL = $package
-  } elsif "$mod_package" {
+  } elsif $mod_package {
     $package_REAL = $mod_package
   }
   $mod_libs = $apache::params::mod_libs
   $mod_lib = $mod_libs[$mod] # 2.6 compatibility hack
-  if "${mod_lib}" {
+  if ${mod_lib} {
     $lib = $mod_lib
   }
 

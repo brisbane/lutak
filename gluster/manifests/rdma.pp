@@ -3,9 +3,9 @@
 # This module manages gluster server
 #
 class gluster::rdma (
-  $version    = $gluster::params::version,
+  $package_ensure = $gluster::params::package_ensure,
 ) inherits gluster::params {
   package { 'glusterfs-rdma':
-      ensure  => "$version",
+      ensure  => $package_ensure,
   }
 }

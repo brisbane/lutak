@@ -1,4 +1,6 @@
 class php::modules::pecl::apc (
+  $major            = $php::major,
+  $package_ensure   = $php::package_ensure,
   $enabled          = '1',
   $shm_segments     = '1',
   $optimization     = '0',
