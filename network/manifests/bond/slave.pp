@@ -21,17 +21,17 @@
 define network::bond::slave (
   $macaddress,
   $master,
-  $ethtool_opts = ""
+  $ethtool_opts = ''
 ) {
   $interface = $name
 
   file { "ifcfg-$interface":
-    mode    => "644",
-    owner   => "root",
-    group   => "root",
-    ensure  => "present",
-    path    => "/etc/sysconfig/network-scripts/ifcfg-$interface",
-    content => template("network/ifcfg-bond.erb"),
+    ensure  => present,
+    owner   => root,
+    group   => root,
+    mode    => '0644',
+    path    => '/etc/sysconfig/network-scripts/ifcfg-$interface',
+    content => template('network/ifcfg-bond.erb'),
     before  => File["ifcfg-$master"],
     # need to know $ensure since one of these execs is not defined.
     #notify  => [ Exec["ifup-$master"], Exec["ifdown-$master"], ],
