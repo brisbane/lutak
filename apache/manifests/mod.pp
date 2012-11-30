@@ -16,7 +16,7 @@ define apache::mod (
   }
   $mod_libs = $apache::params::mod_libs
   $mod_lib = $mod_libs[$mod] # 2.6 compatibility hack
-  if ${mod_lib} {
+  if $mod_lib {
     $lib = $mod_lib
   }
 

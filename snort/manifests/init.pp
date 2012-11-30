@@ -33,7 +33,7 @@ class snort (
     group   => root,
     mode    => '0644',
     source  => [
-      "puppet:///files/snort/${::fqdn}/threshold.conf",
+      'puppet:///private/snort/threshold.conf',
       'puppet:///modules/snort/threshold.conf',
     ],
     require => Package['snort'],
@@ -54,7 +54,7 @@ class snort (
     group   => root,
     mode    => '0644',
     source  => [
-      "puppet:///files/snort/${::fqdn}/local.conf",
+      'puppet:///private/snort/local.conf',
       'puppet:///modules/snort/local.conf',
     ],
     require => [ Package['snort'], File['/etc/snort/snort.conf'] ],
@@ -66,7 +66,7 @@ class snort (
     group   => root,
     mode    => '0644',
     source  => [
-      "puppet:///files/snort/${::fqdn}/local.rules",
+      'puppet:///private/snort/local.rules',
       'puppet:///modules/snort/local.rules',
     ],
     require => [ Package['snort'], File['/etc/snort/local.conf'] ],

@@ -23,7 +23,7 @@ class snort::pulledpork (
     group   => root,
     mode    => '0644',
     source  => [
-      "puppet:///files/snort/${::fqdn}/disablesid.conf",
+      'puppet:///private/snort/disablesid.conf',
       'puppet:///modules/snort/disablesid.conf',
     ],
     require => Package['pulledpork'],
@@ -42,7 +42,7 @@ class snort::pulledpork (
     group   => root,
     mode    => '0644',
     source  => [
-      "puppet:///files/snort/${::fqdn}/VRT.conf",
+      'puppet:///private/snort/VRT.conf',
       'puppet:///modules/snort/VRT.conf',
     ],
     require => File['/etc/cron.d/pulledpork'],
@@ -54,7 +54,7 @@ class snort::pulledpork (
     group   => root,
     mode    => '0644',
     source  => [
-      "puppet:///files/snort/${::fqdn}/emerging.conf",
+      'puppet:///private/snort/emerging.conf',
       'puppet:///modules/snort/emerging.conf',
     ],
     require => File['/etc/cron.d/pulledpork'],
