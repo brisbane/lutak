@@ -6,6 +6,7 @@ define users::useraccount (
   $shell    = '/bin/bash',
   $password = '',
   $sshkeys  = [],
+  $recurse  = true,
 ) {
   $username = $name
   # This case statement will allow disabling an account by passing
@@ -86,7 +87,7 @@ define users::useraccount (
               ensure  => directory,
               owner   => $home_owner,
               group   => $home_group,
-              recurse => true,
+              recurse => $recurse,
               replace => false,
               ignore  => '.git',
               source  => [
@@ -106,7 +107,7 @@ define users::useraccount (
               ensure  => directory,
               owner   => $home_owner,
               group   => $home_group,
-              recurse => true,
+              recurse => $recurse,
               replace => true,
               force   => true,
               ignore  => '.git',
