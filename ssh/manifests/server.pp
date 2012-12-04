@@ -6,6 +6,7 @@ class ssh::server (
   $server_package_name = $ssh::server_package_name,
   $package_ensure      = $ssh::package_ensure,
   $service_name        = $ssh::service_name,
+  $keys_dir            = "/etc/puppet/private/$fqdn/ssh",
 ) inherits ssh {
   package { $server_package_name:
     ensure => $package_ensure,
@@ -16,56 +17,10 @@ class ssh::server (
     provider => redhat,
     require  => Package['openssh-server'],
   }
-  # ssh keys
-  file { '/etc/ssh/ssh_host_dsa_key':
-    ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0600',
-    source  => [
-      'puppet:///private/ssh/ssh_host_dsa_key',
-      'puppet:///modules/ssh/ssh_host_dsa_key',
-    ],
-    require => Package['openssh-server'],
-    notify  => Service[$service_name],
-  }
-  file { '/etc/ssh/ssh_host_dsa_key.pub':
-    ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0644',
-    source  => [
-      'puppet:///private/ssh/ssh_host_dsa_key.pub',
-      'puppet:///modules/ssh/ssh_host_dsa_key.pub',
-    ],
-    require => Package['openssh-server'],
-    notify  => Service[$service_name],
-  }
-  file { '/etc/ssh/ssh_host_rsa_key':
-    ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0600',
-    source  => [
-      'puppet:///private/ssh/ssh_host_rsa_key',
-      'puppet:///modules/ssh/ssh_host_rsa_key',
-    ],
-    require => Package['openssh-server'],
-    notify  => Service[$service_name],
-  }
-  file { '/etc/ssh/ssh_host_rsa_key.pub':
-    ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0644',
-    source  => [
-      'puppet:///private/ssh/ssh_host_rsa_key.pub',
-      'puppet:///modules/ssh/ssh_host_rsa_key.pub',
-    ],
-    require => Package['openssh-server'],
-    notify  => Service[$service_name],
-  }
 
+  if generate('/etc/puppet/modules/ssh/scripts/generate_host_keys.sh', $keys_dir) {
+    include ssh::server::keys 
+  }
 }
 
 
