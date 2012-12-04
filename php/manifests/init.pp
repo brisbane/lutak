@@ -6,7 +6,6 @@ class php (
   $major          = $php::params::major,
   $package_ensure = $php::params::package_ensure,
 ) inherits php::params {
-  Class['php'] -> Class['apache::mod::php']
   # packages from CentOS base
   package { "php$major":
     ensure  => $package_ensure,

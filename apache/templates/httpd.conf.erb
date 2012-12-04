@@ -160,8 +160,8 @@ Include conf.d/*.conf
 #  when the value of (unsigned)Group is above 60000; 
 #  don't use Group #-1 on these systems!
 #
-User <%= scope.lookupvar('apache::params::user') %>
-Group <%= scope.lookupvar('apache::params::group') %>
+User <%= user %>
+Group <%= group %>
 
 ### Section 2: 'Main' server configuration
 #

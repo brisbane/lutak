@@ -26,6 +26,8 @@ class apache (
   $maxkeepaliverequests = $apache::params::maxkeepaliverequests,
   $keepalivetimeout     = $apache::params::keepalivetimeout,
   $servertimeout        = $apache::params::servertimeout,
+  $user                 = $apache::params::user,
+  $group                = $apache::params::group,
   $umask                = $apache::params::umask,
   ) inherits apache::params {
 #  include apache::params

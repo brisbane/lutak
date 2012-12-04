@@ -12,4 +12,9 @@ class jenkins (
     ensure  => $package_ensure,
     require => [ Package["java-1.$java_version.0-sun-devel"], File['/etc/yum.repos.d/jenkins.repo'], ],
   }
+  service { 'jenkins':
+    ensure  => running,
+    enable  => true,
+    require => Package['jenkins'],
+  }
 }

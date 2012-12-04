@@ -26,8 +26,8 @@ class cobbler (
   $apache_service     = $cobbler::params::apache_service,
 ) inherits cobbler::params {
 
-  # use apache modules
-  include apache::mod::wsgi
+  # require apache modules
+  require apache::mod::wsgi
   class { 'apache::mod::proxy':
     proxy_allow => "$server_ip $::ipaddress 127.0.0.1",
   }
