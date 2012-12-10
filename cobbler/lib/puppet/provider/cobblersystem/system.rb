@@ -86,15 +86,14 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
                 case setting
                 when 'static'
                     if iface_settings["#{setting}"] or iface_settings["#{setting}"] == 'True' then
-                        #result["#{iface_name}"]["#{setting}"] = '1'
                         iface_settings["#{setting}"] = '1'
                     else
-                        #result["#{iface_name}"]["#{setting}"] = '0'
                         iface_settings["#{setting}"] = '0'
                     end
-                end 
+                when 'static_routes'
+                    iface_settings["#{setting}"] = iface_settings["#{setting}"] * " "
+                end
                 result["#{iface_name}"]["#{setting}"] = iface_settings["#{setting}"]
-#unless ( iface_settings["#{setting}"].nil? and iface_settings["#{setting}"] != "" )
             end 
         end
         result
@@ -130,6 +129,8 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
                     setting_long = 'mac-address'
                 when 'ip_address'
                     setting_long = 'ip-address'
+                when 'static_routes'
+                    setting_long = 'static-routes'
                 else
                     setting_long = setting
                 end
