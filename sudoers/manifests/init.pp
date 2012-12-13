@@ -1,3 +1,4 @@
+# Class: sudoers
 class sudoers {
   package { 'sudo':
     ensure => present,
@@ -10,8 +11,8 @@ class sudoers {
     require => Package['sudo'],
   }
   exec {'add_sudo_include_d':
-    command => '/bin/echo "includedir /etc/sudoers.d" >> /etc/sudoers',
-    unless  => '/bin/grep -q "includedir /etc/sudoers.d" /etc/sudoers',
+    command => '/bin/echo "## Read drop-in files from /etc/sudoers.d (the # here does not mean a comment)" >> /etc/sudoers && /bin/echo "#includedir /etc/sudoers.d" >> /etc/sudoers',
+    unless  => '/bin/grep -q "^#includedir /etc/sudoers.d" /etc/sudoers',
     require => File['/etc/sudoers.d'],
   }
 }

@@ -5,6 +5,9 @@
 class gluster::server (
   $package_ensure = $gluster::params::package_ensure,
 ) inherits gluster::params {
+  package { 'glusterfs-fuse':
+    ensure  => $package_ensure,
+  }
   package { 'glusterfs-server':
     ensure  => $package_ensure,
   }
