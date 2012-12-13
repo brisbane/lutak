@@ -11,7 +11,7 @@ class gridcert {
     ensure  => file,
     owner   => root,
     group   => root,
-    mode    => '0644',
+    mode    => '0444',
     source  => [
       'puppet:///private/gridcert/hostcert.pem',
     ],
@@ -21,7 +21,7 @@ class gridcert {
     ensure  => file,
     owner   => root,
     group   => root,
-    mode    => '0600',
+    mode    => '0400',
     source  => [
       'puppet:///private/gridcert/hostkey.pem',
     ],
