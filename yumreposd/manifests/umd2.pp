@@ -53,7 +53,6 @@ class yumreposd::umd2 {
         ensure   => '2.0.0-1.el5',
         provider => 'rpm',
         source   => 'http://repository.egi.eu/sw/production/umd/2/sl5/x86_64/base/umd-release-2.0.0-1.el5.noarch.rpm',
-        require  => [ Package['yum-plugin-priorities'], Package['yum-plugin-protectbase'], ],
       }
     }
     /^6.*/: {
@@ -61,7 +60,6 @@ class yumreposd::umd2 {
         ensure   => '2.0.0-1.el6',
         provider => 'rpm',
         source   => 'http://repository.egi.eu/sw/production/umd/2/sl6/x86_64/base/umd-release-2.0.0-1.el6.noarch.rpm',
-        require  => [ Package['yum-plugin-priorities'], Package['yum-plugin-protectbase'], ],
       }
     }
   }
