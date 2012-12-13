@@ -1,0 +1,28 @@
+ntp
+
+This is the ntp module which manages ntp clients and servers
+
+# Class: ntp
+#
+# This module manages ntp clients and is standard for all hosts
+#
+# Requires:
+#   $ntpServerList be set in site manifest
+#
+# Sample Usage:
+#   $ntpServerList = [ '0.pool.ntp.org', '1.pool.ntp.org' ]
+#   include ntp
+
+# Class: ntp::server
+#
+# This module manages ntp servers
+#
+# Requires: 
+#   class ntp
+#   $ntpServerList be set in site manifest
+#   $ntpClientList be set in site manifest
+#
+# Sample Usage:
+#   $ntpServerList = [ '0.pool.ntp.org', '1.pool.ntp.org' ]
+#   $ntpClientList = [ '192.168.0.0/255.255.255.0', '192.168.151.13' ]
+#   include ntp::server
