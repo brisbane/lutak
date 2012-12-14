@@ -1,9 +1,10 @@
 # modules/koji/web.pp - manage koji
 #
 class koji::web {
+  require yum::repo::epel
+
   package {'koji-web':
     ensure  => present,
-    require => Class['yumreposd::epel'],
   }
   file {'/etc/httpd/conf.d/kojiweb.conf':
     ensure  => present,

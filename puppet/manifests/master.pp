@@ -40,7 +40,6 @@ class puppet::master (
     }
     /^httpd|^apache/: {
       # include and set up apache
-      include yumreposd::passenger
       include apache
       include apache::mod::ssl
       include apache::mod::passenger
