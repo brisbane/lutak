@@ -1,8 +1,9 @@
-class php::modules::pecl::ssh2 (
+# Class: php::mod::pecl::amqp
+class php::mod::pecl::amqp (
   $major          = $php::major,
   $package_ensure = $php::package_ensure,
 ) inherits php {
-  package { "php$major-pecl-ssh2":
+  package { "php${major}-pecl-amqp":
     ensure  => $package_ensure,
   }
 }

@@ -1,4 +1,5 @@
-class php::modules::pecl::apc (
+# Class: php::mod::pecl::apc
+class php::mod::pecl::apc (
   $major            = $php::major,
   $package_ensure   = $php::package_ensure,
   $enabled          = '1',
@@ -12,7 +13,7 @@ class php::modules::pecl::apc (
   $enable_cli       = '0',
   $cache_by_default = '1',
 ) inherits php {
-  package { "php$major-pecl-apc":
+  package { "php${major}-pecl-apc":
     ensure  => $package_ensure,
   }
   file { '/etc/php.d/apc.ini':
@@ -21,6 +22,6 @@ class php::modules::pecl::apc (
     group   => root,
     mode    => '0644',
     content => template('php/apc.ini.erb'),
-    require => Package["php$major-pecl-apc"],
+    require => Package["php${major}-pecl-apc"],
   }
 }
