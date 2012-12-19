@@ -1,8 +1,9 @@
-class php::modules::pear (
+# Class: php::mod::soap
+class php::mod::soap (
   $major          = $php::major,
   $package_ensure = $php::package_ensure,
 ) inherits php {
-  package { "php$major-pear":
+  package { "php${major}-soap":
     ensure  => $package_ensure,
   }
 }

@@ -1,10 +1,10 @@
-# Class: sudoers::requiretty
+# Define: sudoers::requiretty
 #
-# This module controls sudo requiretty option
+# This module manages sudo requiretty option
 # for users and groups
 #
 define sudoers::requiretty(
-  $requiretty       = $false,
+  $requiretty       = false,
   $filename         = $title,
   $user             = undef,
   $group            = undef,

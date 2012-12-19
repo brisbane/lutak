@@ -1,4 +1,6 @@
+# Class: samba::server
 class samba::server(
+  $major                 = $samba::params::major,
   $workgroup             = $samba::params::workgroup,
   $realm                 = $samba::params::realm,
   $security              = $samba::params::security,
@@ -20,31 +22,59 @@ class samba::server(
   $ad_user               = $samba::params::ad_user,
   $ad_password           = $samba::params::ad_password,
 ) inherits samba::params {
-  include samba::server::install
-  include samba::server::config
-  include samba::server::service
+
+  Package { ensure => installed, }
+  File {
+    owner => root,
+    group => root,
+  }
+
+  # packages
+  package { "samba${major}":
+    alias  => 'samba',
+  }
+  package { "samba${major}-winbind":
+    alias  => 'samba-winbind',
+  }
+  # config dir
+  file { '/etc/samba':
+    ensure  => directory,
+    mode    => '0755',
+    require => Package['samba'],
+  }
+
+  # services
+  Service {
+    ensure     => running,
+    hasstatus  => true,
+    hasrestart => true,
+    enable     => true,
+  }
+  service { 'smb':
+    require => Package['samba'],
+  }
+  service { 'nmb':
+    require => Package['samba'],
+  }
+  service { 'winbind':
+    require => Package['samba-winbind'],
+  }
 
   # join domain
   if upcase($security) == 'ADS' {
     file {'/etc/krb5.conf':
-      ensure  => present, 
-      owner   => root,
-      group   => root,
+      ensure  => present,
       mode    => '0644',
       content => template('samba/krb5.conf.erb'),
     }
-    package {'krb5-workstation':
-      ensure => present,
-    }
+    package {'krb5-workstation': }
     exec {'join_active_directory_domain':
       # command => '/usr/bin/net ads join -U mount%1f2fe65def',
-      command => "/usr/bin/net ads join -U $ad_user%$ad_password",
+      command => "/usr/bin/net ads join -U ${ad_user}%${ad_password}",
       onlyif  => '/usr/bin/net ads testjoin -k 2>&1 | /bin/grep -q "not valid"',
     }
     file {'/etc/samba/smb.conf':
       ensure  => present,
-      owner   => root,
-      group   => root,
       mode    => '0644',
       content => template('samba/smb-ads.conf.erb'),
       notify  => Class['samba::server::service']
@@ -53,7 +83,7 @@ class samba::server(
 
 #   $context = '/files/etc/samba/smb.conf'
 #   $target = "target[. = 'global']"
-# 
+#
 #   #
 #   # global section of smb.conf
 #   #
@@ -63,7 +93,7 @@ class samba::server(
 #     require => Class["samba::server::config"],
 #     notify => Class['samba::server::service']
 #   }
-# 
+#
 #   # workgroup
 #   augeas { 'global-workgroup':
 #     context => $context,
@@ -74,7 +104,7 @@ class samba::server(
 #     require => Augeas['global-section'],
 #     notify  => Class['samba::server::service']
 #   }
-# 
+#
 #   # realm (AD domain)
 #   augeas { 'global-realm':
 #     context => $context,
@@ -85,7 +115,7 @@ class samba::server(
 #     require => Augeas['global-section'],
 #     notify  => Class['samba::server::service']
 #   }
-# 
+#
 #   # server string
 #   augeas { 'global-server_string':
 #     context => $context,
@@ -96,7 +126,7 @@ class samba::server(
 #     require => Augeas['global-section'],
 #     notify => Class['samba::server::service']
 #   }
-# 
+#
 #   # netbios name
 #   augeas { 'global-netbios_name':
 #     context => $context,
@@ -107,7 +137,7 @@ class samba::server(
 #     require => Augeas['global-section'],
 #     notify   => Class['samba::server::service']
 #   }
-# 
+#
 #   # security
 #   augeas { 'global-security':
 #     context => $context,
@@ -118,7 +148,7 @@ class samba::server(
 #     require => Augeas['global-section'],
 #     notify => Class['samba::server::service']
 #   }
-# 
+#
 #   # allow trusted domains
 #   augeas { 'global-allow_trusted_domains':
 #     context => $context,
@@ -129,7 +159,7 @@ class samba::server(
 #     require => Augeas['global-section'],
 #     notify => Class['samba::server::service']
 #   }
-# 
+#
 #   # password server
 #   augeas { 'global-password_server':
 #     context => $context,
@@ -140,7 +170,7 @@ class samba::server(
 #     require => Augeas['global-section'],
 #     notify  => Class['samba::server::service']
 #   }
-# 
+#
 #   # interfaces
 #   augeas { 'global-interfaces':
 #     context => $context,
@@ -151,7 +181,7 @@ class samba::server(
 #     require => Augeas['global-section'],
 #     notify => Class['samba::server::service']
 #   }
-# 
+#
 #   # syslog
 #   augeas { 'global-syslog':
 #     context => $context,
@@ -162,7 +192,7 @@ class samba::server(
 #     require => Augeas['global-section'],
 #     notify  => Class['samba::server::service']
 #   }
-# 
+#
 #   # logfile
 #   augeas { 'global-logfile':
 #     context => $context,
@@ -173,7 +203,7 @@ class samba::server(
 #     require => Augeas['global-section'],
 #     notify  => Class['samba::server::service']
 #   }
-# 
+#
 #   # load printers
 #   augeas { 'global-load_printers':
 #     context => $context,
@@ -184,7 +214,7 @@ class samba::server(
 #     require => Augeas['global-section'],
 #     notify   => Class['samba::server::service']
 #   }
-# 
+#
 #   # cups options
 #   augeas { 'global-cups_options':
 #     context => $context,
@@ -195,7 +225,7 @@ class samba::server(
 #     require => Augeas['global-section'],
 #     notify   => Class['samba::server::service']
 #   }
-# 
+#
 #   # domain master
 #   augeas { 'global-domain_master':
 #     context => $context,
@@ -206,7 +236,7 @@ class samba::server(
 #     require => Augeas['global-section'],
 #     notify   => Class['samba::server::service']
 #   }
-# 
+#
 #   # local master
 #   augeas { 'global-local_master':
 #     context => $context,
@@ -217,7 +247,7 @@ class samba::server(
 #     require => Augeas['global-section'],
 #     notify   => Class['samba::server::service']
 #   }
-# 
+#
 #   # idmap backend
 #   augeas { 'global-idmap_backend':
 #     context => $context,
@@ -228,7 +258,7 @@ class samba::server(
 #     require => Augeas['global-section'],
 #     notify   => Class['samba::server::service']
 #   }
-# 
+#
 #   # idmap uid
 #   augeas { 'global-idmap_uid':
 #     context => $context,
@@ -239,7 +269,7 @@ class samba::server(
 #     require => Augeas['global-section'],
 #     notify   => Class['samba::server::service']
 #   }
-# 
+#
 #   # idmap gid
 #   augeas { 'global-idmap_gid':
 #     context => $context,
@@ -250,7 +280,7 @@ class samba::server(
 #     require => Augeas['global-section'],
 #     notify   => Class['samba::server::service']
 #   }
-# 
+#
 #   # winbind use default domain
 #   augeas { 'global-winbind_use_defdomain':
 #     context => $context,
