@@ -62,6 +62,7 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
                      'bonding_opts',		# bonding_opts
                      'static_routes',		# static routes
                      'management',		# buildiso inst
+                     'dns_name',                # dns name, cobbler generates file from this info
                    ]
 
         result = {}
@@ -113,6 +114,7 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
                      'bonding_opts',		# bonding_opts
                      'static_routes',		# static routes
                      'management',		# buildiso inst
+                     'dns_name',                # dns name, cobbler generates file from this info
                    ]
 
         # modify interfaces according to resource in puppet
@@ -133,6 +135,8 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
                     setting_long = 'ip-address'
                 when 'static_routes'
                     setting_long = 'static-routes'
+                when 'dns_name'
+                    setting_long = 'dns-name'
                 else
                     setting_long = setting
                 end
