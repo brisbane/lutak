@@ -14,9 +14,9 @@ class puppet::master (
   $fileserver_clients = $puppet::params::fileserver_clients,
   $server_type        = $puppet::params::server_type,
 ) inherits puppet::params {
-  package { 'puppet-server':
-    ensure  => $package_ensure,
-  }
+  package { 'puppet-server':       ensure => $package_ensure,  }
+  package { 'rubygem-puppet-lint': ensure => $package_ensure, }
+
   file { '/etc/puppet/fileserver.conf':
     ensure  => present,
     content => template('puppet/fileserver.conf.erb'),
