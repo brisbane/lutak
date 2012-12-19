@@ -13,6 +13,22 @@ class yum::repodef::umd2 {
     source  =>  "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/UMD-2-base.repo",
     require => Package['umd-release'],
   }
+  file { '/etc/yum.repos.d/UMD-2-updates.repo':
+    ensure  => file,
+    mode    => '0644',
+    owner   => root,
+    group   => root,
+    source  =>  "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/UMD-2-updates.repo",
+    require => Package['umd-release'],
+  }
+  file { '/etc/yum.repos.d/EGI-trustanchors.repo':
+    ensure  => file,
+    mode    => '0644',
+    owner   => root,
+    group   => root,
+    source  =>  "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/EGI-trustanchors.repo",
+    require => Package['umd-release'],
+  }
 
   case $::operatingsystemrelease {
     default: {}
