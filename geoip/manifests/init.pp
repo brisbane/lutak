@@ -6,52 +6,51 @@ class geoip (
   $package_ensure = $geoip::params::package_ensure,
   $geoip_version  = $geoip::params::geoip_version,
 ){
+  require perl::mod::libwww
+
   # install specific version
   package { 'GeoIP':
     ensure => $package_ensure,
   }
+
+  File {
+    ensure  => file,
+    owner   => root,
+    group   => root,
+    mode    => '0644',
+    require => Package['GeoIP'],
+  }
+
   # package brings directory, but we decide to purge it
   file { '/usr/share/GeoIP':
     ensure  => directory,
     purge   => true,
-    owner   => root,
-    group   => root,
     mode    => '0755',
-    require => Package['GeoIP'],
   }
+
   # fetch and manage GeoIP.dat
-  exec { 'fetch-geoip':
+  exec { 'fetch_geoip':
     command => '/bin/touch /usr/share/GeoIP/GeoIP.dat && /usr/bin/perl /usr/share/doc/GeoIP-1.4.8/fetch-geoipdata.pl > /dev/null 2>&1',
-    creates => '/usr/share/GeoIP/GeoIP.dat',
+    unless  => '/usr/bin/test -s /usr/share/GeoIP/GeoIP.dat',
     require => File['/usr/share/GeoIP'],
   }
   file { '/usr/share/GeoIP/GeoIP.dat':
-    ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0644',
-    require => Exec['fetch-geoip'],
+    require => Exec['fetch_geoip'],
   }
-  # fetch and manage GeoIP.dat
-  exec { 'fetch-geolitecity':
+
+  # fetch and manage GeoLiteCity.dat
+  exec { 'fetch_geolitecity':
     command => '/bin/touch /usr/share/GeoIP/GeoLiteCity.dat && /usr/bin/perl /usr/share/doc/GeoIP-1.4.8/fetch-geoipdata-city.pl > /dev/null 2>&1',
-    creates => '/usr/share/GeoIP/GeoLiteCity.dat',
+    unless  => '/usr/bin/test -s /usr/share/GeoIP/GeoLiteCity.dat',
     require => File['/usr/share/GeoIP'],
   }
   file { '/usr/share/GeoIP/GeoLiteCity.dat':
-    ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0644',
-    require => Exec['fetch-geoip'],
+    require => Exec['fetch_geolitecity'],
   }
+
   # files are fetched via cron every month
   file { '/etc/cron.monthly/fetch-geodata':
-    ensure  => file,
-    owner   => root,
-    group   => root,
     mode    => '0755',
     content => template('geoip/fetch-geodata.erb'),
-    require => Package['GeoIP'],
   }
 }
