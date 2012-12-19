@@ -4,14 +4,20 @@ Puppet::Type.newtype(:cobblersystem) do
 A typical rule will look like this:
 
 cobblersystem { 'test.domain.com':
-  ensure        => present,
-  profile       => 'CentOS-6.3-x86_64',
-  interfaces    => 'eth0',
-  mac_address   => '00:50:56:b0:00:26',
-  ipaddress     => '10.8.16.53',
-  gateway       => '10.8.16.52',
-  hostname      => 'test.domain.com',
-  netboot       => true,
+  ensure     => present,
+  profile    => 'CentOS-6.3-x86_64',
+  interfaces => { 'eth0' => {
+                    mac_address => '90:B1:1C:06:BF:56',
+                    static      => '1',
+                    management  => true,
+                    ip_address  => '10.8.16.53',
+                    netmask     => '255.255.255.0', 
+                    dns_name    => 'test.domain.com', 
+                  },
+                },
+  gateway    => '10.8.16.51',
+  hostname   => 'test.domain.com',
+  netboot    => false,
 }
 
 "
