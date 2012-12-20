@@ -93,7 +93,6 @@ cobblersystem { 'test.domain.com':
   newproperty(:netboot) do
     desc "Enable reinstallation of system."
     newvalues(:true, :false)
-    defaultto :false
   end
 
 end
