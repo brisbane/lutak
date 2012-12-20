@@ -7,13 +7,13 @@ class php (
   $package_ensure = $php::params::package_ensure,
 ) inherits php::params {
   # packages from CentOS base
-  package { "php$major":
+  package { "php${major}":
     ensure  => $package_ensure,
   }
-  package { "php$major-cli":
+  package { "php${major}-cli":
     ensure  => $package_ensure,
   }
-  package { "php$major-common":
+  package { "php${major}-common":
     ensure  => $package_ensure,
   }
 }
