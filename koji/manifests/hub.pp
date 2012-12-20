@@ -1,6 +1,8 @@
 # modules/koji/hub.pp - manage koji hub
 #
 class koji::hub {
+  require yum::repo::epel
+
   package {'koji-hub':
     ensure => present,
   }

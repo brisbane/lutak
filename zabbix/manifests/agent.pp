@@ -7,17 +7,16 @@ class zabbix::agent (
   $server_name    = $zabbix::server_name,
   $client_name    = $zabbix::client_name,
 ) inherits zabbix {
+  require yum::repo::srce
+
   package { 'zabbix-agentd':
     ensure   => $package_ensure,
-    require  => Class['yumreposd::srce'],
   }
   package { 'zabbix-agentd_ntpd':
     ensure   => $package_ensure,
-    require  => Class['yumreposd::srce'],
   }
   package { 'zabbix-agentd_ssh':
     ensure   => $package_ensure,
-    require  => Class['yumreposd::srce'],
   }
   service { 'zabbix-agent':
     ensure   => running,

@@ -61,6 +61,8 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
                      'netmask',			# netmask
                      'bonding_opts',		# bonding_opts
                      'static_routes',		# static routes
+                     'management',		# buildiso inst
+                     'dns_name',                # dns name, cobbler generates file from this info
                    ]
 
         result = {}
@@ -111,6 +113,8 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
                      'netmask',			# netmask
                      'bonding_opts',		# bonding_opts
                      'static_routes',		# static routes
+                     'management',		# buildiso inst
+                     'dns_name',                # dns name, cobbler generates file from this info
                    ]
 
         # modify interfaces according to resource in puppet
@@ -131,12 +135,14 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
                     setting_long = 'ip-address'
                 when 'static_routes'
                     setting_long = 'static-routes'
+                when 'dns_name'
+                    setting_long = 'dns-name'
                 else
                     setting_long = setting
                 end
                 # finally construct command and edit system properties
                 unless val[setting].nil?
-                    valuearg="--#{setting_long}=" + val[setting]
+                    valuearg="--#{setting_long}=" + val[setting].to_s
                     cobbler("system","edit",namearg,ifacearg,valuearg)
                 end
             end

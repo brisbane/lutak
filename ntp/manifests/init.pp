@@ -16,7 +16,6 @@ class ntp (
   package { 'ntp':
     ensure  => $package_ensure,
     name    => $package_name,
-    require => Class['yumreposd::base'],
   }
   service { 'ntpd':
     ensure  => running,

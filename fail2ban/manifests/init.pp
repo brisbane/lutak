@@ -1,11 +1,13 @@
+# Class: fail2ban
 class fail2ban (
   $global_ignore   = $fail2ban::params::global_ignore,
   $global_bantime  = $fail2ban::params::global_bantime,
   $global_maxretry = $fail2ban::params::global_maxretry,
 ) inherits fail2ban::params {
+  require yum::repo::srce
+
   package{'fail2ban':
     ensure  => latest,
-    require => Class['yumreposd::srce'],
   }
   file { '/etc/fail2ban/fail2ban.conf' :
     ensure  => present,

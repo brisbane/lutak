@@ -27,8 +27,8 @@ define users::useraccount (
     ensure     => $ensure,
     gid        => $username,
     groups     => $groups,
-    comment    => "$comment ",
-    home       => "/home/$username",
+    comment    => "${comment} ",
+    home       => "/home/${username}",
     shell      => $shell,
     allowdupe  => false,
     managehome => true,
@@ -41,15 +41,14 @@ define users::useraccount (
     allowdupe => false,
   }
 
-  # Set password if available
+  # set password, or force user on first login
   if $password != '' {
     User <| title == $username |> { password => $password }
   }
-  # force user to set password if is empty on first login
-  if $password == '' {
-    exec { "setpassonlogin_$username":
-      command     => "usermod -p '' $username && chage -d 0 $username",
-      unless      => "grep $username /etc/shadow | cut -f 2 -d : | grep -v '!'  > /dev/null",
+  else {
+    exec { "setpassonlogin_${username}":
+      command     => "usermod -p '' ${username} && chage -d 0 ${username}",
+      unless      => "grep ${username} /etc/shadow | cut -f 2 -d : | grep -v '!'  > /dev/null",
       refreshonly => true,
       subscribe   => User[$username],
       require     => User[$username],
@@ -59,13 +58,13 @@ define users::useraccount (
   # uid/gid management
   if $uid != '' {
     # Manage uid if etcpass is available
-    if $etcpasswd != '' {
+    if $::etcpasswd != '' {
       User <| title == $username |> { uid => $uid }
       users::uidsanity { $uid:   username => $username }
     }
 
     # Manage gid if etcgroup is available
-    if $etcgroup != '' {
+    if $::etcgroup != '' {
       User <| title == $username |> { gid => $uid }
       Group <| title == $username |> { gid => $uid }
       users::gidsanity { $uid: groupname => $username }
@@ -73,12 +72,12 @@ define users::useraccount (
   }
 
   $managedDirs = [
-    "/etc/puppet/files/users/home/host/${username}.$fqdn",
-    "/etc/puppet/files/users/home/host/${username}.$hostname",
-    "/etc/puppet/files/users/home/domain/${username}.$domain",
-    "/etc/puppet/files/users/home/env/${username}.$environment",
+    "/etc/puppet/files/users/home/host/${username}.${::fqdn}",
+    "/etc/puppet/files/users/home/host/${username}.${::hostname}",
+    "/etc/puppet/files/users/home/domain/${username}.${::domain}",
+    "/etc/puppet/files/users/home/env/${username}.${::environment}",
     "/etc/puppet/files/users/home/user/${username}",
-    "/etc/puppet/files/users/home/skel",
+    '/etc/puppet/files/users/home/skel',
   ]
 
   case generate('/etc/puppet/modules/users/scripts/findDirs.sh', $managedDirs) {
@@ -91,15 +90,15 @@ define users::useraccount (
               replace => false,
               ignore  => '.git',
               source  => [
-                  "puppet:///files/users/home/default/host/${username}.$fqdn",
-                  "puppet:///files/users/home/default/host/${username}.$hostname",
-                  "puppet:///files/users/home/default/domain/${username}.$domain",
-                  "puppet:///files/users/home/default/env/${username}.$environment",
+                  "puppet:///files/users/home/default/host/${username}.${::fqdn}",
+                  "puppet:///files/users/home/default/host/${username}.${::hostname}",
+                  "puppet:///files/users/home/default/domain/${username}.${::domain}",
+                  "puppet:///files/users/home/default/env/${username}.${::environment}",
                   "puppet:///files/users/home/default/user/${username}",
-                  "puppet:///files/users/home/default/skel",
-                  "puppet:///files/users/home/default",
+                  'puppet:///files/users/home/default/skel',
+                  'puppet:///files/users/home/default',
               ],
-              require   => User["${username}"],
+              require => User[$username],
           }
       }
       default: {
@@ -112,20 +111,21 @@ define users::useraccount (
               force   => true,
               ignore  => '.git',
               source  => [
-                  "puppet:///files/users/home/host/${username}.$fqdn",
-                  "puppet:///files/users/home/host/${username}.$hostname",
-                  "puppet:///files/users/home/domain/${username}.$domain",
-                  "puppet:///files/users/home/env/${username}.$environment",
+                  "puppet:///files/users/home/host/${username}.${::fqdn}",
+                  "puppet:///files/users/home/host/${username}.${::hostname}",
+                  "puppet:///files/users/home/domain/${username}.${::domain}",
+                  "puppet:///files/users/home/env/${username}.${::environment}",
                   "puppet:///files/users/home/user/${username}",
-                  "puppet:///files/users/home/skel",
+                  'puppet:///files/users/home/skel',
               ],
-              require   => User["${username}"],
+              require => User[$username],
           }
       }
   }
 
   file { "/home/${username}/.bash_history":
-    mode    => 600,
+    ensure  => file,
+    mode    => '0600',
     owner   => $home_owner,
     group   => $home_group,
     require => File["/home/${username}"],
@@ -135,7 +135,7 @@ define users::useraccount (
     ensure  => directory,
     owner   => $home_owner,
     group   => $home_group,
-    mode    => 700,
+    mode    => '0700',
     require => File["/home/${username}"],
   }
 
@@ -143,7 +143,7 @@ define users::useraccount (
   if $sshkeys != [] {
     users::sshkey{ $sshkeys:
       ensure => present,
-      user   => "$username",
+      user   => $username,
     }
   }
 }

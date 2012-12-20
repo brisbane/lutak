@@ -1,6 +1,6 @@
-# Class: ntp::params
+# Class: samba::params
 #
-#   The ntp configuration settings.
+#   The samba configuration settings.
 #
 # Parameters:
 #
@@ -11,6 +11,18 @@
 # Sample Usage:
 #
 class samba::params {
+  # package name version
+  # note: we want samba3x packages in RHEL v5
+  case $::operatingsystemrelease {
+    default: {
+      $major = ''
+    }
+    /^5.*/: {
+      $major = '3x'
+    }
+  }
+  $package_ensure = 'present'
+  # other settings
   $workgroup     = 'WORKGROUP'
   $realm         = ''
   $security      = 'share'
@@ -27,8 +39,8 @@ class samba::params {
   # win integration options
   $domain_master = 'no'
   $local_master  = 'no'
-  # idmap mapping 
-  $idmap_backend         = "tdbsam"
+  # idmap mapping
+  $idmap_backend         = 'tdbsam'
   $idmap_range           = '10000-49999'
   $winbind_use_defdomain = 'yes'
   $winbind_enum_users    = 'yes'
