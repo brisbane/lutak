@@ -7,12 +7,12 @@ class zabbix::web (
   $db             = $zabbix::db,
 ) inherits zabbix {
   require apache
+  require yum::repo::srce
 
   include php
 
-  package { "zabbix-web-$db":
+  package { "zabbix-web-${db}":
     ensure   => $package_ensure,
-    require  => Class['yumreposd::srce'],
   }
   file { '/etc/httpd/conf.d/zabbix.conf':
     ensure  => file,
@@ -20,6 +20,6 @@ class zabbix::web (
     group   => root,
     mode    => '0644',
     source  => 'puppet:///modules/zabbix/zabbix.conf',
-    require => Package["zabbix-web-$db"],
+    require => Package["zabbix-web-${db}"],
   }
 }

@@ -6,10 +6,10 @@ class tsm (
   $package_ensure = $tsm::params::package_ensure,
   $exclude        = $tsm::params::exclude,
 ) inherits tsm::params {
-  include yumreposd::srce_intern
+  include yum::repo::srce::intern
+
   package { 'tsm-client':
     ensure  => $package_ensure,
-    require => Class['yumreposd::srce_intern'],
   }
   service { [ 'dsmcad-backup', 'dsmcad-archive']:
     ensure   => running,

@@ -1,9 +1,10 @@
 # modules/koji/pgsql.pp - manage koji
 #
 class koji::pgsql {
+  require yum::repo::epel
+
   package {'postgresql-server':
     ensure  => latest,
-    require => Class['yumreposd::epel'],
   }
   exec {'pginitdb':
     command => 'service postgresql initdb',

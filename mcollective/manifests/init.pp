@@ -45,9 +45,9 @@ class mcollective (
     file { '/etc/mcollective/facts.yaml':
       ensure   => present,
       # avoid including highly-dynamic facts as they will cause unnecessary template writes
-      content  => inline_template('<%= scope.to_hash.reject { |k,v| k.to_s =~ /(uptime_seconds|timestamp|free)/ }.to_yaml %>'),
-      owner    => 'root',
-      group    => 'root',
+      content  => inline_template('<%= Hash[scope.to_hash.reject { |k,v| k.to_s =~ /(uptime|timestamp|memory|free|swap)/ }.sort].to_yaml %>'),
+      owner    => root,
+      group    => root,
       mode     => '0400',
       require  => Package['mcollective'],
       notify   => Service['mcollective'],
