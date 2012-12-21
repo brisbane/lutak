@@ -28,7 +28,7 @@ class yum::repodef::epel {
       package { 'epel-release':
         ensure   => present,
         provider => 'rpm',
-        source   => 'http://ftp-stud.hs-esslingen.de/pub/epel/6/i386/epel-release-6-7.noarch.rpm ',
+        source   => 'http://ftp-stud.hs-esslingen.de/pub/epel/6/i386/epel-release-6-8.noarch.rpm ',
       }
     }
   }
