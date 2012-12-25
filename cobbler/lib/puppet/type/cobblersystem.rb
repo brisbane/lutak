@@ -18,20 +18,21 @@ cobblersystem { 'test.domain.com':
   gateway    => '10.8.16.51',
   hostname   => 'test.domain.com',
   netboot    => false,
+  comment    => 'my system description',
 }
 
 "
-  desc "The cobbler system type"
+  desc 'The cobbler system type'
 
   ensurable
 
   newparam(:name) do
     isnamevar
-    desc "The name of the system"
+    desc 'The name of the system'
   end
 
   newproperty(:profile) do
-    desc "Profile that is linked with system"
+    desc 'Profile that is linked with system'
   end
 
   autorequire(:cobblerprofile) do
@@ -39,7 +40,7 @@ cobblersystem { 'test.domain.com':
   end
 
   newproperty(:interfaces) do
-    desc "The list of interfaces in system."
+    desc 'The list of interfaces in system.'
 
     def insync?(is)
       # @should is an Array. see lib/puppet/type.rb insync?
@@ -71,8 +72,8 @@ cobblersystem { 'test.domain.com':
   end 
 
   newproperty(:gateway) do
-    desc "IP address of gateway."
-    defaultto ""
+    desc 'IP address of gateway.'
+    defaultto ''
     validate do |value|
       unless value.chomp.empty?
         raise ArgumentError, "%s is not a valid IP address." % value unless value =~ /\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}/
@@ -81,8 +82,8 @@ cobblersystem { 'test.domain.com':
   end
 
   newproperty(:hostname) do
-    desc "The hostname of the system, can be equal to name"
-    defaultto ""
+    desc 'The hostname of the system, can be equal to name'
+    defaultto ''
     validate do |value|
       unless value.chomp.empty?
         raise ArgumentError, "%s is not a valid hostname." % value unless value =~ /^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-_]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-_]*[A-Za-z0-9])$/
@@ -91,8 +92,12 @@ cobblersystem { 'test.domain.com':
   end
 
   newproperty(:netboot) do
-    desc "Enable reinstallation of system."
+    desc 'Enable reinstallation of system.'
     newvalues(:true, :false)
+  end
+
+  newproperty(:comment) do
+    defaultto ''
   end
 
 end

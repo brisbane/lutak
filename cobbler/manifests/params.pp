@@ -52,4 +52,10 @@ class cobbler::params {
 
   # depends on paache
   $apache_service = 'httpd'
+
+  # purge resources that are not defined
+  $purge_distro  = true
+  $purge_repo    = true
+  $purge_profile = true
+  $purge_system  = true
 }
