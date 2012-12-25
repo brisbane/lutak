@@ -13,4 +13,7 @@ class admintools::extras {
   package { 'git':
     ensure  => latest,
   }
+  package { 'git-svn':
+    ensure  => latest,
+  }
 }
