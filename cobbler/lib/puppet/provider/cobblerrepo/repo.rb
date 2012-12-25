@@ -1,85 +1,107 @@
+require 'xmlrpc/client'
+
 Puppet::Type.type(:cobblerrepo).provide(:repo) do
-    desc "Support for managing the Cobbler repos"
+  desc 'Support for managing the Cobbler repos'
 
-    commands :cobbler => 'cobbler'
+  commands :cobbler => '/usr/bin/cobbler'
 
-    def create
-	# sanity check
-        if @resource[:mirror].nil? 
-            raise ArgumentError, "mirror of the repository must be specified!"
-        end
+  mk_resource_methods
 
-        # add or edit?
-        addoredit="edit"
-        if cobbler("repo","list").grep(/#{Regexp.escape(@resource[:name])}/).empty?
-            addoredit="add"
-        end
+  def self.instances
+    keys = []
+    # connect to cobbler server on localhost
+    cobblerserver = XMLRPC::Client.new2('http://127.0.0.1/cobbler_api')
+    # make the query (get all systems)
+    xmlrpcresult = cobblerserver.call('get_repos')
 
-        # create cobblerargs variable
-        cobblerargs = "repo " + addoredit + " --name=" + @resource[:name] 
-        cobblerargs += " --arch=" + @resource[:arch].to_s
-        cobblerargs += " --mirror=" + @resource[:mirror]
-        tmparg = "--mirror-locally=no"
-	unless @resource[:mirrorlocally].nil?
-	  if @resource[:mirrorlocally].to_s.grep(/false/i).empty?
-            tmparg = "--mirror-locally=yes"
-	  end
-	end
-
-        # turn string into array
-        cobblerargs = cobblerargs.split(' ')
-        cobblerargs << tmparg
-
-	# run cobbler commands
-	cobbler(cobblerargs)
-	cobbler("reposync")
-	cobbler("sync")
+    # get properties of current system to @property_hash
+    xmlrpcresult.each do |member|
+      keys << new(
+        :name           => member['name'],
+        :ensure         => :present,
+        :arch           => member['arch'],
+        :priority       => member['priority'].to_s,
+        :mirror         => member['mirror'],
+        :mirror_locally => member['mirror_locally'].to_s,
+        :keep_updated   => member['keep_updated'].to_s,
+        :comment        => member['comment']
+      )
     end
+    keys
+  end
 
-    def destroy
-	# remove repository from cobbler
-	reponame="--name=" + @resource[:name]
-	cobbler("repo","remove",reponame)
-	cobbler("reposync")
-	cobbler("sync")
+  def self.prefetch(resources)
+    instances.each do |prov|
+      if resource = resources[prov.name]
+        resource.provider = prov
+      end
     end
+  end
+
+  # sets architecture
+  def arch=(value)
+    cobbler('repo', 'edit', '--name=' + @resource[:name], '--arch=' + value.to_s)
+    @property_hash[:arch]=(value.to_s)
+    cobbler('reposync')
+  end
+
+  # sets mirror
+  def mirror=(value)
+    cobbler('repo', 'edit', '--name=' + @resource[:name], '--mirror=' + value)
+    @property_hash[:mirror]=(value)
+    cobbler('reposync')
+  end
+
+  # mirror locally repository or not
+  def mirror_locally=(value)
+    cobbler('repo', 'edit', '--name=' + @resource[:name], '--mirror-locally=' + value.to_s)
+    @property_hash[:mirror_locally]=(value.to_s)
+    cobbler('reposync')
+  end
+
+  # keep mirror updated?
+  def keep_updated=(value)
+    cobbler('repo', 'edit', '--name=' + @resource[:name], '--keep-updated=' + value.to_s)
+    @property_hash[:keep_updated]=(value.to_s)
+  end
+
+  # comment
+  def comment=(value)
+    cobbler('repo', 'edit', '--name=' + @resource[:name], '--comment=' + value)
+    @property_hash[:comment]=(value)
+  end
+
+  def create
+    # sanity check
+    raise ArgumentError, 'mirror of the repository must be specified!' if @resource[:mirror].nil? 
+    
+    # create cobblerargs variable
+    cobblerargs = 'repo add --name=' + @resource[:name] + ' --mirror=' + @resource[:mirror]
+    
+    # turn string into array
+    cobblerargs = cobblerargs.split(' ')
+
+    # run cobbler commands
+    cobbler(cobblerargs)
+    
+    # add properties
+    self.arch           = @resource.should(:arch)          unless self.arch           == @resource.should(:arch)
+    self.mirror_locally = @resource.should(:mirror_localy) unless self.mirror_locally == @resource.should(:mirror_locally)
+    self.keep_updated   = @resource.should(:keep_updated)  unless self.keep_updated   == @resource.should(:keep_updated)
+    self.comment        = @resource.should(:comment)       unless self.comment        == @resource.should(:comment)
+    
+    # final sync
+    cobbler('reposync')
+    @property_hash[:ensure] = :present
+  end
+
+  def destroy
+    cobbler('repo','remove','--name=' + @resource[:name])
+    cobbler('reposync')
+    @property_hash[:ensure] = :absent
+  end
   
-    def exists?
-	# sanity check
-        if @resource[:mirror].nil? 
-            raise ArgumentError, "mirror of the repository must be specified!"
-        end
-
-        # check if cobbler has current repo added
-	if cobbler("repo","list").grep(/#{Regexp.escape(@resource[:name])}/).empty?
-            return false
-        else
-            namearg="--name=" + @resource[:name]
-            # check mirror
-            if cobbler("repo","report",namearg).grep(/#{Regexp.escape(@resource[:mirror])}/).empty?
-                return false
-            end
-            # check the priority
-            unless @resource[:priority].nil?
-                if cobbler("repo","report",namearg).grep(/#{Regexp.escape(@resource[:priority])}/).grep(/Priority/).empty?
-                    return false
-                end
-            end
-            # check the arch
-            unless @resource[:arch].nil?
-                if cobbler("repo","report",namearg).grep(/#{@resource[:arch]}/).grep(/Arch/).empty?
-                    return false
-                end
-            end
-            # check the mirrorlocally
-            unless @resource[:mirrorlocally].nil?
-                cur = cobbler("repo","report",namearg).grep(/Mirror locally/).to_s.sub(/^.* : /, '')
-                new = @resource[:mirrorlocally].to_s
-                if cur.grep(/#{new}/i).empty?
-                    return false
-                end
-            end
-	end
-	return true
-    end
+  def exists?
+    @property_hash[:ensure] == :present
+  end
 end
