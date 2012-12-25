@@ -8,7 +8,7 @@ cobblersystem { 'test.domain.com':
   profile    => 'CentOS-6.3-x86_64',
   interfaces => { 'eth0' => {
                     mac_address => '90:B1:1C:06:BF:56',
-                    static      => '1',
+                    static      => true,
                     management  => true,
                     ip_address  => '10.8.16.53',
                     netmask     => '255.255.255.0', 
@@ -49,6 +49,14 @@ cobblersystem { 'test.domain.com':
       # if members of hashes are not the same, something
       # was added or removed from manifest, so return false
       return false unless is.class == Hash and should.class == Hash and is.keys.sort == should.keys.sort
+      # check if something was added or removed on second level
+      is.each do |l,w|
+        if w.is_a?(Hash)
+          # hack for 'management' setting (which is being read all the time)
+          should[l]['management'] = false unless should[l].has_key?('management')
+          return false unless w.keys.sort == should[l].keys.sort
+        end
+      end
       # if some setting changed in manifest, return false
       should.each do |k, v|
         if v.is_a?(Hash)

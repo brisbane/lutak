@@ -14,38 +14,14 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
     # make the query (get all systems)
     xmlrpcresult = cobblerserver.call('get_systems')
 
-    # available network settings
-    settings = [ 'mac_address',      # mac_address
-                 'interface_type',   # interface_type
-                 'interface_master', # interface_master
-                 'static',           # static
-                 'ip_address',       # ip_address
-                 'netmask',          # netmask
-                 'bonding_opts',     # bonding_opts
-                 'static_routes',    # static routes
-                 'management',       # buildiso inst
-                 'dns_name',         # dns name, cobbler generates file from this info
-               ]
-    iface_hash = {}
-
     # get properties of current system to @property_hash
     xmlrpcresult.each do |member|
-      # get interfaces
+      # put only keys with values in interfaces hash
+      inet_hash = {}
       member['interfaces'].each do |iface_name,iface_settings|
-        iface_hash["#{iface_name}"] = {}
-        settings.each do |setting|
-          # get correct specific setting
-          case setting
-          when 'static'
-            if iface_settings["#{setting}"] or iface_settings["#{setting}"] == 'True' then
-              iface_settings["#{setting}"] = '1'
-            else
-              iface_settings["#{setting}"] = '0'
-            end
-          when 'static_routes'
-            iface_settings["#{setting}"] = iface_settings["#{setting}"] * ' '
-          end
-          iface_hash["#{iface_name}"]["#{setting}"] = iface_settings["#{setting}"]
+        inet_hash["#{iface_name}"] = {}
+        iface_settings.each do |key,val|
+          inet_hash["#{iface_name}"]["#{key}"] = val unless val == '' or val == []
         end
       end
 
@@ -53,7 +29,7 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
         :name           => member['name'],
         :ensure         => :present,
         :profile        => member['profile'],
-        :interfaces     => iface_hash,
+        :interfaces     => inet_hash,
         :hostname       => member['hostname'],
         :gateway        => member['gateway'],
         :netboot        => member['netboot_enabled'].to_s,
@@ -102,32 +78,10 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
     # name argument for cobbler
     namearg='--name=' + @resource[:name]
 
-    # available network settings
-    settings = [ 'mac_address',      # mac_address
-                 'interface_type',   # interface_type
-                 'interface_master', # interface_master
-                 'static',           # static
-                 'ip_address',       # ip_address
-                 'netmask',          # netmask
-                 'bonding_opts',     # bonding_opts
-                 'static_routes',    # static routes
-                 'management',       # buildiso inst
-                 'dns_name',         # dns name, cobbler generates file from this info
-               ]
-
-    # modify interfaces according to resource in puppet
-    value.each do |key, val|
-      ifacearg='--interface=' + key
-      settings.each do |setting|
-        # substitute _ for -
-        setting_log = setting.sub(/_/,'-')
-        # finally construct command and edit system properties
-        unless val[setting].nil?
-          valuearg="--#{setting_long}=" + val[setting].to_s
-          cobbler('system','edit',namearg,ifacearg,valuearg)
-        end
-      end
-    end
+    # cobbler limitation: cannot delete all interfaces from system :(
+    # so we must complicate interface sync by first adding temp
+    # interface, then deleting/recreating all other interfaces
+    # and finally deleting temp
 
     # connect to cobbler server on localhost
     cobblerserver = XMLRPC::Client.new2('http://127.0.0.1/cobbler_api')
@@ -136,12 +90,36 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
     # get properties of current system to variable
     currentsystem = {}
     xmlrpcresult.each do |member|
-      currentsystem = member unless member['name'] != @resource[:name]
+      currentsystem = member if member['name'] == @resource[:name]
     end
-    # delete cobbler interface if it's not present in the value section
+    # add temp interface
+    cobbler('system', 'edit', namearg, '--interface=tmp_puppet', '--static=true')
+    # delete all other intefraces
     currentsystem['interfaces'].each do |iface_name,iface_settings|
-      cobbler('system', 'edit', namearg, '--interface=' + iface_name, '--delete-interface') unless value.has_key?(iface_name)
+      cobbler('system', 'edit', namearg, '--interface=' + iface_name, '--delete-interface')
     end
+
+    # recreate interfaces according to resource in puppet
+    value.each do |iface, settings|
+      ifacearg = '--interface=' + iface
+
+      settings.each do |key,val|
+        # substitute _ for -
+        setting = key.gsub(/_/,'-')
+        # finally construct command and edit system properties
+        unless val.nil?
+          val = val.join(' ') if val.is_a?(Array)
+          valuearg = "--#{setting}=" + val.to_s
+          cobbler('system', 'edit', namearg, ifacearg, valuearg)
+        else
+          cobbler('system', 'edit', namearg, ifacearg, "--#{setting}=''")
+        end
+      end
+    end
+
+    # remove temp interface
+    cobbler('system', 'edit', namearg, '--interface=tmp_puppet', '--delete-interface')
+
     @property_hash[:interfaces]=(value)
   end
 
