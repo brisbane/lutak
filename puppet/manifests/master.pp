@@ -3,7 +3,7 @@
 # This module manages puppet and is standard for all hosts
 #
 # Requires:
-#   $puppetmaster must be set in hiera
+#   $puppetmaster must be set in
 #
 
 # Sample Usage:
@@ -13,8 +13,9 @@ class puppet::master (
   $package_ensure     = $puppet::params::package_ensure,
   $fileserver_clients = $puppet::params::fileserver_clients,
   $server_type        = $puppet::params::server_type,
+  $environments       = $puppet::params::environments,
 ) inherits puppet::params {
-  package { 'puppet-server':       ensure => $package_ensure,  }
+  package { 'puppet-server':       ensure => $package_ensure, }
   package { 'rubygem-puppet-lint': ensure => $package_ensure, }
 
   file { '/etc/puppet/fileserver.conf':
@@ -27,6 +28,27 @@ class puppet::master (
     notify  => Service['puppetmaster'],
   }
 
+  # check if we use environments
+  if $environments != [] {
+    file { '/etc/puppet/environments':
+      ensure  => directory,
+      owner   => root,
+      group   => root,
+      mode    => '0755',
+      require => Package['puppet-server'],
+    }
+    puppet::environment { $environments : }
+  }
+
+  # puppet.conf template
+  file { '/etc/puppet/puppet.conf':
+    ensure  => present,
+    content => template('puppet/puppet.conf.erb'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    require => Package['puppet-server'],
+  }
 
   # install package depending on major version
   case $server_type {
@@ -43,16 +65,6 @@ class puppet::master (
       include apache
       include apache::mod::ssl
       include apache::mod::passenger
-
-      # puppet.conf with SSL settings
-      file { '/etc/puppet/puppet.conf':
-        ensure  => present,
-        content => template('puppet/puppet.conf.erb'),
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0644',
-        require => Package['puppet-server'],
-      }
 
       # rack application setup
       file { '/etc/puppet/rack':

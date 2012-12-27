@@ -80,7 +80,7 @@ define users::useraccount (
     '/etc/puppet/files/users/home/skel',
   ]
 
-  case generate('/etc/puppet/modules/users/scripts/findDirs.sh', $managedDirs) {
+  case generate("/etc/puppet/environments/${environment}/modules/users/scripts/findDirs.sh", $managedDirs) {
       '': {
           file { "/home/${username}":
               ensure  => directory,
