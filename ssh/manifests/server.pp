@@ -18,7 +18,7 @@ class ssh::server (
     require  => Package['openssh-server'],
   }
 
-  if generate('/etc/puppet/modules/ssh/scripts/generate_host_keys.sh', "${keys_dir}/${::fqdn}/ssh") {
+  if generate("/etc/puppet/environments/${environment}/modules/ssh/scripts/generate_host_keys.sh", "${keys_dir}/${::fqdn}/ssh") {
     include ssh::server::keys
   }
 }

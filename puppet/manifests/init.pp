@@ -3,7 +3,7 @@
 # This module manages puppet and is standard for all hosts
 #
 # Requires:
-#   $puppetmaster must be set in hiera
+#   $puppetmaster must be set in
 #
 
 # Sample Usage:
