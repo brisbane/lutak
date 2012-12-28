@@ -1,3 +1,4 @@
+# Class: apache::mod::ssl
 class apache::mod::ssl (
   $sslports = ['443'],
 ) {

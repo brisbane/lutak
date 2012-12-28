@@ -13,7 +13,10 @@
 # Sample Usage:
 #
 class apache (
+  $default_mods         = true,
+  $service_enable       = true,
   $serveradmin          = 'root@localhost',
+  $sendfile             = false,
   $startservers         = $apache::params::startservers,
   $minspareservers      = $apache::params::minspareservers,
   $maxspareservers      = $apache::params::maxspareservers,
@@ -29,28 +32,11 @@ class apache (
   $user                 = $apache::params::user,
   $group                = $apache::params::group,
   $umask                = $apache::params::umask,
-  ) inherits apache::params {
-#  include apache::params
+) inherits apache::params {
 
   package { 'httpd':
     ensure => installed,
     name   => $apache::params::apache_name,
-  }
-
-  service { 'httpd':
-    ensure    => running,
-    name      => $apache::params::apache_name,
-    enable    => true,
-    subscribe => Package['httpd'],
-  }
-
-  file { 'httpd_vdir':
-    ensure  => directory,
-    path    => $apache::params::vdir,
-    recurse => true,
-    purge   => true,
-    notify  => Service['httpd'],
-    require => Package['httpd'],
   }
 
   if $::osfamily == 'redhat' or $::operatingsystem == 'amazon' {
@@ -63,6 +49,25 @@ class apache (
       notify  => Service['httpd'],
       require => Package['httpd'],
     }
+  }
+
+  # true/false is sufficient for both ensure and enable
+  validate_bool($service_enable)
+
+  service { 'httpd':
+    ensure    => $service_enable,
+    name      => $apache::params::apache_name,
+    enable    => $service_enable,
+    subscribe => Package['httpd'],
+  }
+
+  file { 'httpd_vdir':
+    ensure  => directory,
+    path    => $apache::params::vdir,
+    recurse => true,
+    purge   => true,
+    notify  => Service['httpd'],
+    require => Package['httpd'],
   }
 
   if $apache::params::conf_dir and $apache::params::conf_file {
