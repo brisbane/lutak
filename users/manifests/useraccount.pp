@@ -1,3 +1,18 @@
+# Define: users::useraccount
+#
+# This define adds user account to local system
+#
+# Parameters:
+#
+# Actions:
+#   - Install Apache
+#   - Manage Apache service
+#
+# Requires:
+#   - get_module_path() form stdlib
+#
+# Sample Usage:
+#
 define users::useraccount (
   $ensure   = present,
   $comment  = '',
@@ -80,7 +95,9 @@ define users::useraccount (
     '/etc/puppet/files/users/home/skel',
   ]
 
-  case generate("/etc/puppet/environments/${environment}/modules/users/scripts/findDirs.sh", $managedDirs) {
+  # get path of current module
+  $mypath = get_module_path('users')
+  case generate("${mypath}/scripts/findDirs.sh", $managedDirs) {
       '': {
           file { "/home/${username}":
               ensure  => directory,

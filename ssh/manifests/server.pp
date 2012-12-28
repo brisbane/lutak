@@ -1,6 +1,17 @@
-# Class: ssh
+# Class: ssh::server
 #
-# This module manages ssh
+# This class manages ssh server
+#
+# Parameters:
+#
+# Actions:
+#   - Install SSH server
+#   - Manage SSH host keys
+#
+# Requires:
+#   - get_module_path() form stdlib
+#
+# Sample Usage:
 #
 class ssh::server (
   $server_package_name = $ssh::server_package_name,
@@ -18,7 +29,9 @@ class ssh::server (
     require  => Package['openssh-server'],
   }
 
-  if generate("/etc/puppet/environments/${environment}/modules/ssh/scripts/generate_host_keys.sh", "${keys_dir}/${::fqdn}/ssh") {
+  # get path of current module
+  $mypath = get_module_path('ssh')
+  if generate("${mypath}/scripts/generate_host_keys.sh", "${keys_dir}/${::fqdn}/ssh") {
     include ssh::server::keys
   }
 }
