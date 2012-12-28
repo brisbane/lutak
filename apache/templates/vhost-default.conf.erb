@@ -1,8 +1,9 @@
 # ************************************
-# Default template in module apache
+# Default template in module puppetlabs-apache
 # Managed by Puppet
 # ************************************
 
+NameVirtualHost <%= vhost_name %>:<%= port %>
 <VirtualHost <%= vhost_name %>:<%= port %>>
   ServerName <%= srvname %>
 <% if serveradmin %>
