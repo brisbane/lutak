@@ -24,6 +24,7 @@ class cobbler (
   $dhcp_interfaces    = $cobbler::params::dhcp_interfaces,
   $defaultrootpw      = $cobbler::params::defaultrootpw,
   $apache_service     = $cobbler::params::apache_service,
+  $allow_access       = $cobbler::params::allow_access,
   $purge_distro       = $cobbler::params::purge_distro,
   $purge_repo         = $cobbler::params::purge_repo,
   $purge_profile      = $cobbler::params::purge_profile,
@@ -32,10 +33,8 @@ class cobbler (
 
   # require apache modules
   require apache::mod::wsgi
-  class { 'apache::mod::proxy':
-    proxy_allow => "${server_ip} ${::ipaddress} 127.0.0.1",
-  }
-  class { 'apache::mod::proxy_http': }
+  require apache::mod::proxy
+  require apache::mod::proxy_http
 
   # file defaults
   File {
@@ -44,6 +43,13 @@ class cobbler (
     mode  => '0644',
   }
 
+  # class { 'apache::mod::proxy':
+  #   proxy_allow => "${server_ip} ${::ipaddress} 127.0.0.1",
+  # }
+  file { '/etc/httpd/conf.d/proxy_cobbler.conf':
+    content => template('cobbler/proxy_cobbler.conf.erb'),
+    require => Service[$apache_service],
+  }
 
   package { 'tftp-server': ensure => present, }
   package { 'syslinux':    ensure => present, }
@@ -100,7 +106,7 @@ class cobbler (
     resources { 'cobblerprofile': purge => true, }
   }
   if $purge_system == true {
-    resources { 'cobblersystem': purge => true, }
+    resources { 'cobblersystem':  purge => true, }
   }
 
   # include ISC DHCP only if we choose manage_dhcp

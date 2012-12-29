@@ -6,7 +6,7 @@
 #
 
 # Sample Usage:
-#   include puppet
+#   puppet::environment{'test': }
 #
 define puppet::environment ( ) {
   $environment = $title
@@ -18,5 +18,6 @@ define puppet::environment ( ) {
   }
   # create directories
   file { "/etc/puppet/environments/${environment}": }
+  file { "/etc/puppet/environments/${environment}/forge": }
   file { "/etc/puppet/environments/${environment}/modules": }
 }
