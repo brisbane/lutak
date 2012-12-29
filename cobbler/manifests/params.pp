@@ -50,8 +50,10 @@ class cobbler::params {
   $sign_puppet_certs_automatically       = 1
   $remove_old_puppet_certs_automatically = 1
 
-  # depends on paache
+  # depends on apache
   $apache_service = 'httpd'
+  # access, regulated through Proxy directive
+  $allow_access = "${server_ip} ${::ipaddress} 127.0.0.1"
 
   # purge resources that are not defined
   $purge_distro  = true
