@@ -27,39 +27,8 @@ class admintools {
   package { 'telnet':       ensure => latest, }
   package { 'lsof':         ensure => latest, }
   package { 'expect':       ensure => latest, }
-  # yum helpers
-  # case $::operatingsystemrelease {
-  #   default : {}
-  #   '5.8' : {
-  #     package { 'yum-allowdowngrade': ensure => latest, }
-  #     package { 'yum-changelog':      ensure => latest, }
-  #     package { 'yum-downloadonly':   ensure => latest, }
-  #     package { 'yum-merge-conf':     ensure => latest, }
-  #     package { 'yum-priorities':     ensure => latest, }
-  #     package { 'yum-protectbase':    ensure => latest, }
-  #     package { 'yum-security':       ensure => latest, }
-  #     package { 'yum-upgrade-helper': ensure => latest, }
-  #     package { 'yum-versionlock':    ensure => latest, }
-  #   }
-  #   '6.2' : {
-  #     package { 'yum-plugin-changelog':      ensure => latest, }
-  #     package { 'yum-plugin-downloadonly':   ensure => latest, }
-  #     package { 'yum-plugin-merge-conf':     ensure => latest, }
-  #     package { 'yum-plugin-priorities':     ensure => latest, }
-  #     package { 'yum-plugin-protectbase':    ensure => latest, }
-  #     package { 'yum-plugin-upgrade-helper': ensure => latest, }
-  #     package { 'yum-plugin-versionlock':    ensure => latest, }
-  #   }
-  #   '6.3' : {
-  #     package { 'yum-plugin-changelog':      ensure => latest, }
-  #     package { 'yum-plugin-downloadonly':   ensure => latest, }
-  #     package { 'yum-plugin-merge-conf':     ensure => latest, }
-  #     package { 'yum-plugin-priorities':     ensure => latest, }
-  #     package { 'yum-plugin-protectbase':    ensure => latest, }
-  #     package { 'yum-plugin-upgrade-helper': ensure => latest, }
-  #     package { 'yum-plugin-versionlock':    ensure => latest, }
-  #   }
-  # }
-  # postfix
-  package { 'postfix':                 ensure => latest, }
+  package { 'postfix':      ensure => latest, }
+  # paralel compressors
+  package { 'pbzip2':       ensure => latest, }
+  package { 'pigz':         ensure => latest, }
 }
