@@ -4,9 +4,7 @@
 # and key
 #
 class gridcert {
-  package { 'lcg-CA':
-    ensure  => latest,
-  }
+  include gridcert::package
   file { '/etc/grid-security/hostcert.pem':
     ensure  => file,
     owner   => root,
