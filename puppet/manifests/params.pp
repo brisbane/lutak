@@ -1,25 +1,30 @@
 # Class: puppet::params
 #
 #   The puppet configuration settings.
-#
-# Parameters:
-#
-# Actions:
-#
-# Requires:
-#
-# Sample Usage:
-#
 class puppet::params {
+  ## global settings ##
+
+  # what to do with packages
   $package_ensure = 'present'
+
+
+  ## agent settings ##
+
   # fqdn of puppetmaster
   $puppetmaster = 'puppet'
-  # subnets that are allowed to access "/files"
-  # section from puppetmaster web server
-  $fileserver_clients = ['127.0.0.0/8']
-  # type of puppet master server, one of:
-  #  puppetmaster, apache, nginx
+
+  # environment
+  $agentenv = ''
+
+
+  ## master settings ##
+
+  # type of puppet master server, one of: puppetmaster, apache, nginx
   $server_type = 'puppetmaster'
+
   # environments
   $environments = ['production', 'test', 'dev']
+
+  # subnets that are allowed to access "/files"
+  $fileserver_clients = ['127.0.0.0/8']
 }

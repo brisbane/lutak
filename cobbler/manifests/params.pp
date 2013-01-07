@@ -1,14 +1,6 @@
 # Class: cobbler::params
 #
-#   The cobbler configuration settings.
-#
-# Parameters:
-#
-# Actions:
-#
-# Requires:
-#
-# Sample Usage:
+#   The cobbler default configuration settings.
 #
 class cobbler::params {
   case $::osfamily {

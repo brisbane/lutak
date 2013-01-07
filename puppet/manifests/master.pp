@@ -40,15 +40,15 @@ class puppet::master (
     puppet::environment { $environments : }
   }
 
-  # puppet.conf template
-  file { '/etc/puppet/puppet.conf':
-    ensure  => present,
-    content => template('puppet/puppet.conf.erb'),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    require => Package['puppet-server'],
-  }
+#  # puppet.conf template
+#  file { '/etc/puppet/puppet.conf':
+#    ensure  => present,
+#    content => template('puppet/puppet.conf.erb'),
+#    owner   => 'root',
+#    group   => 'root',
+#    mode    => '0644',
+#    require => Package['puppet-server'],
+#  }
 
   # install package depending on major version
   case $server_type {

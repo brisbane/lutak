@@ -12,7 +12,19 @@
 class puppet (
   $package_ensure = $puppet::params::package_ensure,
   $puppetmaster   = $puppet::params::puppetmaster,
+  $agentenv       = $puppet::params::agentenv,
 ) inherits puppet::params {
+  # file defaults
+  File {
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    require => Package['puppet'],
+    notify  => Service['puppet'],
+  }
+
+  # package and service
   package { 'puppet':
     ensure  => $package_ensure,
   }
@@ -20,24 +32,11 @@ class puppet (
     ensure   => 'running',
     enable   => true,
     provider => 'redhat',
-    require  => Package['puppet'],
+    require  => File['/etc/puppet/puppet.conf'],
   }
-  file { '/etc/puppet/auth.conf':
-    ensure  => present,
-    source  => 'puppet:///modules/puppet/auth.conf',
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    require => Package['puppet'],
-    notify  => Service['puppet'],
-  }
-  file { '/etc/sysconfig/puppet':
-    ensure  => present,
-    content => template('puppet/sysconfigpuppet.erb'),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    require => Package['puppet'],
-    notify  => Service['puppet'],
-  }
+
+  # files
+  file { '/etc/puppet/puppet.conf': content => template('puppet/puppet.conf.erb'), }
+  file { '/etc/puppet/auth.conf':   source  => 'puppet:///modules/puppet/auth.conf', }
+  file { '/etc/sysconfig/puppet':   content => template('puppet/sysconfigpuppet.erb'), }
 }

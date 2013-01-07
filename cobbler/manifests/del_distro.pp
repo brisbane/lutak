@@ -1,3 +1,4 @@
+# Define: cobbler::del_distro
 define cobbler::del_distro (){
   include cobbler
   $distro = $title
@@ -6,7 +7,7 @@ define cobbler::del_distro (){
     destdir => $cobbler::distro_path,
     require => [ Service[$cobbler::service_name], Service[$cobbler::apache_service] ],
   }
-  file { "$cobbler::distro_path/kickstarts/$distro.ks":
+  file { "${cobbler::distro_path}/kickstarts/${distro}.ks":
     ensure  => absent,
   }
 }
