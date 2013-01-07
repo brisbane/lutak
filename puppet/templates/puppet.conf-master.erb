@@ -11,6 +11,15 @@
     # The default value is '$confdir/ssl'.
     ssldir = $vardir/ssl
 
+    # The search path for modules.
+    # The default value is '$confdir/modules'
+    modulepath = $confdir/environments/$environment/modules:$confdir/environments/$environment/forge:$confdir/modules:/usr/share/puppet/modules
+
+<% environments.each do |envr| -%>
+[<%= envr %>]
+    manifest = $confdir/environments/<%= envr %>/manifests/site.pp
+<% end -%>
+
 [agent]
     # The file in which puppetd stores a list of the classes
     # associated with the retrieved configuratiion.  Can be loaded in
@@ -37,3 +46,16 @@
   end
 %>
     environment = <%= curenv %>
+<% if server_type =~ /^httpd|^apache/ then %>
+
+[puppetmasterd]
+    # The  header  containing  an  authenticated client´s SSL DN. This
+    # header must be set by the proxy to  the  authenticated  client´s
+    # SSL DN (e.g., /CN=puppet.puppetlabs.com).
+    ssl_client_header = SSL_CLIENT_S_DN
+
+    # The header containing the status message of the client verifica-
+    # tion. This header must be set by the proxy to ´SUCCESS´  if  the
+    # client  successfully authenticated, and anything else otherwise.
+    ssl_client_verify_header = SSL_CLIENT_VERIFY
+<% end %>
