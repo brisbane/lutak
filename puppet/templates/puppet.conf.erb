@@ -15,9 +15,9 @@
     # The default value is '$confdir/modules'
     modulepath = $confdir/environments/$environment/modules:$confdir/environments/$environment/forge:$confdir/modules:/usr/share/puppet/modules
 
-<% environments.each do |environment| -%>
-[<%= environment %>]
-    manifest = $confdir/environments/<%= environment %>/manifests/site.pp
+<% environments.each do |envr| -%>
+[<%= envr %>]
+    manifest = $confdir/environments/<%= envr %>/manifests/site.pp
 <% end -%>
 
 [agent]
@@ -33,7 +33,21 @@
     # The default value is '$confdir/localconfig'.
     localconfig = $vardir/localconfig
 
+    # The environment Puppet is running in.
+    # For servers (i.e. puppet master) this provides the default
+    # environment for nodes we know nothing about.
+    # The default value is 'production'.<% 
+  if scope.lookupvar('agentenv').length > 0
+    # if agentenv is set up, use that
+    curenv = agentenv
+  else
+    # else use environment, or if environment is not set, fall back to 'production' as default
+    curenv = scope.lookupvar('environment').length > 0 ? scope.lookupvar('environment') : 'production'
+  end
+%>
+    environment = <%= curenv %>
 <% if server_type =~ /^httpd|^apache/ then %>
+
 [puppetmasterd]
     # The  header  containing  an  authenticated client´s SSL DN. This
     # header must be set by the proxy to  the  authenticated  client´s
