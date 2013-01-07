@@ -14,16 +14,20 @@ class puppet::master (
   $fileserver_clients = $puppet::params::fileserver_clients,
   $server_type        = $puppet::params::server_type,
   $environments       = $puppet::params::environments,
-) inherits puppet::params {
+) inherits puppet {
   package { 'puppet-server':       ensure => $package_ensure, }
   package { 'rubygem-puppet-lint': ensure => $package_ensure, }
 
-  file { '/etc/puppet/fileserver.conf':
-    ensure  => present,
-    content => template('puppet/fileserver.conf.erb'),
+  # file defaults
+  File {
+    ensure  => file,
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
+  }
+
+  file { '/etc/puppet/fileserver.conf':
+    content => template('puppet/fileserver.conf.erb'),
     require => Package['puppet-server'],
     notify  => Service['puppetmaster'],
   }
@@ -32,23 +36,17 @@ class puppet::master (
   if $environments != [] {
     file { '/etc/puppet/environments':
       ensure  => directory,
-      owner   => root,
-      group   => root,
       mode    => '0755',
       require => Package['puppet-server'],
     }
     puppet::environment { $environments : }
   }
 
-#  # puppet.conf template
-#  file { '/etc/puppet/puppet.conf':
-#    ensure  => present,
-#    content => template('puppet/puppet.conf.erb'),
-#    owner   => 'root',
-#    group   => 'root',
-#    mode    => '0644',
-#    require => Package['puppet-server'],
-#  }
+  # puppet.conf template
+  File['/etc/puppet/puppet.conf'] {
+    content => template('puppet/puppet.conf-master.erb'),
+    require => Package['puppet-server'],
+  }
 
   # install package depending on major version
   case $server_type {
@@ -69,39 +67,27 @@ class puppet::master (
       # rack application setup
       file { '/etc/puppet/rack':
         ensure  => directory,
-        owner   => root,
-        group   => root,
         mode    => '0755',
       }
       file { '/etc/puppet/rack/config.ru':
         ensure  => file,
         owner   => puppet,
-        group   => root,
-        mode    => '0644',
         source  => 'puppet:///modules/puppet/config.ru',
         require => [ File['/etc/puppet/rack'], Package['puppet-server'], ],
       }
       file { '/etc/puppet/rack/public':
         ensure  => directory,
-        owner   => root,
-        group   => root,
         mode    => '0755',
         require => File['/etc/puppet/rack/config.ru'],
       }
       file { '/etc/puppet/rack/tmp':
         ensure  => directory,
-        owner   => root,
-        group   => root,
         mode    => '0755',
         require => File['/etc/puppet/rack/config.ru'],
       }
 
       # plant apache conf file
       file { '/etc/httpd/conf.d/puppetmaster.conf':
-        ensure  => present,
-        owner   => 'root',
-        group   => 'root',
-        mode    => '0644',
         content => template('puppet/puppetmaster.conf.erb'),
         require => File['/etc/puppet/rack/tmp'],
       }
