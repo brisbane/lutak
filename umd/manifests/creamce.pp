@@ -52,7 +52,35 @@ class umd::creamce (
   exec { 'creamce-yaim':
     command => '/opt/glite/yaim/bin/yaim -c -s /opt/glite/yaim/etc/site-info.def -n creamCE -n CLUSTER -n TORQUE_server -n TORQUE_utils && rpm -q emi-cream-ce > /opt/glite/yaim/etc/emi-cream-ce.info',
     unless  => 'test -f /opt/glite/yaim/etc/emi-cream-ce.info',
-    require => [ File['/opt/glite/yaim/etc/users.conf'], File['/opt/glite/yaim/etc/wn-list.conf'], File['/opt/glite/yaim/etc/groups.conf'], Package['emi-cream-ce'], Package['emi-torque-server'], Package['emi-torque-utils'], Package['emi-cluster'], Service['munge'], Package['sudo'] ],
+    require => [ File['/opt/glite/yaim/etc/users.conf'], File['/opt/glite/yaim/etc/wn-list.conf'], File['/opt/glite/yaim/etc/groups.conf'], Package['emi-cream-ce'], Package['emi-torque-server'], Package['emi-torque-utils'], Package['emi-cluster'], Service['munge'], Package['sudo'], File['/opt/glite/yaim/functions/local/config_cluster_gip_glue2'], File['/opt/glite/yaim/functions/local/config_cluster_gip_lrms_dynamic'], File['/opt/glite/yaim/functions/local/config_cream_gip'], File['/opt/glite/yaim/functions/local/config_cluster_gip_scheduler_plugin'] ],
     timeout => 0,
+  }
+  file { '/opt/glite/yaim/functions/local/config_cluster_gip_glue2':
+    ensure  => file,
+    owner   => root,
+    group   => root,
+    mode    => '0644',
+    source  => 'puppet:///modules/umd/config_cluster_gip_glue2',
+  }
+  file { '/opt/glite/yaim/functions/local/config_cluster_gip_lrms_dynamic':
+    ensure  => file,
+    owner   => root,
+    group   => root,
+    mode    => '0644',
+    source  => 'puppet:///modules/umd/config_cluster_gip_lrms_dynamic',
+  }
+  file { '/opt/glite/yaim/functions/local/config_cream_gip':
+    ensure  => file,
+    owner   => root,
+    group   => root,
+    mode    => '0644',
+    source  => 'puppet:///modules/umd/config_cream_gip',
+  }
+  file { '/opt/glite/yaim/functions/local/config_cluster_gip_scheduler_plugin':
+    ensure  => file,
+    owner   => root,
+    group   => root,
+    mode    => '0644',
+    source  => 'puppet:///modules/umd/config_cluster_gip_scheduler_plugin',
   }
 }
