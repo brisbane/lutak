@@ -1,0 +1,744 @@
+#!/bin/bash
+##############################################################################
+# Copyright (c) Members of the EGEE Collaboration. 2004.
+# See http://www.eu-egee.org/partners/ for details on the copyright
+# holders. 
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+##############################################################################
+#
+# NAME :   	config_cream_gip
+#        
+# DESCRIPTION : This function configures the generic information providor (GIP)
+#               for a Cream CE node.
+#
+# AUTHORS :     grid-release@infn.it massimo.sgaravatto@pd.infn.it
+#
+# NOTES :       Support installation of CREAM-CE intended for use with or without
+#               a glite-CLUSTER node   
+#
+# YAIM MODULE:  glite.yaim.cream-ce
+#                
+############################################################################## 
+
+
+config_cream_gip_setenv () {
+        yaimlog DEBUG "This function currently doesn't set any environment variables."
+}
+
+
+config_cream_gip_check () {
+  if [ "x${CREAM_CLUSTER_MODE}" = "xyes" ]; then
+    config_cream_gip_check_cluster
+  else
+    config_cream_gip_check_nocluster
+  fi
+}
+
+
+config_cream_gip () {
+  if [ "x${CREAM_CLUSTER_MODE}" = "xyes" ]; then
+    config_cream_gip_cluster
+  else
+    config_cream_gip_nocluster
+  fi
+}
+
+
+
+function config_cream_gip_check_nocluster () {
+
+  requires $1 SE_LIST JOB_MANAGER VOS QUEUES CE_BATCH_SYS \
+    CE_CPU_MODEL CE_CPU_VENDOR CE_CPU_SPEED CE_OS CE_OS_RELEASE \
+    CE_MINPHYSMEM CE_MINVIRTMEM CE_SMPSIZE CE_SI00 CE_SF00 \
+    CE_OUTBOUNDIP CE_INBOUNDIP CE_RUNTIMEENV \
+    CE_PHYSCPU CE_LOGCPU CREAM_CE_STATE GROUPS_CONF \
+    CE_OS_ARCH CE_OS_VERSION \
+    CE_CAPABILITY CE_OTHERDESCR VO_SW_DIR \
+    SE_MOUNT_INFO_LIST __GROUP_ENABLE 
+
+ ret_cod1=$?
+
+  BATCH_SYS=`echo $CE_BATCH_SYS | tr '[:upper:]' '[:lower:]'`
+  if [ "x$BATCH_SYS" == "xlsf" ]; then
+    requires $1 BATCH_BIN_DIR LSFPROFILE_DIR
+    ret_cod2=$?
+  else if [ $BATCH_SYS = pbs ] || [ $BATCH_SYS = torque ] ; then
+    requires $1 BATCH_SERVER
+    ret_cod2=$?
+  fi
+  fi
+  if  [ ! $ret_cod1 == 0 ] || [ ! $ret_cod2 == 0 ]; then
+    return 1
+  else
+    return 0
+  fi
+
+}
+
+
+function config_cream_gip_nocluster () {
+
+
+  GLITE_CREAM_LOCATION_GIP=/var/lib/bdii/gip
+
+  # Fix bug #51706 
+  JOB_MANAGER=`echo $JOB_MANAGER | sed  's/^lcg//'`
+
+  # Auxiliary parameters
+  LDIF_DIR="${GLITE_CREAM_LOCATION_GIP}/ldif" 
+
+  # Info config for Cream CE
+  ce_port=8443
+  ce_type="cream"
+  info_port=2170
+  info_type=resource
+
+  rpmcmd=`which rpm`
+  if  [ $? == 0 ]; then
+   yaimlog DEBUG "Using rpm to find glite-ce-cream version"
+   ce_impl_ver=`rpm -q --qf %{V} glite-ce-cream`
+  else
+   dpkgcmd=`which dpkg-query`
+   if  [ $? == 0 ]; then
+      yaimlog DEBUG "Using dpkg-query to find glite-ce-cream version"
+      ce_impl_ver=`dpkg-query -W -f='${Version}' glite-ce-cream`
+   else
+      yaimlog ERROR "This system doen't support rpm nor dpkg-query"
+      exit 1
+   fi
+  fi
+  ce_impl_name=CREAM
+
+  # Set default SE info
+  default_se=`set x $SE_LIST; echo "$2"`
+  if [ "$default_se" ]; then
+    for VO in `echo $VOS | tr '[:lower:]' '[:upper:]'`; do
+      if [ "x`get_vo_param ${VO} DEFAULT_SE`" = "x" ]; then
+        set_vo_param ${VO} DEFAULT_SE $default_se
+      fi
+    done
+  fi
+
+
+  #=============
+  # GlueCluster
+  #=============
+
+  # Define conf file
+  outfile=${LDIF_DIR}/static-file-Cluster.ldif
+
+  cat << EOF > $outfile
+dn: GlueClusterUniqueID=${CE_HOST},mds-vo-name=resource,o=grid
+objectClass: GlueClusterTop
+objectClass: GlueCluster
+objectClass: GlueInformationService
+objectClass: GlueKey
+objectClass: GlueSchemaVersion
+GlueClusterUniqueID: ${CE_HOST}
+GlueClusterName: ${CE_HOST}
+GlueForeignKey: GlueSiteUniqueID=${SITE_NAME}
+EOF
+
+  for QUEUE in $QUEUES; do
+      echo "GlueForeignKey:" \
+      "GlueCEUniqueID=${CE_HOST}:${ce_port}/${ce_type}-$JOB_MANAGER-$QUEUE" >> $outfile
+  done
+
+  for QUEUE in $QUEUES; do
+      echo "GlueClusterService: ${CE_HOST}:${ce_port}/${ce_type}-$JOB_MANAGER-$QUEUE" >> $outfile
+  done
+
+  cat << EOF >> $outfile
+GlueInformationServiceURL: ldap://`hostname -f`:${info_port}/mds-vo-name=${info_type},o=grid
+GlueSchemaVersionMajor: 1
+GlueSchemaVersionMinor: 3
+
+EOF
+
+  cat << EOF >> $outfile
+dn: GlueSubClusterUniqueID=${CE_HOST},GlueClusterUniqueID=${CE_HOST},mds-vo-name=resource,o=grid
+objectClass: GlueClusterTop
+objectClass: GlueSubCluster
+objectClass: GlueHostApplicationSoftware
+objectClass: GlueHostArchitecture
+objectClass: GlueHostBenchmark
+objectClass: GlueHostMainMemory
+objectClass: GlueHostNetworkAdapter
+objectClass: GlueHostOperatingSystem
+objectClass: GlueHostProcessor
+objectClass: GlueInformationService
+objectClass: GlueKey
+objectClass: GlueSchemaVersion
+GlueSubClusterUniqueID: ${CE_HOST}
+GlueChunkKey: GlueClusterUniqueID=${CE_HOST}
+GlueHostArchitecturePlatformType: ${CE_OS_ARCH}
+GlueHostArchitectureSMPSize: ${CE_SMPSIZE}
+GlueHostBenchmarkSF00: ${CE_SF00}
+GlueHostBenchmarkSI00: ${CE_SI00}
+GlueHostMainMemoryRAMSize: ${CE_MINPHYSMEM}
+GlueHostMainMemoryVirtualSize: ${CE_MINVIRTMEM}
+GlueHostNetworkAdapterInboundIP: ${CE_INBOUNDIP}
+GlueHostNetworkAdapterOutboundIP: ${CE_OUTBOUNDIP}
+GlueHostOperatingSystemName: ${CE_OS}
+GlueHostOperatingSystemRelease: ${CE_OS_RELEASE}
+GlueHostOperatingSystemVersion: ${CE_OS_VERSION}
+GlueHostProcessorClockSpeed: ${CE_CPU_SPEED}
+GlueHostProcessorModel: ${CE_CPU_MODEL}
+GlueHostProcessorVendor: ${CE_CPU_VENDOR}
+GlueHostProcessorOtherDescription: ${CE_OTHERDESCR}
+GlueSubClusterName: ${CE_HOST}
+GlueSubClusterPhysicalCPUs: ${CE_PHYSCPU}
+GlueSubClusterLogicalCPUs: ${CE_LOGCPU}
+GlueSubClusterTmpDir: /tmp
+GlueSubClusterWNTmpDir: /tmp
+GlueInformationServiceURL: ldap://`hostname -f`:${info_port}/mds-vo-name=${info_type},o=grid
+GlueSchemaVersionMajor: 1
+GlueSchemaVersionMinor: 3
+EOF
+
+  for x in $CE_RUNTIMEENV; do
+      echo "GlueHostApplicationSoftwareRunTimeEnvironment: $x" >>  $outfile
+  done
+
+
+  #========
+  # GlueCE
+  #========
+
+  # Define ldif file
+  LDIF_DIR="${GLITE_CREAM_LOCATION_GIP}/ldif"
+  outfile=${LDIF_DIR}/static-file-CE.ldif
+
+  cat /dev/null > $outfile
+
+  # for (1) - BEGIN
+  for QUEUE in $QUEUES; do
+    cat << EOF >> $outfile
+
+
+
+dn: GlueCEUniqueID=${CE_HOST}:${ce_port}/${ce_type}-$JOB_MANAGER-$QUEUE,mds-vo-name=resource,o=grid
+objectClass: GlueCETop
+objectClass: GlueCE
+objectClass: GlueCEAccessControlBase
+objectClass: GlueCEInfo
+objectClass: GlueCEPolicy
+objectClass: GlueCEState
+objectClass: GlueInformationService
+objectClass: GlueKey
+objectClass: GlueSchemaVersion
+GlueCEUniqueID: ${CE_HOST}:${ce_port}/${ce_type}-$JOB_MANAGER-$QUEUE
+GlueCEHostingCluster: ${CE_HOST}
+GlueCEName: $QUEUE
+GlueCEImplementationName: $ce_impl_name
+GlueCEImplementationVersion: $ce_impl_ver
+GlueCEInfoGatekeeperPort: ${ce_port}
+GlueCEInfoHostName: ${CE_HOST}
+GlueCEInfoLRMSType: $CE_BATCH_SYS
+GlueCEInfoLRMSVersion: not defined
+GlueCEInfoTotalCPUs: 0
+GlueCEInfoJobManager: ${JOB_MANAGER}
+GlueCEInfoContactString: https://${CE_HOST}:${ce_port}/ce-cream/services
+GlueCEInfoApplicationDir: ${VO_SW_DIR}
+GlueCEInfoDataDir: ${CE_DATADIR:-unset}
+GlueCEInfoDefaultSE: $default_se
+GlueCEStateEstimatedResponseTime: 2146660842
+GlueCEStateFreeCPUs: 0
+GlueCEStateRunningJobs: 0
+GlueCEStateStatus: ${CREAM_CE_STATE}
+GlueCEStateTotalJobs: 0
+GlueCEStateWaitingJobs: 444444
+GlueCEStateWorstResponseTime: 2146660842
+GlueCEStateFreeJobSlots: 0
+GlueCEPolicyMaxCPUTime: 999999999
+GlueCEPolicyMaxRunningJobs: 999999999
+GlueCEPolicyMaxTotalJobs: 999999999
+GlueCEPolicyMaxWallClockTime: 999999999
+GlueCEPolicyMaxObtainableCPUTime: 999999999
+GlueCEPolicyMaxObtainableWallClockTime: 999999999
+GlueCEPolicyMaxWaitingJobs: 999999999
+GlueCEPolicyMaxSlotsPerJob: 999999999
+GlueCEPolicyPreemption: 0
+GlueCEPolicyPriority: 1
+GlueCEPolicyAssignedJobSlots: 0
+GlueForeignKey: GlueClusterUniqueID=${CE_HOST}
+GlueInformationServiceURL: ldap://`hostname -f`:${info_port}/mds-vo-name=${info_type},o=grid
+GlueSchemaVersionMajor: 1
+GlueSchemaVersionMinor: 3
+EOF
+
+  for capa in ${CE_CAPABILITY}; do
+    echo "GlueCECapability: ${capa}" >> $outfile
+  done
+
+# Converting the dots and dashes to underscore to get the proper variable name
+    dnssafevar=`echo $QUEUE | sed -e 's/[\.-]/_/g' |  tr '[:lower:]' '[:upper:]'`
+    qenablevar=${dnssafevar}_GROUP_ENABLE
+
+    if [ "${!qenablevar}" ] ; then
+# Here we add the VO names or/and VOMS FQANs to the GlueCEUniqueID's ACBR list
+      for vomsgroup in ${!qenablevar}; do 
+        echo -n "GlueCEAccessControlBaseRule: " >> $outfile
+        convert_fqan "${vomsgroup}"
+        if [ ! `echo ${vomsgroup} | grep "/"` ]; then 
+          echo "VO:${newfqanvo}" >> $outfile
+          if ( echo "${vomsgroup}" | egrep -q '^/[^/]*$' ); then
+            yaimlog WARNING "Queue $QUEUE was enabled for one or more FQANs which specify an entire VO"
+          fi
+        else
+          yaimlog WARNING "Queue $QUEUE was enabled for one or more FQANs which specify an entire VO"
+          echo "VOMS:${newfqan}" >> $outfile
+        fi 
+      done
+
+#  Now, we publish the VOViews belonging to the given GlueCEUniqueID 
+      # for (2) - BEGIN
+      for vomsgroup in ${!qenablevar}; do
+        convert_fqan "${vomsgroup}"
+
+# Keep the possibility to turn off the whole stuff
+        if [ "x${FQANVOVIEWS}" = "xyes" ] || ([ ! `echo ${vomsgroup} | grep "/"` ] && [ "x${FQANVOVIEWS}" = "xno" ] ) ; then
+        myview=`echo ${newfqan} | sed -e 's/=/_/g'`
+        myaccessrule="VOMS:${newfqan}"
+        VO="${newfqanvo}" 
+
+        # To make VO determination `GEAR - safe `
+        if [ ! `echo $vomsgroup | grep "/"` ]; then
+          mygroupsdotconfvo=`cat $GROUPS_CONF | grep $vomsgroup | head -1 | cut -d ":" -f 5`
+           if [ ${mygroupsdotconfvo} ]; then
+             VO=${mygroupsdotconfvo}
+           else
+             VO="${newfqanvo}"
+           fi
+          myaccessrule="VO:${VO}"
+        fi
+
+        cat << EOF >> $outfile
+
+dn: GlueVOViewLocalID=$myview,\
+GlueCEUniqueID=${CE_HOST}:${ce_port}/${ce_type}-${JOB_MANAGER}-${QUEUE},mds-vo-name=resource,o=grid
+objectClass: GlueCETop
+objectClass: GlueVOView
+objectClass: GlueCEInfo
+objectClass: GlueCEState
+objectClass: GlueCEAccessControlBase
+objectClass: GlueCEPolicy
+objectClass: GlueKey
+objectClass: GlueSchemaVersion
+GlueVOViewLocalID: $myview
+GlueCEStateRunningJobs: 0
+GlueCEStateWaitingJobs: 444444
+GlueCEStateTotalJobs: 0
+GlueCEStateFreeJobSlots: 0
+GlueCEStateEstimatedResponseTime: 2146660842
+GlueCEStateWorstResponseTime: 2146660842
+GlueCEInfoDefaultSE:  `get_vo_param ${VO} DEFAULT_SE`
+GlueCEInfoApplicationDir:  `get_vo_param ${VO} SW_DIR`
+GlueCEInfoDataDir: ${CE_DATADIR:-unset}
+GlueChunkKey: GlueCEUniqueID=${CE_HOST}:${ce_port}/${ce_type}-${JOB_MANAGER}-${QUEUE}
+GlueCEAccessControlBaseRule: $myaccessrule
+GlueSchemaVersionMajor: 1
+GlueSchemaVersionMinor: 3
+
+EOF
+
+# Here we add the DENY strings only for the generic VOview, i.e which does not contain "/"
+          allvoview="";thisqueuevoview=""
+          # Collecting all VoView defs
+          for OQUEUE in ${QUEUES}; do
+            dsv=`echo $OQUEUE | sed -e 's/[\.-]/_/g' |  tr '[:lower:]' '[:upper:]'`
+            oqenvar=${dsv}_GROUP_ENABLE
+            allvoview="${allvoview} ${!oqenvar}"
+          done
+          # Sort and drop entries whic appears twice
+          allvoview=`for kk in $allvoview; do echo $kk; done  | sort | uniq`;
+
+# Add the DENY stuff only if it is the generic VOview, i.e the VO itself -> no '/' in it's name
+
+          if [ ! `echo ${vomsgroup} | grep "/"` ]; then
+            convert_fqan ${vomsgroup}
+            vomsgroupvo="${newfqanvo}"
+
+            for myview in ${allvoview}; do
+              convert_fqan ${myview} 
+# We don't deny ourselves...
+
+              if [ "x${myview}" != "x${vomsgroup}" ]; then
+
+ # .. and we put DENY only if it is in the same VO, otherwise it doesn't match, so DENY is not necessary
+                if [ "x${vomsgroupvo}" = "x${newfqanvo}" ] && [ "x${FQANVOVIEWS}" = "xyes" ]; then
+                  echo -n "GlueCEAccessControlBaseRule: " >> $outfile
+                  if [  `echo ${myview} | grep "/"` ] ; then
+                    echo "DENY:${newfqan}" >> $outfile
+                  fi
+                fi
+              fi
+            done 
+          fi
+# This is the end of the FQANVOVIEWS if
+       fi # if (2) - END
+# End of qenablevar loop
+       done # for (2) - END
+# End of qenablevar if
+    fi  # if (1) - END
+  done  # for () - END
+   
+  #==============
+  # GlueCESEBind
+  #==============
+
+  # Create conf file
+  outfile=${LDIF_DIR}/static-file-CESEBind.ldif
+
+  cat /dev/null > $outfile
+  for QUEUE in $QUEUES; do
+      cat <<EOF >> $outfile      
+dn: GlueCESEBindGroupCEUniqueID=${CE_HOST}:${ce_port}/${ce_type}-${JOB_MANAGER}-${QUEUE},mds-vo-name=resource,o=grid
+objectClass: GlueGeneralTop
+objectClass: GlueCESEBindGroup
+objectClass: GlueSchemaVersion
+GlueCESEBindGroupCEUniqueID: ${CE_HOST}:${ce_port}/${ce_type}-${JOB_MANAGER}-${QUEUE}
+EOF
+      for se in $SE_LIST; do
+	  echo "GlueCESEBindGroupSEUniqueID: $se" >> $outfile
+      done
+      cat <<EOF >> $outfile 
+GlueSchemaVersionMajor: 1
+GlueSchemaVersionMinor: 3
+
+EOF
+  done
+
+  for se in ${SE_LIST}; 
+  do
+    accesspoint="n.a"
+    for item in ${SE_MOUNT_INFO_LIST}
+    do
+      se_aux=${item%:*}
+      if [ "x${se}" == "x${se_aux}" ]; then
+        accesspoint=${item#*:}
+        export=${accesspoint%,*} 
+        mount=${accesspoint#*,}
+        accesspoint="${mount},${export}"
+        break
+      fi
+    done
+    for QUEUE in $QUEUES; 
+    do
+      cat << EOF >> $outfile
+
+dn: GlueCESEBindSEUniqueID=$se,\
+GlueCESEBindGroupCEUniqueID=${CE_HOST}:${ce_port}/${ce_type}-${JOB_MANAGER}-${QUEUE},mds-vo-name=resource,o=grid 
+objectClass: GlueGeneralTop
+objectClass: GlueCESEBind
+objectClass: GlueSchemaVersion
+GlueCESEBindSEUniqueID: $se
+GlueCESEBindCEAccesspoint: $accesspoint
+GlueCESEBindCEUniqueID: ${CE_HOST}:${ce_port}/${ce_type}-$JOB_MANAGER-$QUEUE
+GlueCESEBindMountInfo: $accesspoint
+GlueCESEBindWeight: 0
+GlueSchemaVersionMajor: 1
+GlueSchemaVersionMinor: 3
+
+EOF
+    done #queues
+  done # se
+
+  # Exit with success
+  return 0
+}
+
+
+config_cream_gip_check_cluster () {
+  requires $1 SE_LIST CE_BATCH_SYS VOS CE_HOST
+  ret=$?
+  CE_name=`echo ${CE_HOST} | sed -e 's/-/_/g' -e 's/\./_/g' | tr '[:upper:]' '[:lower:]'`
+  requires $1 CE_HOST_${CE_name}_QUEUES CE_HOST_${CE_name}_CE_InfoJobManager \
+              CE_HOST_${CE_name}_QUEUE__CE_AccessControlBaseRule \
+              CE_HOST_${CE_name}_CE_TYPE
+  let "ret |= $?"
+  for i in InfoApplicationDir CAPABILITY; do
+    if [ ! "`eval echo "\\$CE_$i"`" ]; then
+      if [ ! "`eval echo "\\$CE_HOST_${CE_name}_CE_$i"`" ]; then
+        requires $1 CE_HOST_${CE_name}_QUEUE__CE_$i
+        if [ $? -ne 0 ]; then
+          yaimlog ERROR "(And neither is CE_HOST_${CE_name}_CE_$i nor CE_$i)"
+          ret=1
+        fi
+      fi
+    fi
+  done
+  if [ $ret -ne 0 ]; then
+    return 1
+  fi
+  return 0
+}
+
+
+
+config_cream_gip_cluster () {
+
+
+ yaimlog DEBUG "Configuring the GlueCE"
+
+ info_type=resource
+
+ # Define ldif file
+
+  GLITE_CREAM_LOCATION_GIP=/var/lib/bdii/gip
+
+  LDIF_DIR="${GLITE_CREAM_LOCATION_GIP}/ldif"
+  OUTFILE=${LDIF_DIR}/static-file-CE.ldif
+  cat /dev/null > ${OUTFILE}
+
+  CE_name=`echo ${CE_HOST} | sed -e 's/[\.-]/_/g' | tr '[:upper:]' '[:lower:]'`     # Transform . and - into _ for the variable name.
+  ce_type=`eval echo "\\$CE_HOST_${CE_name}_CE_TYPE"`
+
+  for QUEUE in `eval echo "\\$CE_HOST_${CE_name}_QUEUES"`; do
+      QUEUE_name=`echo ${QUEUE} | sed -e 's/[\.-]/_/g' |  tr '[:lower:]' '[:upper:]'`
+      requires $1 QUEUE_${QUEUE_name}_CLUSTER_UniqueID
+
+  yaimlog DEBUG "Configuring the queue information for queue ${QUEUE} for CE ${CE_name}"
+  echo "" >> $OUTFILE
+  echo "dn: GlueCEUniqueID=${CE_HOST}:8443/${ce_type}-`eval echo "\\$CE_HOST_${CE_name}_CE_InfoJobManager"`-${QUEUE},mds-vo-name=resource,o=grid" >> $OUTFILE
+  cat <<EOF >> $OUTFILE
+objectClass: GlueCETop
+objectClass: GlueCE
+objectClass: GlueCEAccessControlBase
+objectClass: GlueCEInfo
+objectClass: GlueCEPolicy
+objectClass: GlueCEState
+objectClass: GlueInformationService
+objectClass: GlueKey
+objectClass: GlueSchemaVersion
+GlueSchemaVersionMajor: 1
+GlueSchemaVersionMinor: 3
+EOF
+  echo "GlueCEUniqueID: ${CE_HOST}:8443/${ce_type}-`eval echo "\\$CE_HOST_${CE_name}_CE_InfoJobManager"`-${QUEUE}"  >> $OUTFILE
+  echo "GlueCEHostingCluster: ${CE_HOST}"  >> $OUTFILE
+  echo "GlueCEName: ${QUEUE}" >> $OUTFILE
+  echo "GlueCEInfoHostName: ${CE_HOST}" >> $OUTFILE
+  echo "GlueCEInfoContactString: https://${CE_HOST}:8443/ce-cream/services" >> $OUTFILE
+  
+  for i in ${CE_VAR}; do
+        if [ "`eval echo "\\$CE_HOST_${CE_name}_QUEUE_${QUEUE_name}_CE_$i"`" ]; then       # user defined value for CE - queue
+          yaimlog DEBUG "using user defined value at CE-queue level for GlueCE attribute $i"
+          var="`eval echo "\\$CE_HOST_${CE_name}_QUEUE_${QUEUE_name}_CE_$i"`"
+        elif [ "`eval echo "\\$CE_HOST_${CE_name}_CE_$i"`" ]; then
+          yaimlog DEBUG "using user defined value at CE level for GlueCE attribute $i"
+          var="`eval echo "\\$CE_HOST_${CE_name}_CE_$i"`"
+        else
+          yaimlog DEBUG "using user defined value at site level for GlueCE attribute $i"
+          var="`eval echo "\\$CE_$i"`"
+        fi
+    if [ "x$var" != "x" ]; then
+          if [ $i != "CAPABILITY" ]; then
+            echo "GlueCE$i: $var" >> ${OUTFILE}
+          else
+            for capa in $var; do
+              echo "GlueCECapability: ${capa}" >> $OUTFILE
+            done
+          fi
+       elif [ $i == "InfoDefaultSE" ]; then
+          TEMP_SE=`eval echo \$SE_LIST | sed s'/^[ ]*//'`;                           # default SE taken from SE_LIST
+          default_se="${TEMP_SE%% *}"
+          yaimlog DEBUG "using SE_LIST first value for GlueCE$i"
+          echo "GlueCE$i: ${default_se}" >> ${OUTFILE}
+	  fi
+      done # Glue CE
+      echo "GlueForeignKey: GlueClusterUniqueID=`eval echo "\\$QUEUE_${QUEUE_name}_CLUSTER_UniqueID"`" >> $OUTFILE
+      echo "GlueInformationServiceURL: ldap://`hostname -f`:${info_port}/mds-vo-name=${info_type},o=grid" >> $OUTFILE
+
+      # Decide whether multiple value glue variables have the same separator
+      # or whether we keep old syntax in certain variables
+      #OLDIFS=$IFS
+      #IFS="|"
+      var=CE_HOST_${CE_name}_QUEUE_${QUEUE_name}_CE_AccessControlBaseRule
+      eval var=\$$var
+      for j in $var; do
+        convert_fqan "${j}"
+        if [ ! `echo ${j} | grep "/"` ]; then
+                 echo "GlueCEAccessControlBaseRule: VO:${newfqanvo}" >> ${OUTFILE}
+        else
+                 echo "GlueCEAccessControlBaseRule: VOMS:${newfqan}" >> ${OUTFILE}
+        fi
+      done
+      #IFS=$OLDIFS
+
+##########
+# VOView #
+##########
+
+     yaimlog DEBUG "Configuring the VOView information for queue ${QUEUE} for CE ${CE_name}"
+
+      for j in $var; do
+         echo "" >> $OUTFILE
+        if [ "x${FQANVOVIEWS}" = "xyes" ] || ([ ! `echo $j | grep "/"` ] && [ "x${FQANVOVIEWS}" = "xno" ] ) ; then
+          convert_fqan "${j}"
+          voview=`echo ${j} | sed -e 's/=/_/g'`
+          voview_name=`echo ${voview} | sed -e 's/\//_/g' | sed -e 's/[\.-]/_/g' | tr '[:lower:]' '[:upper:]'`
+          echo "dn: GlueVOViewLocalID=${voview},GlueCEUniqueID=${CE_HOST}:8443/${ce_type}-`eval echo "\\$CE_HOST_${CE_name}_CE_InfoJobManager"`-${QUEUE},mds-vo-name=resource,o=grid" >> $OUTFILE
+          cat <<EOF >> $OUTFILE
+objectClass: GlueCETop
+objectClass: GlueVOView
+objectClass: GlueCEInfo
+objectClass: GlueCEState
+objectClass: GlueCEAccessControlBase
+objectClass: GlueCEPolicy
+objectClass: GlueKey
+objectClass: GlueSchemaVersion
+GlueSchemaVersionMajor: 1
+GlueSchemaVersionMinor: 3
+EOF
+          echo "GlueVOViewLocalID: ${voview}" >> ${OUTFILE}
+          for i in ${VOVIEW_VAR}; do
+            if [ `eval echo "\\$CE_HOST_${CE_name}_QUEUE_${QUEUE_name}_VOVIEW_${voview_name}_CE_$i"` ]; then # user defined value for CE - queue - voview
+              yaimlog DEBUG "using user defined value at CE-queue-voview level  for GlueCE$i"
+              echo "GlueCE$i: `eval echo "\\$CE_HOST_${CE_name}_QUEUE_${QUEUE_name}_VOVIEW_${voview_name}_CE_$i"`" >> ${OUTFILE}
+            else
+              if [ `eval echo "\\$CE_HOST_${CE_name}_QUEUE_${QUEUE_name}_CE_$i"` ]; then                     # user defined value for CE - queue
+                yaimlog DEBUG "using user defined value at CE-queue level  for GlueCE$i"
+                echo "GlueCE$i: `eval echo "\\$CE_HOST_${CE_name}_QUEUE_${QUEUE_name}_CE_$i"`" >> ${OUTFILE}
+              else
+                if [ `eval echo "\\$CE_HOST_${CE_name}_CE_$i"` ]; then                                       # user defined value for CE
+                  yaimlog DEBUG "using user defined value at CE level  for GlueCE$i"
+                  echo "GlueCE$i: `eval echo "\\$CE_HOST_${CE_name}_CE_$i"`" >> ${OUTFILE}
+                else
+                  if [ $i == "InfoDefaultSE" ]; then
+                    vo_default_se=`get_vo_param ${newfqanvo} DEFAULT_SE`
+                    if [ "${vo_default_se}" ]; then
+                      echo "GlueCE$i: ${vo_default_se}" >> ${OUTFILE}                                           # VO default SE
+                   else
+                      if [ `eval echo "\\$CE_$i"` ]; then
+                        echo "GlueCE$i: `eval echo "\\$CE_$i"`" >> ${OUTFILE}                                   # default value
+                      else
+                        echo "GlueCE$i: ${default_se}" >> ${OUTFILE}                                            # default SE taken from SE_LIST
+                      fi
+                    fi
+                  else
+                    if [ $i == "InfoApplicationDir" ]; then
+                      sw_dir=`get_vo_param ${newfqanvo} SW_DIR`
+                      if [ "${sw_dir}" ]; then
+                        echo "GlueCE$i: ${sw_dir}" >> ${OUTFILE}                                                # VO default SW_DIR
+                      else
+                        yaimlog ERROR "SW_DIR for ${VO} is not set !"
+                        exit 1
+                      fi
+                    else
+                      yaimlog DEBUG "using user defined value at site level for GlueCE$i"
+                      echo "GlueCE$i: `eval echo "\\$CE_$i"`" >> ${OUTFILE}                                     # default value
+                    fi # SW_DIR
+                  fi #default SE
+                fi # CE
+              fi # CE - queue
+            fi  # CE - queue - voview
+          done # Glue VOView
+          echo "GlueChunkKey: GlueCEUniqueID=${CE_HOST}:8443/${ce_type}-`eval echo "\\$CE_HOST_${CE_name}_CE_InfoJobManager"`-${QUEUE}" >> $OUTFILE
+          if [ ! `echo ${j} | grep "/"` ]; then
+            echo "GlueCEAccessControlBaseRule: VO:${newfqanvo}" >> ${OUTFILE}
+          else
+            echo "GlueCEAccessControlBaseRule: VOMS:${newfqan}" >> ${OUTFILE}
+          fi
+##################
+# Configure DENY #
+##################
+
+          for deny_QUEUE in `eval echo "\\$CE_HOST_${CE_name}_QUEUES"`; do
+            deny_QUEUE_name=`echo ${deny_QUEUE} | sed -e 's/[\.-]/_/g' |  tr '[:lower:]' '[:upper:]'`
+            deny_var=CE_HOST_${CE_name}_QUEUE_${deny_QUEUE_name}_AccessControlBaseRule
+            allowview="${allowview} ${!deny_var}"
+          done
+
+          # Sort and drop entries whic appears twice
+          allvoview=`for kk in $allvoview; do echo $kk; done  | sort | uniq`;
+
+          # Add the DENY stuff only if it is the generic VOview, i.e the VO itself -> no '/' in it's name
+          if [ ! `echo ${j} | grep "/"` ]; then
+            vomsgroupvo="${newfqanvo}"
+            for myview in ${allvoview}; do
+              convert_fqan ${myview}
+              # We don't deny ourselves...
+              if [ "x${myview}" != "x${j}" ]; then
+              # .. and we put DENY only if it is in the same VO, otherwise it doesn't match, so DENY is not necessary
+                if [ "x${vomsgroupvo}" = "x${newfqanvo}" ] && [ "x${FQANVOVIEWS}" = "xyes" ]; then
+                  echo -n "GlueCEAccessControlBaseRule: DENY:${newfqan}" >> ${OUTFILE}
+                fi
+              fi
+           done
+          fi # DENY
+        fi #  FQANVOVIEWS
+      done # VOView
+    done # QUEUE
+echo >> ${OUTFILE}
+############
+# GlueCESE #
+############
+
+yaimlog DEBUG "Configuring the GlueCESEBind"
+
+OUTFILE=${LDIF_DIR}/static-file-CESEBind.ldif
+cat  /dev/null > ${OUTFILE}
+for QUEUE in `eval echo "\\$CE_HOST_${CE_name}_QUEUES"`; do
+  QUEUE_name=`echo ${QUEUE} | sed -e 's/[\.-]/_/g' |  tr '[:lower:]' '[:upper:]'`
+  echo "" >> ${OUTFILE}
+  echo "dn: GlueCESEBindGroupCEUniqueID=${CE_HOST}:8443/${ce_type}-`eval echo "\\$CE_HOST_${CE_name}_CE_InfoJobManager"`-${QUEUE},mds-vo-name=resource,o=grid" >> ${OUTFILE}
+cat <<EOF   >> ${OUTFILE}
+objectClass: GlueGeneralTop
+objectClass: GlueCESEBindGroup
+objectClass: GlueSchemaVersion
+GlueSchemaVersionMajor: 1
+GlueSchemaVersionMinor: 3
+EOF
+  echo "GlueCESEBindGroupCEUniqueID: ${CE_HOST}:8443/${ce_type}-`eval echo "\\$CE_HOST_${CE_name}_CE_InfoJobManager"`-${QUEUE}" >> ${OUTFILE}
+  for se in $SE_LIST; do
+    echo "GlueCESEBindGroupSEUniqueID: $se" >> ${OUTFILE}
+  done
+done
+
+for se in $SE_LIST
+do
+  accesspoint="n.a"
+  for item in ${SE_MOUNT_INFO_LIST}
+  do
+    se_aux=${item%:*}
+    if [ "x${se}" == "x${se_aux}" ]; then
+      accesspoint=${item#*:}
+      export=${accesspoint%,*}
+      mount=${accesspoint#*,}
+      accesspoint="${mount},${export}"
+      break
+    fi
+  done
+  for QUEUE in `eval echo "\\$CE_HOST_${CE_name}_QUEUES"`; do
+    cat <<EOF >> ${OUTFILE}
+
+dn: GlueCESEBindSEUniqueID=$se,\
+GlueCESEBindGroupCEUniqueID=${CE_HOST}:8443/${ce_type}-`eval echo "\\$CE_HOST_${CE_name}_CE_InfoJobManager"`-${QUEUE},mds-vo-name=resource,o=grid
+objectClass: GlueGeneralTop
+objectClass: GlueCESEBind
+objectClass: GlueSchemaVersion
+GlueCESEBindSEUniqueID: $se
+GlueCESEBindCEAccesspoint: $accesspoint
+GlueCESEBindCEUniqueID: ${CE_HOST}:8443/${ce_type}-`eval echo "\\$CE_HOST_${CE_name}_CE_InfoJobManager"`-${QUEUE}
+GlueCESEBindMountInfo: $accesspoint
+GlueCESEBindWeight: 0
+GlueSchemaVersionMajor: 1
+GlueSchemaVersionMinor: 3
+EOF
+
+  done #QUEUE
+done #SE_LIST
+
+return 0
+}
