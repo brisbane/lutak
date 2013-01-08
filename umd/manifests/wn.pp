@@ -20,6 +20,11 @@ class umd::wn (
     ensure  => latest,
   }
 
+  # Needed for jobwrapper
+  package { 'glite-lb-client-progs':
+    ensure  => latest,
+  }
+
   package { 'emi-wn':
     ensure  => $wn_version,
   }
