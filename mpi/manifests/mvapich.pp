@@ -1,6 +1,6 @@
-# Class: mpi
+# Class: mpi::mvapich
 #
-# Superclass for installation of Mvapich
+# Class for installation of Mvapich
 #
 # Parameters:
 #
