@@ -11,7 +11,9 @@
 #   include ganglia::server
 #
 class ganglia::server (
-  $cluster        = $ganglia::params::cluster
+  $cluster        = $ganglia::params::cluster,
+  $data_source    = 'localhost',
+  $trusted_hosts  = 'localhost',
 ) inherits ganglia::params {
   package { 'ganglia-gmetad':
     ensure => present,
