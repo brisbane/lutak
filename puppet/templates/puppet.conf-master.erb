@@ -46,9 +46,31 @@
   end
 %>
     environment = <%= curenv %>
-<% if server_type =~ /^httpd|^apache/ then %>
 
-[puppetmasterd]
+[puppetmasterd]<% if storeconfigs.to_s =~ /true/ %>
+    # Whether to store each client's configuration, including catalogs,
+    # facts, and related data. This also enables the import and export
+    # of resources in the Puppet language - a mechanism for exchange
+    # resources between nodes.
+    # The default value is 'false'
+    storeconfigs = <%= storeconfigs %>
+
+    # Type of database to use for storeconfigs
+    # The default value is 'sqlite3'
+    dbadapter = <%= dbadapter %>
+
+    # The database user for caching. Only used for networked databases.
+    # The default value is 'puppet'
+    dbuser = <%= dbuser %>
+
+    # The database password for caching. Only used for networked databases.
+    # The default value is 'puppet'
+    dbpassword = <%= dbpassword %>
+
+    # The  database  server  for  caching.
+    # The default value is 'localhost'
+    dbserver = <%= dbserver %><% end %>
+<% if server_type =~ /^httpd|^apache/ %>
     # The  header  containing  an  authenticated client´s SSL DN. This
     # header must be set by the proxy to  the  authenticated  client´s
     # SSL DN (e.g., /CN=puppet.puppetlabs.com).
@@ -57,5 +79,4 @@
     # The header containing the status message of the client verifica-
     # tion. This header must be set by the proxy to ´SUCCESS´  if  the
     # client  successfully authenticated, and anything else otherwise.
-    ssl_client_verify_header = SSL_CLIENT_VERIFY
-<% end %>
+    ssl_client_verify_header = SSL_CLIENT_VERIFY<% end %>
