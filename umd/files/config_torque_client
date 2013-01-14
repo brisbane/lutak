@@ -145,6 +145,7 @@ if [ ! -f $TORQUE_VAR_DIR/mom_priv/config ]; then
 \$ideal_load ${ideal_load_var}
 \$max_load ${max_load_var}
 \$usecp $BATCH_SERVER:/home /home
+\$tmpdir /scratch
 EOF
 else
   yaimlog WARNING "$TORQUE_VAR_DIR/mom_priv/config already exists, YAIM will not touch it"

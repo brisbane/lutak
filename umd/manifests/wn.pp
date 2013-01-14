@@ -65,4 +65,26 @@ class umd::wn (
     mode    => '0644',
     source  => 'puppet:///modules/umd/config_torque_client',
   }
+  file { '/etc/profile.d/glite_local.sh':
+    ensure  => file,
+    owner   => root,
+    group   => root,
+    mode    => '0644',
+    source  => 'puppet:///modules/umd/glite_local.sh',
+  }
+  file { '/etc/profile.d/glite_local.csh':
+    ensure  => file,
+    owner   => root,
+    group   => root,
+    mode    => '0644',
+    source  => 'puppet:///modules/umd/glite_local.csh',
+  }
+  file { '/usr/local/libexec/cp_1.sh':
+    ensure  => file,
+    owner   => root,
+    group   => root,
+    mode    => '0755',
+    source  => 'puppet:///modules/umd/cp_1.sh',
+  }
+
 }
