@@ -2,15 +2,18 @@
 #
 # This module manages FhGFS client
 #
-class fhgfs::client {
+class fhgfs::client (
+  $version = $fhgfs::version,
+  $mounts  = 'puppet:///private/fhgfs/fhgfs-mounts.conf',
+) inherits fhgfs {
   package { 'kernel-devel' :
     ensure   => present,
   }
   package { 'fhgfs-helperd':
-    ensure   => present,
+    ensure   => $version,
   }
   package { 'fhgfs-client':
-    ensure   => present,
+    ensure   => $version,
     require  => Package['kernel-devel'],
   }
   service { 'fhgfs-helperd':
@@ -19,21 +22,13 @@ class fhgfs::client {
     provider => redhat,
     require  => Package['fhgfs-helperd'],
   }
-  file { '/etc/fhgfs/fhgfs-client-home.conf':
-    require => Package['fhgfs-client'],
-    source  => 'puppet:///files/fhgfs/fhgfs-client-home.conf',
-  }
-  file { '/etc/fhgfs/fhgfs-client-shared.conf':
-    require => Package['fhgfs-client'],
-    source  => 'puppet:///files/fhgfs/fhgfs-client-shared.conf',
-  }
   file { '/etc/fhgfs/fhgfs-mounts.conf':
     require => Package['fhgfs-client'],
-    source  => 'puppet:///files/fhgfs/fhgfs-mounts.conf',
+    source  => $mounts,
   }
   service { 'fhgfs-client':
     enable   => true,
     provider => redhat,
-    require  => [ Package['fhgfs-client'], Service['fhgfs-helperd'], File['/etc/fhgfs/fhgfs-client-home.conf'], File['/etc/fhgfs/fhgfs-client-shared.conf'], File['/etc/fhgfs/fhgfs-mounts.conf'] ],
+    require  => [ Package['fhgfs-client'], Service['fhgfs-helperd'], File['/etc/fhgfs/fhgfs-mounts.conf'] ],
   }
 }

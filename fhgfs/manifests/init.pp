@@ -12,9 +12,12 @@ class fhgfs (
   $meta_space_emergency_limit = '3G',
   $storage_space_low_limit = '100G',
   $storage_space_emergency_limit = '10G',
+  $version = '2011.04.r21-el6',
 ) {
+  require yum::repo::fhgfs
+
   package { 'fhgfs-utils':
-    ensure => present,
+    ensure => $version,
   }
   file { '/etc/fhgfs/fhgfs-client.conf':
     require => Package['fhgfs-utils'],
