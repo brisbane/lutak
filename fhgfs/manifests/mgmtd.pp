@@ -10,9 +10,10 @@ class fhgfs::mgmtd (
   $meta_space_emergency_limit    = $fhgfs::meta_space_emergency_limit,
   $storage_space_low_limit       = $fhgfs::storage_space_low_limit,
   $storage_space_emergency_limit = $fhgfs::storage_space_emergency_limit,
+  $version                       = $fhgfs::version,
 ) inherits fhgfs {
   package { 'fhgfs-mgmtd':
-    ensure => present,
+    ensure => $version,
   }
   file { '/etc/fhgfs/fhgfs-mgmtd.conf':
     require => Package['fhgfs-mgmtd'],
