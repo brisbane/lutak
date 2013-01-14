@@ -1,6 +1,6 @@
-# Class: puppet
+# Class: puppet::master
 #
-# This module manages puppet and is standard for all hosts
+# This module manages puppet master
 #
 # Requires:
 #   $puppetmaster must be set in
@@ -13,6 +13,11 @@ class puppet::master (
   $package_ensure     = $puppet::params::package_ensure,
   $fileserver_clients = $puppet::params::fileserver_clients,
   $server_type        = $puppet::params::server_type,
+  $storeconfigs       = false,
+  $dbadapter          = 'sqlite3',
+  $dbuser             = 'puppet',
+  $dbpassword         = 'puppet',
+  $dbserver           = 'localhost',
   $environments       = $puppet::params::environments,
 ) inherits puppet {
   package { 'puppet-server':       ensure => $package_ensure, }
@@ -46,6 +51,7 @@ class puppet::master (
   File['/etc/puppet/puppet.conf'] {
     content => template('puppet/puppet.conf-master.erb'),
     require => Package['puppet-server'],
+    notify  => Service[$server_type],
   }
 
   # install package depending on major version
@@ -104,5 +110,11 @@ class puppet::master (
     /^nginx/: {
       # TODO: nginx configuration
     }
+  }
+
+  # storeconfigs
+  if ( $storeconfigs =~ /true/ ) {
+    notify{'blabla': }
+    require rails
   }
 }

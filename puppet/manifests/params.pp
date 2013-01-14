@@ -22,6 +22,9 @@ class puppet::params {
   # type of puppet master server, one of: puppetmaster, apache, nginx
   $server_type = 'puppetmaster'
 
+  # wether or not to use storeconfigs
+  $storeconfigs = false
+
   # environments
   $environments = ['production', 'test', 'dev']
 
