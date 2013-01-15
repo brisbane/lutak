@@ -119,7 +119,7 @@ PAR_EXECD_INST_COUNT="20"
 # A list of hosts which should become admin hosts
 # If you do not enter any host here, you have to add all of your hosts
 # by hand after the installation. The example works without any entry
-ADMIN_HOST_LIST="<%= qmaster_host %>"
+ADMIN_HOST_LIST="<%= qmaster_host %><% nodes.each do |val| -%> <%= val %><% end -%>"
 
 # A list of hosts which should become submit hosts
 # If you do not enter any host here, you have to add all of your hosts
