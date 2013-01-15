@@ -1,0 +1,94 @@
+#!/bin/bash
+#
+# Startup/shutdown script for nVidia CUDA
+#
+# chkconfig: 345 80 20
+# description: Startup/shutdown script for nVidia CUDA
+
+# Source function library.
+. /etc/init.d/functions
+
+DRIVER=nvidia
+RETVAL=0
+
+# Create /dev nodes for nvidia devices
+function createnodes() {
+   # Count the number of NVIDIA controllers found.
+   N3D=`/sbin/lspci | grep -i NVIDIA | grep "3D controller" | wc -l`
+   NVGA=`/sbin/lspci | grep -i NVIDIA | grep "VGA compatible controller" | wc -l`
+
+   N=`expr $N3D + $NVGA - 1`
+   for i in `seq 0 $N`; do
+       mknod -m 666 /dev/nvidia$i c 195 $i
+       RETVAL=$?
+       [ "$RETVAL" = 0 ] || exit $RETVAL
+   done
+
+   mknod -m 666 /dev/nvidiactl c 195 255
+   RETVAL=$?
+   [ "$RETVAL" = 0 ] || exit $RETVAL
+}
+
+# Remove /dev nodes for nvidia devices
+function removenodes() {
+   rm -f /dev/nvidia*
+}
+
+# Start daemon
+function start() {
+   echo -n $"Loading $DRIVER kernel module: "
+   modprobe $DRIVER && success || failure
+   RETVAL=$?
+   echo
+   [ "$RETVAL" = 0 ] || exit $RETVAL
+
+   echo -n $"Initializing CUDA /dev entries: "
+   createnodes && success || failure
+   RETVAL=$?
+   echo
+   [ "$RETVAL" = 0 ] || exit $RETVAL
+}
+
+# Stop daemon
+function stop() {
+   echo -n $"Unloading $DRIVER kernel module: "
+   rmmod -f $DRIVER && success || failure
+   RETVAL=$?
+   echo
+   [ "$RETVAL" = 0 ] || exit $RETVAL
+
+   echo -n $"Removing CUDA /dev entries: "
+   removenodes && success || failure
+   RETVAL=$?
+   echo
+   [ "$RETVAL" = 0 ] || exit $RETVAL
+}
+
+function status() {
+   echo -n $"Checking if $DRIVER kernel module is loaded: "
+   lsmod | grep $DRIVER 2>&1 >/dev/null && success || failure
+   RETVAL=$?
+   echo
+   [ "$RETVAL" = 0 ] || exit $RETVAL
+}
+
+# See how we were called
+case "$1" in
+   start)
+       start
+      ;;
+   stop)
+       stop
+      ;;
+   restart)
+       stop
+       start
+      ;;
+   status)
+       status
+      ;;
+   *)
+       echo $"Usage: $0 {start|stop|restart}"
+       RETVAL=1
+esac
+exit $RETVAL
