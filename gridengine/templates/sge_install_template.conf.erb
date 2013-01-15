@@ -130,7 +130,7 @@ SUBMIT_HOST_LIST="<%= qmaster_host %>"
 # If you do not enter any host here, you have to add all of your hosts
 # by hand after the installation. The example works without any entry
 # (mandatory for execution host installation)
-EXEC_HOST_LIST="compute-0-1.isabella compute-0-2.isabella compute-0-3.isabella compute-0-4.isabella compute-0-5.isabella compute-0-6.isabella compute-0-7.isabella compute-0-8.isabella compute-0-9.isabella compute-0-10.isabella compute-0-11.isabella compute-0-12.isabella compute-0-13.isabella compute-0-14.isabella compute-0-15.isabella compute-0-16.isabella compute-0-17.isabella compute-0-18.isabella compute-0-19.isabella compute-0-20.isabella compute-0-21.isabella compute-0-22.isabella compute-0-23.isabella compute-0-24.isabella compute-1-1.isabella compute-1-2.isabella compute-1-3.isabella compute-1-4.isabella"
+EXEC_HOST_LIST="<% nodes.each do |val| -%><%= val %> <% end -%>"
 
 # The directory where the execd spools (local configuration)
 # If you want configure your execution daemons to spool in

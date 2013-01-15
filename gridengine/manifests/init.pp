@@ -16,6 +16,7 @@ class gridengine (
   $qmaster_host = 'localhost',
   $default_domain = 'none',
   $admin_mail = 'root',
+  $nodes,
 ) {
   package { 'gridengine':
     ensure => present,

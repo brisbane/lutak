@@ -60,28 +60,28 @@ class gridengine::node (
     group   => 'sgeadmin',
     mode    => '0644',
     require => File['/opt/sge/default/common'],
-    source  => 'puppet:///modules/gridengine/settings.sh',
+    content  => template('gridengine/settings.sh.erb'),
   }
   file { '/opt/sge/default/common/settings.csh':
     owner   => 'sgeadmin',
     group   => 'sgeadmin',
     mode    => '0644',
     require => File['/opt/sge/default/common'],
-    source  => 'puppet:///modules/gridengine/settings.csh',
+    content  => template('gridengine/settings.csh.erb'),
   }
   file { '/opt/sge/default/common/sgeexecd':
     owner   => 'sgeadmin',
     group   => 'sgeadmin',
     mode    => '0755',
     require => File['/opt/sge/default/common'],
-    source  => 'puppet:///modules/gridengine/sgeexecd',
+    content  => template('gridengine/sgeexecd.erb'),
   }
   file { '/opt/sge/default/common/sgemaster':
     owner   => 'sgeadmin',
     group   => 'sgeadmin',
     mode    => '0755',
     require => File['/opt/sge/default/common'],
-    source  => 'puppet:///modules/gridengine/sgemaster',
+    content  => template('gridengine/sgemaster.erb'),
   }
 
   file { '/opt/sge/default/common/configuration':
