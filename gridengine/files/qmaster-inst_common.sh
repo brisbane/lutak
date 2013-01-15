@@ -376,10 +376,9 @@ CheckPath()
 CheckBinaries()
 {
 
-   BINFILES="sge_coshepherd \
-             sge_qmaster  \
+   BINFILES="sge_qmaster  \
              sge_shadowd \
-             sge_shepherd qacct qalter qconf qdel qhold \
+             qacct qalter qconf qdel qhold \
              qhost qlogin qmake qmod qresub qrls qrsh qselect qsh \
              qstat qsub qtcsh qping qquota sgepasswd"
 
