@@ -87,4 +87,4 @@ do_rsa1_keygen
 do_rsa_keygen
 do_dsa_keygen
 chmod -R 440 $KEYSDIR/*
-exit 0
+echo "Success" && exit 0

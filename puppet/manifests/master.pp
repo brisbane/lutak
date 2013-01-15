@@ -14,6 +14,7 @@ class puppet::master (
   $fileserver_clients = $puppet::params::fileserver_clients,
   $server_type        = $puppet::params::server_type,
   $storeconfigs       = false,
+  $thin_storeconfigs  = true,
   $dbadapter          = 'sqlite3',
   $dbuser             = 'puppet',
   $dbpassword         = 'puppet',
@@ -113,8 +114,6 @@ class puppet::master (
   }
 
   # storeconfigs
-  if ( $storeconfigs =~ /true/ ) {
-    notify{'blabla': }
-    require rails
-  }
+  if ( $storeconfigs =~ /true/ ) { require rubygem::rails }
+  if ( $dbadapter =~ /sqlite3/ ) { require rubygem::sqlite3ruby }
 }

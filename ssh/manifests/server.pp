@@ -31,7 +31,7 @@ class ssh::server (
 
   # get path of current module
   $mypath = get_module_path('ssh')
-  if generate("${mypath}/scripts/generate_host_keys.sh", "${keys_dir}/${::fqdn}/ssh") {
+  if ( generate("${mypath}/scripts/generate_host_keys.sh", "${keys_dir}/${::fqdn}/ssh") =~ /Success/ ) {
     include ssh::server::keys
   }
 }

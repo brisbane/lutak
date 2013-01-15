@@ -3,8 +3,9 @@
 # This modules installs redmine 2.0
 #
 class redmine {
-  package { 'rubygems':                 ensure => latest, }
-  package { 'rubygem-rails':            ensure => '3.2.6-1.el6.srce', }
+  require rubygem
+  #package { 'rubygem-rails':           ensure => '3.2.6-1.el6.srce', }
+  require rubygem::rails
   package { 'rubygem-mocha':            ensure => '0.12.0-1.el6.srce', }
   package { 'rubygem-rmagick':          ensure => '2.13.1-1.el6.srce', }
   package { 'rubygem-prototype-rails':  ensure => '3.2.1-1.el6.srce', }
@@ -33,7 +34,9 @@ class redmine {
   # set correct permissions
   file { '/var/www/redmine/log':
     ensure  => directory,
-    owner   => apache, group => apache, recurse => true,
+    owner   => apache,
+    group   => apache,
+    recurse => true,
     require => Exec['getredmine'],
   }
   # configure redmine
@@ -68,7 +71,8 @@ class redmine {
   file { '/etc/httpd/conf.d/redmine.conf':
     ensure  => present,
     mode    => '0644',
-    owner   => 'root', group => 'root',
+    owner   => 'root',
+    group   => 'root',
     source  => 'puppet:///modules/redmine/redmine.conf',
     require => [ File['/var/www/redmine'], Package['mod_passenger'], ],
     notify  => Service['httpd'],
