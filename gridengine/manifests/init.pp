@@ -1,14 +1,27 @@
-# Class: ganglia
+# Class: gridengine
 #
-# This class includes the common components for ganglia installations
+# This class includes the common components for SGE installations
 #
 # Parameters:
 #
 # Actions:
 #
 # Sample Usage:
-#   include ganglia
+#   include gridengine
 #
-class gridengine {
-
+class gridengine (
+  $cluster_name = 'default',
+  $jmx_port = 538,
+  $jvm_lib_path = '/usr/lib/jvm/java/jre/lib/amd64/server/libjvm.so',
+  $qmaster_host = 'localhost',
+  $default_domain = 'none',
+  $admin_mail = 'root',
+) {
+  package { 'gridengine':
+    ensure => present,
+  }
+  file { '/opt/sge/sge_install_template.conf':
+    require => Package['gridengine'],
+    content  => template('gridengine/sge_install_template.conf.erb'),
+  }
 }
