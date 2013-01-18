@@ -7,4 +7,11 @@ class samba (
     ensure => $package_ensure,
     alias  => 'samba-client',
   }
+
+  case $::operatingsystemrelease {
+    default: {}
+    /^6.*/: {
+      package { 'cifs-utils' : ensure => present, }
+    }
+  }
 }
