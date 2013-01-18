@@ -20,6 +20,7 @@ class puppet::master (
   $dbpassword         = 'puppet',
   $dbserver           = 'localhost',
   $environments       = $puppet::params::environments,
+  $envmanifest        = false,
 ) inherits puppet {
   package { 'puppet-server':       ensure => $package_ensure, }
   package { 'rubygem-puppet-lint': ensure => $package_ensure, }
