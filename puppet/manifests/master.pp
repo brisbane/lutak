@@ -14,13 +14,15 @@ class puppet::master (
   $fileserver_clients = $puppet::params::fileserver_clients,
   $server_type        = $puppet::params::server_type,
   $storeconfigs       = false,
-  $thin_storeconfigs  = true,
+  $thin_storeconfigs  = false,
   $dbadapter          = 'sqlite3',
+  $dbname             = 'storeconfigs',
   $dbuser             = 'puppet',
   $dbpassword         = 'puppet',
   $dbserver           = 'localhost',
   $environments       = $puppet::params::environments,
   $envmanifest        = false,
+  $modulepath         = '$confdir/environments/$environment/modules:$confdir/modules:/usr/share/puppet/modules',
 ) inherits puppet {
   package { 'puppet-server':       ensure => $package_ensure, }
   package { 'rubygem-puppet-lint': ensure => $package_ensure, }
@@ -115,6 +117,10 @@ class puppet::master (
   }
 
   # storeconfigs
-  if ( $storeconfigs =~ /true/ ) { require rubygem::rails }
-  if ( $dbadapter =~ /sqlite3/ ) { require rubygem::sqlite3ruby }
+  if ( $storeconfigs =~ /true/ ) {
+    case $dbadapter {
+      default : { }
+      /puppetdb/: { require puppet::puppetdb }
+    }
+  }
 }

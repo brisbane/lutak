@@ -7,10 +7,19 @@ class infiniband::sm {
   package { 'opensm':
     ensure => present,
   }
+  # fixes package startup script: delay increased from 1 to 20
+  file { '/etc/init.d/opensm':
+    ensure  => file,
+    owner   => root,
+    group   => root,
+    mode    => '0755',
+    source  => 'puppet:///modules/infiniband/opensm',
+    require => Package['opensm'],
+  }
   service { 'opensm':
     ensure   => running,
     enable   => true,
     provider => redhat,
-    require  => [ Package['opensm'], Service['rdma'] ],
+    require  => [ File['/etc/init.d/opensm'], Service['rdma'] ],
   }
 }

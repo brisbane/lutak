@@ -13,7 +13,7 @@
 
     # The search path for modules.
     # The default value is '$confdir/modules'
-    modulepath = $confdir/environments/$environment/modules:$confdir/environments/$environment/forge:$confdir/modules:/usr/share/puppet/modules
+    modulepath = <%= modulepath %>
 
 <% environments.each do |envr| -%>
 [<%= envr %>]
@@ -58,15 +58,24 @@
     # Whether storeconfigs store in the database only the facts and
     # exported resources.
     # The default value is 'false'
-    thin_storeconfigs = <%= thin_storeconfigs %>
+    thin_storeconfigs = <%= thin_storeconfigs %><% if dbadapter =~ /sqlite3/ %>
 
     # Type of database to use for storeconfigs
     # The default value is 'sqlite3'
-    dbadapter = <%= dbadapter %><% if dbadapter =~ /sqlite3/ %>
+    dbadapter = <%= dbadapter %>
 
     # The database cache for client configurations.
-    dblocation = $statedir/clientconfigs.sqlite3<% end %>
-<% if dbadapter =~ /postgresql|pgsql|mysql/ %>
+    dblocation = $statedir/clientconfigs.sqlite3
+<% elsif dbadapter =~ /postgresql|pgsql|mysql/ %>
+
+    # Type of database to use for storeconfigs
+    # The default value is 'sqlite3'
+    dbadapter = <%= dbadapter %>
+
+    # The name of the database to use.
+    # The default value is 'puppet'
+    dbname = <%= dbname %>
+
     # The database user for caching. Only used for networked databases.
     # The default value is 'puppet'
     dbuser = <%= dbuser %>
@@ -77,7 +86,13 @@
 
     # The database server for caching.
     # The default value is 'localhost'
-    dbserver = <%= dbserver %><% end %><% end %>
+    dbserver = <%= dbserver %>
+<% elsif dbadapter =~ /puppetdb/ %>
+
+    # Configure the backend terminus used for StoreConfigs. By default,
+    # this uses the ActiveRecord store, which directly talks to the
+    # database from within the Puppet Master process.
+    storeconfigs_backend = puppetdb<% end %><% end %>
 <% if server_type =~ /^httpd|^apache/ %>
     # The header containing an authenticated client´s SSL DN. This
     # header must be set by the proxy to the authenticated client´s

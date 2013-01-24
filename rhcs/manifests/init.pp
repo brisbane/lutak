@@ -3,42 +3,71 @@
 # This module deploys base RedHah Cluster Suite packages
 #
 class rhcs (
-  $config_file = 'puppet:///modules/rhcs/cluster.conf',
-  $ricci_passwd = 'test',
+  $cluster_name = 'default',
+  $config_file  = '',
+  $ricci_passwd = 'defaultriccipass',
+  $ricci_ca_dir = "/etc/puppet/private/${::fqdn}/ricci/ca",
 ) {
-  package { 'cman':
-    ensure => present,
+  # defaults
+  Package { ensure => present, }
+
+  Service {
+    ensure   => running,
+    enable   => true,
+    provider => redhat,
   }
-  package { 'rgmanager':
-    ensure => present,
+
+  File {
+    ensure => file,
+    owner  => root,
+    group  => root,
+    mode   => '0640',
   }
-  package { 'ricci':
-    ensure => present,
-  }
-  package { 'ccs':
-    ensure => present,
-  }
-  service { 'cman':
-    enable    => true,
-    provider  => redhat,
-    require   => Package['cman']
-  }
-  service { 'rgmanager':
-    enable    => true,
-    provider  => redhat,
-    require   => [ Package['rgmanager'], Service['cman'] ],
-  }
-  exec { 'setriccipasswd':
-    user    => 'root',
-    group   => 'root',
-    command => "echo \"$ricci_passwd\" | passwd --stdin ricci",
-    onlyif  => 'grep ricci:\!\!: /etc/shadow > /dev/null',
-    require => Package['ricci'],
-  }
-  service { 'ricci':
-    ensure    => running,
-    enable    => true,
-    provider  => redhat,
-    require   => Package['ricci'],
+
+  # ricci
+  # cluster & storage management and configuration daemon
+
+  # generate ricci CA
+  $mypath = get_module_path('rhcs')
+  if ( generate("${mypath}/scripts/generate_ricci_ca.sh", $ricci_ca_dir) =~ /Success/ ) {
+    # set up ricci
+    include rhcs::ricci
+
+    # ccs
+    # cluster configuration system
+    package { 'ccs': }
+
+    # corosync
+    package { 'corosync': }
+    file { '/etc/corosync/corosync.conf':
+      source  => 'puppet:///modules/rhcs/corosync.conf',
+      require => Package['corosync'],
+    }
+
+    # cman
+    # cluster manager
+    package { 'cman': }
+    file { '/etc/cluster.conf':
+      source  => $rhcs::config_file,
+    }
+    exec { 'clusterinit':
+      command => '/bin/cp /etc/cluster.conf /etc/cluster/cluster.conf',
+      creates => '/etc/cluster/cluster.conf',
+      require => [ Class['rhcs::ricci'], File['/etc/cluster.conf'], Package['cman'] ],
+    }
+    file { '/etc/cluster/cluster.conf': require => Exec['clusterinit'], }
+    service { 'cman': require => [ File['/etc/cluster/cluster.conf'], File['/etc/corosync/corosync.conf'], ], }
+    exec { 'clusterupdate':
+      command     => '/usr/sbin/ccs_config_validate -f /etc/cluster.conf && /usr/bin/ccs_sync -f /etc/cluster.conf && /usr/sbin/cman_tool version -r',
+      unless      => '/usr/bin/diff /etc/cluster.conf /etc/cluster/cluster.conf > /dev/null',
+      refreshonly => true,
+      subscribe   => File['/etc/cluster.conf'],
+      require     => [ Class['rhcs::ricci'], Service['cman'], ],
+    }
+
+    # rgmanager
+    # resource group manager
+    package { 'rgmanager': }
+    service { 'rgmanager': require => [ Package['rgmanager'], Service['cman'] ], }
   }
 }
