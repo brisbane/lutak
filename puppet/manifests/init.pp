@@ -21,7 +21,6 @@ class puppet (
     group   => 'root',
     mode    => '0644',
     require => Package['puppet'],
-    notify  => Service['puppet'],
   }
 
   # package and service

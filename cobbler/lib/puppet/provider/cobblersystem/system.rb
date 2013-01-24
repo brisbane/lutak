@@ -92,8 +92,11 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
     xmlrpcresult.each do |member|
       currentsystem = member if member['name'] == @resource[:name]
     end
+    # generate tmp string for interface name
+    o =  [('a'..'z'),('A'..'Z')].map{|i| i.to_a}.flatten
+    puppet_iface =  'tmp_' + (0...15).map{ o[rand(o.length)] }.join
     # add temp interface
-    cobbler('system', 'edit', namearg, '--interface=tmp_puppet', '--static=true')
+    cobbler('system', 'edit', namearg, "--interface=#{puppet_iface}", '--static=true')
     # delete all other intefraces
     currentsystem['interfaces'].each do |iface_name,iface_settings|
       cobbler('system', 'edit', namearg, '--interface=' + iface_name, '--delete-interface')
@@ -118,7 +121,7 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
     end
 
     # remove temp interface
-    cobbler('system', 'edit', namearg, '--interface=tmp_puppet', '--delete-interface')
+    cobbler('system', 'edit', namearg, "--interface=#{puppet_iface}", '--delete-interface')
 
     @property_hash[:interfaces]=(value)
   end
