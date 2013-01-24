@@ -1,4 +1,4 @@
-# Class: admin-tools::extras
+# Class: admintools::extras
 #
 # This modules installs extra administration utilities
 #

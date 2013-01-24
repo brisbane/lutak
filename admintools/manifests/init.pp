@@ -1,4 +1,4 @@
-# Class: admin-tools
+# Class: admintools
 #
 # This modules installs basic administration utilities
 #
@@ -28,7 +28,4 @@ class admintools {
   package { 'lsof':         ensure => latest, }
   package { 'expect':       ensure => latest, }
   package { 'postfix':      ensure => latest, }
-  # paralel compressors
-  package { 'pbzip2':       ensure => latest, }
-  package { 'pigz':         ensure => latest, }
 }
