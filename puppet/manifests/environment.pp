@@ -18,6 +18,5 @@ define puppet::environment ( ) {
   }
   # create directories
   file { "/etc/puppet/environments/${environment}": }
-  file { "/etc/puppet/environments/${environment}/forge": }
   file { "/etc/puppet/environments/${environment}/modules": }
 }
