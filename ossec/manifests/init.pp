@@ -10,9 +10,10 @@
 #   include ossec
 #
 class ossec (
-  $ossec_server_ip  = $ossec::params::ossec_server_ip,
-  $ossec_client_id  = $ossec::params::ossec_client_id,
-  $ossec_client_key = $ossec::params::ossec_client_key,
+  $server_ip  = $ossec::params::server_ip,
+  $client_id  = $ossec::params::client_id,
+  $client_key = $ossec::params::client_key,
+  $client_ip  = $ossec::params::client_ip,
   $package_ensure   = $ossec::params::package_ensure,
 ) inherits ossec::params {
   package { 'ossec-hids':
