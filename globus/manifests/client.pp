@@ -6,7 +6,7 @@ class globus::client (
   $tcp_range = $globus::tcp_range,
 ) inherits globus {
   include gridcert::crl
-  $packages = ['globus-proxy-utils', 'uberftp', 'globus-gass-copy-progs', 'globus-gram-client-tools']
+  $packages = ['globus-proxy-utils', 'uberftp', 'globus-gass-copy-progs', 'globus-gram-client-tools', 'globus-gsi-cert-utils-progs']
 
   package { $packages:
     ensure => latest,
