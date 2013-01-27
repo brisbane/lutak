@@ -12,7 +12,8 @@
 #
 class ossec::params {
   $package_ensure   = 'present'
-  $ossec_server_ip  = '127.0.0.1'
-  $ossec_client_id  = '1'
-  $ossec_client_key = 'nokey_usehiera'
+  $server_ip  = '127.0.0.1'
+  $client_id  = '1'
+  $client_key = 'nokey_usehiera'
+  $client_ip = 'nokey_usehiera'
 }
