@@ -6,7 +6,7 @@ class ocsinventory::agent (
   $package_ensure = 'latest',
   $server = 'localhost',
   $pause = 0,
-) inherits zabbix {
+) {
   package { 'ocsinventory-agent':
     ensure   => $package_ensure,
   }
