@@ -3,7 +3,8 @@ class php::mod::pecl::gearman (
   $major          = $php::major,
   $package_ensure = $php::package_ensure,
 ) inherits php {
-  package { "php${major}-pecl-gearman":
-    ensure  => $package_ensure,
+  package { 'php-pecl-gearman':
+    ensure => $package_ensure,
+    name   => "php${major}-pecl-gearman",
   }
 }

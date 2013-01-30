@@ -13,8 +13,9 @@ class php::mod::pecl::apc (
   $enable_cli       = '0',
   $cache_by_default = '1',
 ) inherits php {
-  package { "php${major}-pecl-apc":
-    ensure  => $package_ensure,
+  package { 'php-pecl-apc':
+    ensure => $package_ensure,
+    name   => "php${major}-pecl-apc",
   }
   file { '/etc/php.d/apc.ini':
     ensure  => file,

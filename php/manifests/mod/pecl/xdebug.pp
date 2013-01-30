@@ -3,8 +3,9 @@ class php::mod::pecl::xdebug (
   $major          = $php::major,
   $package_ensure = $php::package_ensure,
 ) inherits php {
-  package { "php${major}-pecl-xdebug":
+  package { 'php-pecl-xdebug':
     ensure => $package_ensure,
+    name   => "php${major}-pecl-xdebug",
   }
   file {'/etc/php.d/xdebug_conf.ini':
     ensure  => present,

@@ -5,7 +5,10 @@ class php::mod::pecl::ssh2 (
 ) inherits php {
   case $::operatingsystemrelease {
     default: {
-      package { "php${major}-pecl-ssh2": ensure  => $package_ensure, }
+      package { 'php-pecl-ssh2':
+        ensure => $package_ensure,
+        name   => "php${major}-pecl-ssh2",
+      }
     }
     /^5.*/: {
     }
