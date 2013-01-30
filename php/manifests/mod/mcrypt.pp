@@ -3,7 +3,8 @@ class php::mod::mcrypt (
   $major          = $php::major,
   $package_ensure = $php::package_ensure,
 ) inherits php {
-  package { "php${major}-mcrypt":
-    ensure  => $package_ensure,
+  package { 'php-mcrypt':
+    ensure => $package_ensure,
+    name   => "php${major}-mcrypt",
   }
 }

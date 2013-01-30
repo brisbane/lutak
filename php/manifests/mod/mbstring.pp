@@ -3,7 +3,8 @@ class php::mod::mbstring (
   $major          = $php::major,
   $package_ensure = $php::package_ensure,
 ) inherits php {
-  package { "php${major}-mbstring":
-    ensure  => $package_ensure,
+  package { 'php-mbstring':
+    ensure => $package_ensure,
+    name   => "php${major}-mbstring",
   }
 }

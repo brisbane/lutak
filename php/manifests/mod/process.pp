@@ -3,7 +3,8 @@ class php::mod::process (
   $major          = $php::major,
   $package_ensure = $php::package_ensure,
 ) inherits php {
-  package { "php${major}-process":
-    ensure  => $package_ensure,
+  package { 'php-process':
+    ensure => $package_ensure,
+    name   => "php${major}-process",
   }
 }
