@@ -48,6 +48,12 @@ class geoip (
     require => Exec['fetch_geolitecity'],
   }
 
+  file { '/usr/share/GeoIP/GeoIPCity.dat':
+    ensure  => symlink,
+    target  => 'GeoLiteCity.dat',
+    require => File['/usr/share/GeoIP/GeoLiteCity.dat'],
+  }
+
   # files are fetched via cron every month
   file { '/etc/cron.monthly/fetch-geodata':
     mode    => '0755',
