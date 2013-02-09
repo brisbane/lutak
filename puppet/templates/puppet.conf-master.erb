@@ -47,18 +47,13 @@
 %>
     environment = <%= curenv %>
 
-[puppetmasterd]<% if storeconfigs.to_s =~ /true/ %>
+[master]<% if storeconfigs.to_s =~ /true/ %>
     # Whether to store each client's configuration, including catalogs,
     # facts, and related data. This also enables the import and export
     # of resources in the Puppet language - a mechanism for exchange
     # resources between nodes.
     # The default value is 'false'
-    storeconfigs = <%= storeconfigs %>
-
-    # Whether storeconfigs store in the database only the facts and
-    # exported resources.
-    # The default value is 'false'
-    thin_storeconfigs = <%= thin_storeconfigs %><% if dbadapter =~ /sqlite3/ %>
+    storeconfigs = <%= storeconfigs %><% if dbadapter =~ /sqlite3/ %>
 
     # Type of database to use for storeconfigs
     # The default value is 'sqlite3'
