@@ -10,6 +10,6 @@
 GPUDIR=/opt/sge/gpu/var
 FREEGPU="`cat $TMPDIR/gpumachine`"
 if [ $FREEGPU != -1 ]; then
-    rm -f $GPUDIR/GPU$FREEGPU
+    rmdir $GPUDIR/$FREEGPU
 fi
 exit 0
