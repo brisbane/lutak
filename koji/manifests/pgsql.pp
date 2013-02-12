@@ -1,8 +1,6 @@
 # modules/koji/pgsql.pp - manage koji
 #
 class koji::pgsql {
-  require yum::repo::epel
-
   package {'postgresql-server':
     ensure  => latest,
   }

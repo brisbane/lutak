@@ -1,8 +1,6 @@
 # files/koji/init.pp - manage koji
 #
 class koji {
-  require yum::repo::epel
-
   package {'koji':
     ensure  => present,
   }
