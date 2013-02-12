@@ -14,7 +14,6 @@ class puppet::puppetdb (
   $puppetdb_server = 'puppet',
   $puppetdb_port   = '8081',
 ) inherits puppet {
-  require yum::repo::srce::intern
   package { 'puppetdb': ensure => $package_ensure, }
   package { 'puppetdb-terminus': ensure => $package_ensure, }
 

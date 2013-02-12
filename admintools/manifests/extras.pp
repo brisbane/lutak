@@ -3,7 +3,6 @@
 # This modules installs extra administration utilities
 #
 class admintools::extras {
-  require yum::repo::base
   package { 'etckeeper':
     ensure  => latest,
   }

@@ -1,8 +1,6 @@
 # modules/koji/utils.pp - manage koji
 #
 class koji::utils {
-  require yum::repo::epel
-
   package {'koji-utils':
     ensure  => present,
   }

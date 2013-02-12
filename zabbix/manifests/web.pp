@@ -7,7 +7,6 @@ class zabbix::web (
   $db             = $zabbix::db,
 ) inherits zabbix {
   require apache
-  require yum::repo::srce
 
   include php
 

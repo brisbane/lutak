@@ -6,7 +6,6 @@ class zabbix::server (
   $package_ensure = $zabbix::package_ensure,
   $db             = $zabbix::db,
 ) inherits zabbix {
-  require yum::repo::srce
 
   package { "zabbix-server-${db}":
     ensure   => $package_ensure,
@@ -17,4 +16,5 @@ class zabbix::server (
     provider => redhat,
     require  => Package["zabbix-server-${db}"],
   }
+
 }

@@ -10,8 +10,7 @@ protect = 0
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rpmforge-dag
 gpgcheck = 1
 priority = 51
-exclude=fortune*
-exclude=fortune*
+exclude=fortune* atftp-server
 
 [rpmforge-extras]
 name = RHEL $releasever - RPMforge.net - extras
@@ -23,8 +22,7 @@ protect = 0
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rpmforge-dag
 gpgcheck = 1
 priority = 51
-exclude=fortune*
-exclude=fortune*
+exclude=fortune* atftp-server
 
 [rpmforge-testing]
 name = RHEL $releasever - RPMforge.net - testing
@@ -36,5 +34,4 @@ protect = 0
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-rpmforge-dag
 gpgcheck = 1
 priority = 51
-exclude=fortune*
-exclude=fortune*
+exclude=fortune* atftp-server

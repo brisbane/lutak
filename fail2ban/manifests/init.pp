@@ -4,7 +4,6 @@ class fail2ban (
   $global_bantime  = $fail2ban::params::global_bantime,
   $global_maxretry = $fail2ban::params::global_maxretry,
 ) inherits fail2ban::params {
-  require yum::repo::srce
 
   package{'fail2ban':
     ensure  => latest,
