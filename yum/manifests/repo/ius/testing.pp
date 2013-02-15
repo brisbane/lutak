@@ -2,8 +2,10 @@
 #
 # This module adds IUS testing repo to $lsbdistrelease
 #
-class yum::repo::ius::testing {
-  include yum::repo::ius
+class yum::repo::ius::testing (
+  $stage = 'yumsetup',
+){
+  require yum::repo::ius
 
   file {  '/etc/yum.repos.d/ius-testing.repo':
     ensure  => file,
@@ -12,5 +14,4 @@ class yum::repo::ius::testing {
     group   => root,
     source  =>  "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/ius-testing.repo",
   }
-  File['/etc/yum.repos.d/ius-testing.repo'] -> Package <| |>
 }

@@ -3,7 +3,9 @@
 # This module configures ricci (cluster & storage
 # configuration daemon)
 #
-class rhcs::ricci {
+class rhcs::ricci (
+  $cluster_name = $rhcs::cluster_name,
+) inherits rhcs {
   # defaults
   File {
     ensure  => file,
@@ -49,12 +51,11 @@ class rhcs::ricci {
   }
 
   # export cacert, because ccs_sync uses it as client cert
-  @@file { "/var/lib/ricci/certs/client/client_cert_${::hostname}":
-    source  => 'puppet:///private/ricci/cacert.pem',
-    require => File['/root/.ccs/cacert.pem'],
-    tag     => 'ricci_client',
+  @@file { "/var/lib/ricci/certs/clients/client_cert_${::hostname}":
+    source  => "puppet:///files/rhcs/${cluster_name}/client_cert_${::hostname}",
+    tag     => "ricci_client_${cluster_name}",
   }
 
   # collect client certificates for this cluster
-  File <<| tag == 'ricci_client' |>>
+  File <<| tag == "ricci_client_${cluster_name}" |>>
 }

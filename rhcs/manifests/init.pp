@@ -57,12 +57,14 @@ class rhcs (
     }
     file { '/etc/cluster/cluster.conf': require => Exec['clusterinit'], }
     service { 'cman': require => [ File['/etc/cluster/cluster.conf'], File['/etc/corosync/corosync.conf'], ], }
+
+    # do cluster update ONLY if cluster version changes,
+    # else it will fail for sure
     exec { 'clusterupdate':
-      command     => '/usr/sbin/ccs_config_validate -f /etc/cluster.conf && /usr/bin/ccs_sync -f /etc/cluster.conf && /usr/sbin/cman_tool version -r',
-      unless      => '/usr/bin/diff /etc/cluster.conf /etc/cluster/cluster.conf > /dev/null',
-      refreshonly => true,
-      subscribe   => File['/etc/cluster.conf'],
-      require     => [ Class['rhcs::ricci'], Service['cman'], ],
+      command   => '/usr/sbin/ccs_config_validate -f /etc/cluster.conf && /usr/bin/ccs_sync -f /etc/cluster.conf && /usr/sbin/cman_tool version -r',
+      onlyif    => '/usr/bin/diff /etc/cluster.conf /etc/cluster/cluster.conf | /bin/egrep "<cluster.*config_version=" > /dev/null',
+      subscribe => File['/etc/cluster.conf'],
+      require   => [ Class['rhcs::ricci'], Service['cman'], ],
     }
 
     # rgmanager

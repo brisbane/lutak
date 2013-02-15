@@ -2,8 +2,10 @@
 #
 # This module adds IUS archive repo to $lsbdistrelease
 #
-class yum::repo::ius::archive {
-  include yum::repo::ius
+class yum::repo::ius::archive (
+  $stage = 'yumsetup',
+){
+  require yum::repo::ius
 
   file {  '/etc/yum.repos.d/ius-archive.repo':
     ensure  => file,
@@ -12,5 +14,4 @@ class yum::repo::ius::archive {
     group   => root,
     source  =>  "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/ius-archive.repo",
   }
-  File['/etc/yum.repos.d/ius-archive.repo'] -> Package <| |>
 }

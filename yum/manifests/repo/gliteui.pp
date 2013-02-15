@@ -2,7 +2,16 @@
 #
 # This module manages gLite UI repo
 #
-class yum::repo::gliteui {
-  require yum
-  class { 'yum::repodef::gliteui': stage => 'yumsetup' }
+class yum::repo::gliteui (
+  $stage = 'yumsetup',
+) {
+  require yum::repo::base
+
+  file { '/etc/yum.repos.d/glite-UI.repo' :
+    ensure  => file,
+    mode    => '0644',
+    owner   => root,
+    group   => root,
+    source  => "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/glite-UI.repo",
+  }
 }

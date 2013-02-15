@@ -10,6 +10,7 @@ priority = 21
 protect = 0
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY.art.txt
 gpgcheck = 1
+exclude = nmap*
 
 # Almost Stable, release candidates for [atomic]
 [atomic-testing]
