@@ -14,7 +14,7 @@ class puppet::master (
   $fileserver_clients = $puppet::params::fileserver_clients,
   $server_type        = $puppet::params::server_type,
   $storeconfigs       = false,
-  $dbadapter          = 'sqlite3',
+  $dbadapter          = 'puppetdb',
   $dbname             = 'storeconfigs',
   $dbuser             = 'puppet',
   $dbpassword         = 'puppet',

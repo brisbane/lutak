@@ -5,7 +5,7 @@
 class yum::repo::s3tools (
   $stage = 'yumsetup',
 ) {
-  require yum::repodef::base
+  require yum::repo::base
 
   file { '/etc/yum.repos.d/s3tools.repo':
     ensure  => file,

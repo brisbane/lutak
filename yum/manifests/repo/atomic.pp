@@ -5,7 +5,7 @@
 class yum::repo::atomic (
   $stage = 'yumsetup',
 ) {
-  require yum::repodef::base
+  require yum::repo::base
 
   file { '/etc/yum.repos.d/atomic.repo' :
     ensure  => file,

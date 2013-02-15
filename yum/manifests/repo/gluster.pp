@@ -1,8 +1,17 @@
-# Class: yum::repo::puppetlabls
+# Class: yum::repo::gluster
 #
-# This module manages PuppetLabs repo files for $lsbdistrelease
+# This module manages Gluster repo files for $lsbdistrelease
 #
-class yum::repo::gluster {
-  require yum
-  class { 'yum::repodef::gluster': stage => 'yumsetup' }
+class yum::repo::gluster(
+  $stage = 'yumsetup',
+){
+  require yum::repo::base
+
+  file { '/etc/yum.repos.d/gluster.repo' :
+    ensure  => file,
+    mode    => '0644',
+    owner   => root,
+    group   => root,
+    source  => "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/gluster.repo",
+  }
 }
