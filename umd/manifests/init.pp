@@ -3,7 +3,9 @@
 # This modules deploys site-info.def file needed for UMD
 # Yaim installation.
 #
-class umd {
+class umd (
+  $site_info_source = 'puppet:///files/umd/site-info.def',
+) {
   package { 'glite-yaim-core':
     ensure  => present,
   }
@@ -13,7 +15,7 @@ class umd {
     owner   => root,
     group   => root,
     mode    => '0600',
-    source  => 'puppet:///files/umd/site-info.def',
+    source  => $site_info_source,
     require => Package['glite-yaim-core'],
   }
 }

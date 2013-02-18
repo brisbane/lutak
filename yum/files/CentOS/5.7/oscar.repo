@@ -1,4 +1,0 @@
-[oscar]
-name=OSCAR
-baseurl=http://bison.csm.ornl.gov/repos/unstable/rhel-5-x86_64/
-gpgcheck=0

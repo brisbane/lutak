@@ -36,16 +36,16 @@ class yum::repo::umd2 (
     default: {}
     /^5.*/: {
       package {'umd-release':
-        ensure   => '2.0.0-1.el5',
+        ensure   => '2.0.0-2.el5',
         provider => 'rpm',
-        source   => 'http://repository.egi.eu/sw/production/umd/2/sl5/x86_64/base/umd-release-2.0.0-2.el5.noarch.rpm',
+        source   => 'http://repository.egi.eu/sw/production/umd/2/sl5/x86_64/updates/umd-release-2.0.0-2.el5.noarch.rpm',
       }
     }
     /^6.*/: {
       package {'umd-release':
-        ensure   => '2.0.0-1.el6',
+        ensure   => '2.0.0-2.el6',
         provider => 'rpm',
-        source   => 'http://repository.egi.eu/sw/production/umd/2/sl6/x86_64/base/umd-release-2.0.0-2.el6.noarch.rpm',
+        source   => 'http://repository.egi.eu/sw/production/umd/2/sl6/x86_64/updates/umd-release-2.0.0-2.el6.noarch.rpm',
       }
     }
   }
