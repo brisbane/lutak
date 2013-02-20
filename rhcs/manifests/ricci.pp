@@ -38,10 +38,10 @@ class rhcs::ricci (
 
   # service
   service { 'ricci':
-    ensure   => running,
-    enable   => true,
-    provider => redhat,
-    require  => [
+    ensure    => running,
+    enable    => true,
+    provider  => redhat,
+    subscribe => [
       File['/var/lib/ricci/certs/cacert.pem'],
       File['/var/lib/ricci/certs/server.p12'],
       File['/var/lib/ricci/certs/cert8.db'],
@@ -52,8 +52,9 @@ class rhcs::ricci (
 
   # export cacert, because ccs_sync uses it as client cert
   @@file { "/var/lib/ricci/certs/clients/client_cert_${::hostname}":
-    source  => "puppet:///files/rhcs/${cluster_name}/client_cert_${::hostname}",
-    tag     => "ricci_client_${cluster_name}",
+    source => "puppet:///files/rhcs/${cluster_name}/client_cert_${::hostname}",
+    notify => Service['ricci'],
+    tag    => "ricci_client_${cluster_name}",
   }
 
   # collect client certificates for this cluster
