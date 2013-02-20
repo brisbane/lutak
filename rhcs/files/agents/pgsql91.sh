@@ -133,9 +133,10 @@ start()
 	# change it to be owned by the postgres user so that
 	# postmaster doesn't complain.
 	#
-	pguser_group=`groups $OCF_RESKEY_postmaster_user | cut -f1 -d ' '`
+	pguser_group=`groups $OCF_RESKEY_postmaster_user | cut -f3 -d ' '`
 	touch $PSQL_pid_file
-	chown $OCF_RESKEY_postmaster_user.$pguser_group $PSQL_pid_file
+	chown $OCF_RESKEY_postmaster_user $PSQL_pid_file
+	chgrp $pguser_group $PSQL_pid_file
 
 	clog_looking_for $CLOG_INIT "IP Addresses"
 
