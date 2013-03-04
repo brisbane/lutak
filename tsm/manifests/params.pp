@@ -4,4 +4,6 @@
 #
 class tsm::params {
   $package_ensure  = 'present'
+  $backup_service  = 'running'
+  $archive_service = 'running'
 }
