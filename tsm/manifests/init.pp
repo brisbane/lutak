@@ -13,13 +13,6 @@ class tsm (
   package { 'tsm-client':
     ensure  => $package_ensure,
   }
-  service { [ 'dsmcad-backup', 'dsmcad-archive']:
-    ensure   => running,
-    enable   => true,
-    provider => redhat,
-    require  => Package['tsm-client'],
-  }
-
 
   if $backup_service == 'running' {
     service { [ 'dsmcad-backup']:
