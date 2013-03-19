@@ -1,6 +1,6 @@
 def get_redhat_virtualbox_version
   version = Facter::Util::Resolution.exec('/bin/rpm -qa | /bin/grep VirtualBox')
-  if match = /^VirtualBox-\d\.\d-(\d\.\d\.\d)_.*$/.match(version)
+  if match = /^VirtualBox-\d\.\d-(\d\.\d\.\d+)_.*$/.match(version)
     match[1]
   else
     nil
@@ -9,7 +9,7 @@ end
 
 def get_redhat_virtualbox_build
   build = Facter::Util::Resolution.exec('/bin/rpm -qa | /bin/grep VirtualBox')
-  if match = /^VirtualBox-\d\.\d-\d\.\d\.\d_(\d*)_.*$/.match(build)
+  if match = /^VirtualBox-\d\.\d-\d\.\d\.\d+_(\d+)_.*$/.match(build)
     match[1]
   else
     nil
