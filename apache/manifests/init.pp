@@ -32,6 +32,7 @@ class apache (
   $user                 = $apache::params::user,
   $group                = $apache::params::group,
   $umask                = $apache::params::umask,
+  $maxopenfiles         = $apache::params::maxopenfiles,
 ) inherits apache::params {
 
   package { 'httpd':

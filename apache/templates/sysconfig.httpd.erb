@@ -35,3 +35,7 @@
 # limits the permission modes for files and directories created by
 # the process.
 umask <%= umask %>
+
+# Limit max number of open files, for more information take a look at
+# limits.conf(5)
+ulimit -n <%= maxopenfiles %>

@@ -10,6 +10,15 @@ class zabbix20::agent (
   $client_name    = $zabbix20::client_name,
 ) inherits zabbix20 {
 
+  File {
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    require => Package['zabbix-agent'],
+    notify  => Service['zabbix-agent'],
+  }
+
   package { 'zabbix-agent':
     ensure   => $package_ensure,
     name     => "zabbix${major}-agent",
@@ -21,12 +30,9 @@ class zabbix20::agent (
     require  => Package['zabbix-agent'],
   }
   file { '/etc/zabbix_agentd.conf':
-    ensure  => file,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
     content => template('zabbix20/zabbix_agentd.conf.erb'),
-    require => Package['zabbix-agent'],
-    notify  => Service['zabbix-agent'],
+  }
+  file { '/etc/zabbix/agent-conf.d':
+    ensure => directory,
   }
 }

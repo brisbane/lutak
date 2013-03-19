@@ -50,6 +50,8 @@ class apache::params {
   $threadsperchild     = '25'
   # creation mask
   $umask               = '0022'
+  # limits
+  $maxopenfiles        = '1024'
 
   if $::osfamily == 'redhat' or $::operatingsystem == 'amazon' {
     $user                  = 'apache'

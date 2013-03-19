@@ -27,5 +27,6 @@ class admintools {
   package { 'telnet':       ensure => latest, }
   package { 'lsof':         ensure => latest, }
   package { 'expect':       ensure => latest, }
-  package { 'postfix':      ensure => latest, }
+  # postfix
+  include postfix
 }
