@@ -8,8 +8,8 @@ def get_debian_rabbitmq_version
 end
 
 def get_redhat_rabbitmq_version
-  version = Facter::Util::Resolution.exec('yum info rabbitmq-server |grep "^Version"')
-  if match = /^Version\s*:\s*(\d+\.\d+\.\d+)$/.match(version)
+  version = Facter::Util::Resolution.exec('/bin/rpm -qa rabbitmq-server')
+  if match = /^rabbitmq-server-(\d+\.\d+\.\d+).*.noarch$/.match(version)
     match[1]
   else
     nil

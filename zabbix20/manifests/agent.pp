@@ -8,6 +8,7 @@ class zabbix20::agent (
   $server_name    = $zabbix20::server_name,
   $server_active  = $zabbix20::server_active,
   $client_name    = $zabbix20::client_name,
+  $timeout        = '3',
 ) inherits zabbix20 {
 
   File {

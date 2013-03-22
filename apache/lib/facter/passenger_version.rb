@@ -1,6 +1,6 @@
 def get_redhat_passenger_version
-  version = Facter::Util::Resolution.exec('yum info mod_passenger |grep "^Version"')
-  if match = /^Version\s*:\s*(\d+\.\d+\.\d+).*$/.match(version)
+  version = Facter::Util::Resolution.exec('/bin/rpm -qa mod_passenger')
+  if match = /^mod_passenger-(\d+\.\d+\.\d+)-\d+.*$/.match(version)
     match[1]
   else
     nil

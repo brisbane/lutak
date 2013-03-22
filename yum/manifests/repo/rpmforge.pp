@@ -20,16 +20,16 @@ class yum::repo::rpmforge (
     default : {}
     /^5.*/: {
       package {'rpmforge-release':
-        ensure   => '0.5.2-2.el5.rf',
+        ensure   => '0.5.3-1.el5.rf',
         provider => 'rpm',
-        source   => 'http://apt.sw.be/redhat/el5/en/i386/rpmforge/RPMS/rpmforge-release-0.5.2-2.el5.rf.i386.rpm',
+        source   => 'http://apt.sw.be/redhat/el5/en/i386/rpmforge/RPMS/rpmforge-release-0.5.3-1.el5.rf.i386.rpm',
       }
     }
     /^6.*/: {
       package {'rpmforge-release':
-        ensure   => '0.5.2-2.el6.rf',
+        ensure   => '0.5.3-1.el6.rf',
         provider => 'rpm',
-        source   => 'http://apt.sw.be/redhat/el6/en/i386/rpmforge/RPMS/rpmforge-release-0.5.2-2.el6.rf.i686.rpm',
+        source   => 'http://apt.sw.be/redhat/el6/en/i386/rpmforge/RPMS/rpmforge-release-0.5.3-1.el6.rf.i686.rpm',
       }
     }
   }
