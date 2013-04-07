@@ -30,6 +30,7 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
         :ensure         => :present,
         :profile        => member['profile'],
         :interfaces     => inet_hash,
+        :kernel_options => member['kernel_options'],
         :hostname       => member['hostname'],
         :gateway        => member['gateway'],
         :netboot        => member['netboot_enabled'].to_s,
@@ -124,6 +125,31 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
     cobbler('system', 'edit', namearg, "--interface=#{puppet_iface}", '--delete-interface')
 
     @property_hash[:interfaces]=(value)
+  end
+
+  # sets kernel_options
+  def kernel_options=(value)
+    # name argument for cobbler
+    namearg='--name=' + @resource[:name]
+
+    # construct commandline from value hash
+    cobblerargs='system edit --name=' + @resource[:name]
+    cobblerargs=cobblerargs.split(' ')
+    # set up kernel options
+    kopts_value = []
+    # if value is ~, that means key is standalone option
+    value.each do |key,val|
+      if val=="~"
+        kopts_value << "#{key}"
+      else
+        kopts_value << "#{key}=#{val}" unless val=="~"
+      end
+    end
+    cobblerargs << ('--kopts=' + kopts_value * ' ')
+    # finally run command to set value
+    cobbler(cobblerargs)
+    # update property_hash
+    @property_hash[:kernel_options]=(value)
   end
 
   # sets comment

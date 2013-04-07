@@ -9,7 +9,7 @@ class yum::repo::webmin (
 
   exec {'webminrepokeyimport':
     command => '/bin/rpm --import http://www.webmin.com/jcameron-key.asc',
-    unless  => 'rpm -qa | grep 11f63c51 > /dev/null',
+    unless  => '/bin/rpm -qa | /bin/grep -q 11f63c51',
   }
 
   file { '/etc/yum.repos.d/webmin.repo':

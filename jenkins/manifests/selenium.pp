@@ -10,4 +10,5 @@ class jenkins::selenium (
   require admintools::xvfb
   require admintools::imagemagick
   require admintools::firefox
+  require admintools::chrome
 }
