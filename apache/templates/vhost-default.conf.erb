@@ -3,7 +3,6 @@
 # Managed by Puppet
 # ************************************
 
-NameVirtualHost <%= vhost_name %>:<%= port %>
 <VirtualHost <%= vhost_name %>:<%= port %>>
   ServerName <%= srvname %>
 <% if serveradmin %>
@@ -15,6 +14,9 @@ NameVirtualHost <%= vhost_name %>:<%= port %>
 <%= "  ServerAlias #{serveraliases}" %>
 <% end -%>
   DocumentRoot <%= docroot %>
+<% if directoryindex %>
+  DirectoryIndex <%= directoryindex %>
+<% end %>
   <Directory <%= docroot %>>
     Options <%= options %>
     AllowOverride <%= Array(override).join(' ') %>

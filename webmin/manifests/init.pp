@@ -27,4 +27,34 @@ class webmin (
     enable    => true,
     subscribe => File['/etc/webmin/miniserv.conf'],
   }
+
+
+  # webmin.acl
+  concat { '/etc/webmin/webmin.acl':
+    owner   => root,
+    group   => root,
+    mode    => '0600',
+    notify  => Service['webmin'],
+  }
+  concat::fragment { 'webmin_acl:header':
+    target  => '/etc/webmin/webmin.acl',
+    source  => 'puppet:///modules/webmin/webmin.acl',
+    order   => '100',
+  }
+
+  # miniserv.users
+  concat { '/etc/webmin/miniserv.users':
+    owner   => root,
+    group   => root,
+    mode    => '0600',
+    notify  => Service['webmin'],
+  }
+  concat::fragment { 'miniserv_users:header':
+    target  => '/etc/webmin/miniserv.users',
+    source  => 'puppet:///modules/webmin/miniserv.users',
+    order   => '100',
+  }
+
+
+
 }
