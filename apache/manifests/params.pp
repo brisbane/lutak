@@ -76,6 +76,7 @@ class apache::params {
       'python'            => 'mod_python',
       'ssl'               => 'mod_ssl',
       'passenger'         => 'mod_passenger',
+      'xsendfile'         => 'mod_xsendfile',
       'wsgi'              => 'mod_wsgi',
       'extract_forwarded' => 'mod_extract_forwarded',
     }

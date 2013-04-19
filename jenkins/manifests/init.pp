@@ -8,6 +8,7 @@ class jenkins (
 ) inherits jenkins::params {
   require yum::repo::jenkins
   require "java::sun${java_version}"
+  require "java::sun${java_version}::fonts"
 
   package { 'jenkins':
     ensure  => $package_ensure,
