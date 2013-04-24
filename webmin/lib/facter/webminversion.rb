@@ -12,7 +12,7 @@ def get_redhat_webmin_version
   if match = /^webmin-(\d+\.\d+)/.match(version)
     match[1]
   else
-    nil
+    1.0
   end
 end
 
