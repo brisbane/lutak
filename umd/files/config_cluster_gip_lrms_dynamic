@@ -1,0 +1,289 @@
+##############################################################################
+# Copyright (c) Members of the EGEE Collaboration. 2004.
+# See http://www.eu-egee.org/partners/ for details on the copyright
+# holders. 
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+##############################################################################
+#
+# NAME :   	config_cluster_gip_lrms_dynamic
+#        
+# DESCRIPTION : This function configures the info dynamic plugin 
+#               for a Computing Element (CE) node.
+#
+# AUTHORS :     yaim-contact@cern.ch, massimo.sgaravatto@pd.infn.it
+#
+# NOTES :       
+#
+# YAIM MODULE:  glite-yaim-cluster
+#                
+############################################################################## 
+
+config_cluster_gip_lrms_dynamic_check () {
+
+ requires $1 CE_BATCH_SYS
+ ret_cod1=$?
+
+  BATCH_SYS=`echo $CE_BATCH_SYS | tr '[:upper:]' '[:lower:]'`
+  if [ $BATCH_SYS = pbs ] || [ $BATCH_SYS = torque ] ; then
+     my_batch_sys="pbs"
+  else
+     my_batch_sys=${BATCH_SYS}
+  fi
+
+
+  case "$my_batch_sys" in
+
+
+  lsf) 
+    requires $1 BATCH_BIN_DIR LSFPROFILE_DIR
+    ret_cod2=$?;;
+
+  pbs) 
+    requires $1 BATCH_SERVER
+    ret_cod2=$?;;
+
+  sge)
+    requires $1 QUEUES SGE_ROOT SGE_CELL
+    ret_cod2=$?;;
+  *)
+     yaimlog DEBUG "config_cluster_gip_lrms_dynamic not able to manage this batch system"
+esac
+
+  if  [ ! $ret_cod1 == 0 ] || [ ! $ret_cod2 == 0 ]; then
+    return 1
+  else
+    return 0
+  fi
+}
+
+config_cluster_gip_lrms_dynamic_setenv () { 
+
+    	yaimlog DEBUG "This function currently doesn't set any environment variables."
+}
+
+config_cluster_gip_lrms_dynamic () {
+
+GLITE_CLUSTER_LOCATION_LIBEXEC=/usr/libexec
+GLITE_CLUSTER_LOCATION_GIP=/var/lib/bdii/gip
+
+LDIF_DIR="${GLITE_CLUSTER_LOCATION_GIP}/ldif"
+
+glueformat="both"
+
+
+
+glue1celdif="/var/lib/bdii/gip/ldif/static-file-CE.ldif"
+glue2managerldif="/var/lib/bdii/gip/ldif/ComputingManager.ldif"
+glue2shareldif="/var/lib/bdii/gip/ldif/ComputingShare.ldif"
+
+
+BATCH_SYS=`echo $CE_BATCH_SYS | tr '[:upper:]' '[:lower:]'`
+if [ $BATCH_SYS = pbs ] || [ $BATCH_SYS = torque ] ; then
+     my_batch_sys="pbs"
+else
+     my_batch_sys=${BATCH_SYS}
+fi
+
+
+
+case "$my_batch_sys" in
+
+    condor)
+      plugin="${GLITE_CLUSTER_LOCATION_LIBEXEC}/glite-info-dynamic-condor ${BATCH_BIN_DIR:-/usr/bin}/ ${LDIF_DIR}/static-file-CE.ldif";;
+
+   sge) 
+
+###
+### Build /etc/lrms/vqueues.conf
+###
+
+SGE_INFOPROVIDER_DIR=/etc/lrms
+SGE_INFOPROVIDER_DIRTMP=/tmp/sge/etc/lrms
+SGE_INFOPROVIDER_VQUEUES=${SGE_INFOPROVIDER_DIR}/vqueues.conf
+SGE_INFOPROVIDER_CLUSTER=${SGE_INFOPROVIDER_DIR}/cluster.state
+SGE_INFOPROVIDER_REPORTER=${SGE_INFOPROVIDER_DIR}/sge.conf
+
+if [ ! -d ${SGE_INFOPROVIDER_DIRTMP} ]; then
+    mkdir -p ${SGE_INFOPROVIDER_DIRTMP}
+    chmod 700 ${SGE_INFOPROVIDER_DIRTMP}
+fi
+
+yaimlog DEBUG "Creating ${SGE_INFOPROVIDER_VQUEUES} file..."
+
+if [ -e ${SGE_INFOPROVIDER_VQUEUES} ]; then
+      yaimlog WARNING "${SGE_INFOPROVIDER_VQUEUES} exists and will be copied to ${SGE_INFOPROVIDER_DIRTMP}/vqueues.conf!"
+      cp -f ${SGE_INFOPROVIDER_VQUEUES} ${SGE_INFOPROVIDER_DIRTMP}/
+fi
+
+cat <<EOF_SGE_INFOPROVIDER_VQUEUES > ${SGE_INFOPROVIDER_VQUEUES}
+#
+# SGE JobManager queue mapping file
+#
+# Virtual
+# Queue         Property                New Value
+# --------------------------------------------------
+EOF_SGE_INFOPROVIDER_VQUEUES
+
+
+for QUEUE in `echo $QUEUES | sed 's/"//g'` ; do
+   cat <<EOF_SGE_INFOPROVIDER_VQUEUES >> $SGE_INFOPROVIDER_VQUEUES
+$QUEUE          queue                   $QUEUE
+EOF_SGE_INFOPROVIDER_VQUEUES
+done
+
+chmod 644 ${SGE_INFOPROVIDER_VQUEUES}
+
+
+
+#---*---
+
+
+###
+### Build /etc/lrms/cluster.state file
+###
+
+yaimlog DEBUG "Set Cluster status to Production in $SGE_INFOPROVIDER_CLUSTER"
+
+if [ -e ${SGE_INFOPROVIDER_CLUSTER} ]; then
+   yaimlog WARNING "${SGE_INFOPROVIDER_CLUSTER} exists and will be copied to ${SGE_INFOPROVIDER_DIRTMP}/cluster.state!"
+   cp -f ${SGE_INFOPROVIDER_CLUSTER} ${SGE_INFOPROVIDER_DIRTMP}/
+fi
+
+cat <<EOF_SGE_INFOPROVIDER_CLUSTER > ${SGE_INFOPROVIDER_CLUSTER}
+Production
+EOF_SGE_INFOPROVIDER_CLUSTER
+
+chmod 644 ${SGE_INFOPROVIDER_CLUSTER}
+
+#---*---
+
+
+###
+### Build /etc/lrms/sge.conf file
+###
+
+yaimlog DEBUG "Creating $SGE_INFOPROVIDER_REPORTER file..."
+
+
+if [ -e ${SGE_INFOPROVIDER_REPORTER} ]; then
+   yaimlog WARNING "${SGE_INFOPROVIDER_REPORTER} exists and will be copied to ${SGE_INFOPROVIDER_DIRTMP}/sge.conf!"
+   cp -f ${SGE_INFOPROVIDER_REPORTER} ${SGE_INFOPROVIDER_DIRTMP}/
+fi
+
+cat <<EOF_SGE_INFOPROVIDER_REPORTER > ${SGE_INFOPROVIDER_REPORTER}
+#
+# Sample configuration file for SGE information reporter
+# ======================================================
+SGE_ROOT = ${SGE_ROOT}
+SGE_ARCH = `${SGE_ROOT}/util/arch`
+SGE_CELL = ${SGE_CELL}
+vqueue_file = ${SGE_INFOPROVIDER_VQUEUES}
+state_file = ${SGE_INFOPROVIDER_CLUSTER}
+qstat_command = $SGE_ROOT/bin/`$SGE_ROOT/util/arch`/qstat
+qconf_command = $SGE_ROOT/bin/`$SGE_ROOT/util/arch`/qconf
+glue1-static-file-CE                = ${GLITE_CLUSTER_LOCATION_GIP}/ldif/static-file-CE.ldif
+glue2-static-file-computing-manager = ${GLITE_CLUSTER_LOCATION_GIP}/ldif/ComputingManager.ldif
+glue2-static-file-computing-share   = ${GLITE_CLUSTER_LOCATION_GIP}/ldif/ComputingShare.ldif
+outputformat                        = both
+EOF_SGE_INFOPROVIDER_REPORTER
+
+chmod 644 ${SGE_INFOPROVIDER_REPORTER}
+
+plugin="${GLITE_CLUSTER_LOCATION_LIBEXEC}/glite-info-dynamic-sge --info -c ${GLITE_CLUSTER_LOCATION_ETC}/lrms/scheduler.conf"
+
+###
+### SGE Configure /etc/lrms/scheduler.conf
+###
+
+yaimlog DEBUG "Create ERT configuration" 
+####@ Create ERT configuration
+ 
+cat <<EOF >> ${GLITE_CLUSTER_LOCATION_ETC}/lrms/scheduler.conf
+module_search_path : ../lrms:../ett
+[LRMS]
+lrms_backend_cmd: ${GLITE_CLUSTER_LOCATION_LIBEXEC}/glite-info-dynamic-sge --lrmsinfo -c ${GLITE_CLUSTER_LOCATION_ETC}/lrms/scheduler.conf
+[Scheduler]
+cycle_time : 0
+vo_max_jobs_cmd: ${GLITE_CLUSTER_LOCATION_LIBEXEC}/glite-info-dynamic-sge --vomaxjobs -c ${GLITE_CLUSTER_LOCATION_ETC}/lrms/scheduler.conf
+EOF
+;;
+    lsf)
+      yaimlog DEBUG "Customizing the /etc/lrms/lsf.conf file ..."
+      conffile="/etc/lrms/lsf.conf"
+      sed -i "s|outputformat\s*=.*|outputformat=\"${glueformat}\"|" $conffile;
+      sed -i "s|glue1-static-file-CE\s*=.*|glue1-static-file-CE=\"${glue1celdif}\"|" $conffile;
+      sed -i "s|glue2-static-file-computing-manager\s*=.*|glue2-static-file-computing-manager=\"${glue2managerldif}\"|" $conffile;
+      sed -i "s|glue2-static-file-computing-share\s*=.*|glue2-static-file-computing-share=\"${glue2shareldif}\"|" $conffile;
+      sed -i "s|binPath\s*=.*|binPath=\"${BATCH_BIN_DIR}\"|" $conffile;
+      
+      plugin=". ${LSFPROFILE_DIR}/profile.lsf; ${GLITE_CLUSTER_LOCATION_LIBEXEC}/info-dynamic-lsf $conffile"
+
+      mylrmsinfo=/usr/libexec/lrmsinfo-lsf
+
+      yaimlog DEBUG "Create ERT configuration"
+      cat <<EOF >> ${GLITE_CLUSTER_LOCATION_ETC}/lrms/scheduler.conf
+module_search_path : ../lrms:../ett
+[LRMS]
+lrms_backend_cmd: $mylrmsinfo
+[Scheduler]
+cycle_time : 0
+EOF
+       ;;
+   pbs)
+      yaimlog DEBUG "Customizing the /etc/lrms/pbs.conf file ..."
+      conffile="/etc/lrms/pbs.conf"
+      sed -i "s|outputformat\s*=.*|outputformat=\"${glueformat}\"|" $conffile;
+      sed -i "s|glue1-static-file-CE\s*=.*|glue1-static-file-CE=\"${glue1celdif}\"|" $conffile;
+      sed -i "s|glue2-static-file-computing-manager\s*=.*|glue2-static-file-computing-manager=\"${glue2managerldif}\"|" $conffile;
+      sed -i "s|glue2-static-file-computing-share\s*=.*|glue2-static-file-computing-share=\"${glue2shareldif}\"|" $conffile;
+      sed -i "s|pbs-host\s*=.*|pbs-host=\"${BATCH_SERVER}\"|" $conffile;
+      plugin="${GLITE_CLUSTER_LOCATION_LIBEXEC}/info-dynamic-pbs $conffile"
+      yaimlog DEBUG "Define the 'max jobs' cmd for the VOs"
+      vo_max_jobs_cmd=""
+      if ( diagnose -g --host=${BATCH_SERVER} > /dev/null 2>&1 ); then 
+      	    vo_max_jobs_cmd="/usr/libexec/vomaxjobs-maui -h ${BATCH_SERVER}"
+      fi
+
+      TORQUE_VAR_DIR="${TORQUE_VAR_DIR:-/var/torque}"
+      yaimlog DEBUG "Add BATCH_SERVER to the $TORQUE_VAR_DIR/server_name file to enable torque clients"
+      echo $BATCH_SERVER > $TORQUE_VAR_DIR/server_name
+      mylrmsinfo=/usr/libexec/lrmsinfo-pbs
+         
+      yaimlog DEBUG "Create ERT configuration" 
+      cat <<EOF >> /etc/lrms/scheduler.conf
+module_search_path : ../lrms:../ett
+[LRMS]
+lrms_backend_cmd: $mylrmsinfo
+[Scheduler]
+cycle_time : 0
+EOF
+       if [ "$vo_max_jobs_cmd" ]; then
+            echo "vo_max_jobs_cmd: $vo_max_jobs_cmd" >> /etc/lrms/scheduler.conf
+       fi
+       ;;
+   *)
+     yaimlog DEBUG "config_cluster_gip_lrms_dynamic not able to manage this batch system"
+esac
+                                                                                                                             
+yaimlog DEBUG "Configuring the dynamic plugin associated to the batch system ${CE_BATCH_SYS}"
+cat << EOF  > ${GLITE_CLUSTER_LOCATION_GIP}/plugin/glite-info-dynamic-lrms
+#!/bin/sh
+  $plugin 
+EOF
+
+chmod +x ${GLITE_CLUSTER_LOCATION_GIP}/plugin/glite-info-dynamic-lrms
+
+return 0
+
+}
