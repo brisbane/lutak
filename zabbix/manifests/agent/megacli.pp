@@ -3,7 +3,9 @@
 # This module installs zabbix megacli plugin
 #
 class zabbix::agent::megacli {
-  package { 'zabbix-agentd_megacli':
+  require ::yum::repo::srce::intern
+
+  package { 'zabbix-agent_megacli':
     ensure   => present,
   }
 }
