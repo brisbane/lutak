@@ -11,7 +11,7 @@ class zabbix::agent (
   package { 'zabbix-agentd':
     ensure   => $package_ensure,
   }
-  package { 'zabbix-agentd_ntpd':
+  package { 'zabbix-agent_ntpd':
     ensure   => $package_ensure,
   }
   package { 'zabbix-agentd_ssh':
