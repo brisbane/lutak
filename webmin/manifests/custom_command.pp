@@ -5,6 +5,8 @@ define webmin::custom_command (
   $description   = '',
   $documentation = '',
 ) {
+  include webmin
+
   # Webmin checks if custom command passes '\d+.cmd'
   # regex, and loads it only if it does
   $cc_filename = inline_template('<% require \'zlib\'; crc32=Zlib::crc32(title)%><%= crc32 %>')
@@ -16,6 +18,7 @@ define webmin::custom_command (
     mode    => '0644',
     content => template('webmin/custom_command.erb'),
     require => User[$user],
+    notify  => Service['webmin'],
   }
 
   file { "/etc/webmin/custom/${cc_filename}.html":
@@ -24,6 +27,7 @@ define webmin::custom_command (
     group   => root,
     mode    => '0644',
     content => $documentation,
+    notify  => Service['webmin'],
   }
 
 

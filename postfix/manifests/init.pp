@@ -1,9 +1,10 @@
 # Class: postfix
 #
 class postfix (
-  $interfaces = [ 'all' ],
+  $interfaces    = [ 'all' ],
   $mydestination = [ '$myhostname', 'localhost.$mydomain', 'localhost' ],
-  $smtpd_banner = '$myhostname ESMTP $mail_name',
+  $smtpd_banner  = '$myhostname ESMTP $mail_name',
+  $relayhost     = '',
 ) {
   package { 'postfix':
     ensure  => present,
