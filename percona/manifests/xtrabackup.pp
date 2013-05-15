@@ -3,7 +3,7 @@
 # This module manages Percona MySQL xtrabackup
 #
 class percona::xtrabackup (
-  $package_ensure = '2.0.5-499.rhel6',
+  $package_ensure = '2.1.1-600.rhel6',
 ){
   require perl::mod::time::hires
 
