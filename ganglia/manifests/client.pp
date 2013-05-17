@@ -37,16 +37,17 @@ class ganglia::client (
   $udp_bind       = $ganglia::params::udp_bind,
 ) inherits ganglia::params {
   package { 'ganglia-gmond':
-    ensure => present,
+    ensure   => present,
+    notify   => Service['gmond'],
   }
   file { '/etc/ganglia/gmond.conf':
-    ensure  => present,
-    owner   => root,
-    group   => root,
-    mode    => '0644',
-    content => template('ganglia/gmond.conf'),
-    require => Package['ganglia-gmond'],
-    notify  => Service['gmond'],
+    ensure   => present,
+    owner    => root,
+    group    => root,
+    mode     => '0644',
+    content  => template('ganglia/gmond.conf'),
+    require  => Package['ganglia-gmond'],
+    notify   => Service['gmond'],
   }
   service {'gmond':
     ensure   => running,
