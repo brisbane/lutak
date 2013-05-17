@@ -16,16 +16,17 @@ class ganglia::server (
   $trusted_hosts  = 'localhost',
 ) inherits ganglia::params {
   package { 'ganglia-gmetad':
-    ensure => present,
+    ensure   => present,
+    notify   => Service['gmetad'],
   }
   file { '/etc/ganglia/gmetad.conf':
-    ensure  => present,
-    owner   => root,
-    group   => root,
-    mode    => '0644',
-    content => template('ganglia/gmetad.conf'),
-    require => Package['ganglia-gmetad'],
-    notify  => Service['gmetad'],
+    ensure   => present,
+    owner    => root,
+    group    => root,
+    mode     => '0644',
+    content  => template('ganglia/gmetad.conf'),
+    require  => Package['ganglia-gmetad'],
+    notify   => Service['gmetad'],
   }
   service {'gmetad':
     ensure   => running,
