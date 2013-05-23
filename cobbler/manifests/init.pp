@@ -52,6 +52,10 @@
 #   - $dhcp_interfaces [type: array]
 #     Interface for DHCP to listen on.
 #
+#   - $dhcp_subnets [type: array]
+#     Subnets that are not present on local machine, but want to be
+#     used for dhcp (for example: via DHCP relay)
+#
 #   - $defaultrootpw [type: string]
 #     Hash of root password for kickstart files.
 #
@@ -95,6 +99,7 @@ class cobbler (
   $next_server_ip     = $cobbler::params::next_server_ip,
   $nameservers        = $cobbler::params::nameservers,
   $dhcp_interfaces    = $cobbler::params::dhcp_interfaces,
+  $dhcp_subnets       = $cobbler::params::dhcp_subnets,
   $defaultrootpw      = $cobbler::params::defaultrootpw,
   $apache_service     = $cobbler::params::apache_service,
   $allow_access       = $cobbler::params::allow_access,
