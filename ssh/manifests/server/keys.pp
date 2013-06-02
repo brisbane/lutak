@@ -3,7 +3,7 @@
 # This module manages keys for ssh server,
 # and is only intended to use as ssh::server
 # helper class
-# 
+#
 class ssh::server::keys {
   # ssh keys
   file { '/etc/ssh/ssh_host_dsa_key':
@@ -16,7 +16,7 @@ class ssh::server::keys {
       'puppet:///modules/ssh/ssh_host_dsa_key',
     ],
     require => Package['openssh-server'],
-    notify  => Service[$service_name],
+    notify  => Service['sshd'],
   }
   file { '/etc/ssh/ssh_host_dsa_key.pub':
     ensure  => file,
@@ -28,7 +28,7 @@ class ssh::server::keys {
       'puppet:///modules/ssh/ssh_host_dsa_key.pub',
     ],
     require => Package['openssh-server'],
-    notify  => Service[$service_name],
+    notify  => Service['sshd'],
   }
   file { '/etc/ssh/ssh_host_key':
     ensure  => file,
@@ -40,7 +40,7 @@ class ssh::server::keys {
       'puppet:///modules/ssh/ssh_host_key',
     ],
     require => Package['openssh-server'],
-    notify  => Service[$service_name],
+    notify  => Service['sshd'],
   }
   file { '/etc/ssh/ssh_host_key.pub':
     ensure  => file,
@@ -52,7 +52,7 @@ class ssh::server::keys {
       'puppet:///modules/ssh/ssh_host_key.pub',
     ],
     require => Package['openssh-server'],
-    notify  => Service[$service_name],
+    notify  => Service['sshd'],
   }
   file { '/etc/ssh/ssh_host_rsa_key':
     ensure  => file,
@@ -64,7 +64,7 @@ class ssh::server::keys {
       'puppet:///modules/ssh/ssh_host_rsa_key',
     ],
     require => Package['openssh-server'],
-    notify  => Service[$service_name],
+    notify  => Service['sshd'],
   }
   file { '/etc/ssh/ssh_host_rsa_key.pub':
     ensure  => file,
@@ -76,7 +76,7 @@ class ssh::server::keys {
       'puppet:///modules/ssh/ssh_host_rsa_key.pub',
     ],
     require => Package['openssh-server'],
-    notify  => Service[$service_name],
+    notify  => Service['sshd'],
   }
 
 }

@@ -19,7 +19,7 @@
 #
 class apache::params {
 
-  $ssl           = true
+  $ssl           = false
   $template      = 'apache/vhost-default.conf.erb'
   $priority      = '25'
   $servername    = ''
