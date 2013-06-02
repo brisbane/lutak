@@ -19,13 +19,16 @@ class ssh::server (
   $service_name        = $ssh::service_name,
   $keys_dir            = '/etc/puppet/private',
 ) inherits ssh {
+
   package { $server_package_name:
     ensure => $package_ensure,
+    alias  => 'openssh-server',
   }
-  service { $service_name:
+  service { 'sshd':
     ensure   => running,
     enable   => true,
     provider => redhat,
+    name     => $service_name,
     require  => Package['openssh-server'],
   }
 
