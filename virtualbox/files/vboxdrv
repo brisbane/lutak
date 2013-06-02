@@ -3,7 +3,7 @@
 # Linux kernel module init script
 
 #
-# Copyright (C) 2006-2010 Oracle Corporation
+# Copyright (C) 2006-2012 Oracle Corporation
 #
 # This file is part of VirtualBox Open Source Edition (OSE), as
 # available from http://www.virtualbox.org. This file is free software;
@@ -31,7 +31,7 @@ DEVICE=/dev/vboxdrv
 LOG="/var/log/vbox-install.log"
 NOLSB=yes
 DEBIAN=
-VERSION=4.2.6
+VERSION=4.2.12
 MODPROBE=/sbin/modprobe
 
 if $MODPROBE -c | grep -q '^allow_unsupported_modules  *0'; then
