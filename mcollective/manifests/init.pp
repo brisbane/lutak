@@ -21,6 +21,12 @@ class mcollective (
   package { 'mcollective':
     ensure  => $package_ensure,
   }
+  package { 'mcollective-puppet-agent':
+    ensure => present,
+  }
+  package { 'mcollective-service-agent':
+    ensure => present,
+  }
   package { 'rubygem-stomp':
     ensure  => $package_ensure,
   }
