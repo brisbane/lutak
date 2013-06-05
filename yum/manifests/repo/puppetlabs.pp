@@ -3,7 +3,9 @@
 # This module manages PuppetLabs repo files for $lsbdistrelease
 #
 class yum::repo::puppetlabs (
-  $stage = 'yumsetup'
+  $stage    = 'yumsetup',
+  $priority = '1',
+  $exclude  = [],
 ) {
   require yum::repo::base
 
@@ -12,7 +14,7 @@ class yum::repo::puppetlabs (
     mode    => '0644',
     owner   => root,
     group   => root,
-    source  => "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/puppetlabs.repo",
+    content => template("yum/${::operatingsystem}/${::operatingsystemrelease}/puppetlabs.erb"),
     require => Package['puppetlabs-release'],
   }
 

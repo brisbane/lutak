@@ -3,7 +3,8 @@
 # This module manages Webmin repo files for $lsbdistrelease
 #
 class yum::repo::s3tools (
-  $stage = 'yumsetup',
+  $stage   = 'yumsetup',
+  $exclude  = [],
 ) {
   require yum::repo::base
 

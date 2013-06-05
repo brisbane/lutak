@@ -3,14 +3,16 @@
 # This module manages Srce repo files for $lsbdistrelease
 #
 class yum::repo::srce (
-  $stage = 'yumsetup',
+  $stage    = 'yumsetup',
+  $priority = '5',
+  $exclude  = [],
 ) {
   file { '/etc/yum.repos.d/srce.repo' :
     ensure  => file,
     mode    => '0644',
     owner   => root,
     group   => root,
-    source  => "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/srce.repo",
+    content => template("yum/${::operatingsystem}/${::operatingsystemrelease}/srce.erb"),
     require => Package['srce-release'],
   }
 

@@ -3,7 +3,9 @@
 # This module manages elrepo repo files for $operatingsystemrelease
 #
 class yum::repo::elrepo (
-  $stage = 'yumsetup',
+  $stage    = 'yumsetup',
+  $priority = '99',
+  $exclude  = [],
 ){
   require yum::repo::base
 
@@ -12,7 +14,7 @@ class yum::repo::elrepo (
     mode    => '0644',
     owner   => root,
     group   => root,
-    source  => "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/elrepo.repo",
+    content => template("yum/${::operatingsystem}/${::operatingsystemrelease}/elrepo.erb"),
     require => Package['elrepo-release'],
   }
 

@@ -3,9 +3,11 @@
 # This module manages Base repo files for $operatingsystemrelease
 #
 
-# CentOS 5.x
+# CentOS
 class yum::repo::base (
-  $stage = 'yumsetup',
+  $stage    = 'yumsetup',
+  $priority = '1',
+  $exclude  = [],
 ){
   # base package
   package {'yum': ensure => present }
@@ -29,7 +31,7 @@ class yum::repo::base (
         mode    => '0644',
         owner   => root,
         group   => root,
-        source  => "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/CentOS-Base.repo",
+        content => template("yum/${::operatingsystem}/${::operatingsystemrelease}/CentOS-Base.erb"),
         require => Package['centos-release'],
       }
       case $::operatingsystemrelease {

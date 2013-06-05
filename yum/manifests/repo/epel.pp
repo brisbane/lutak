@@ -3,14 +3,16 @@
 # This module manages EPEL repo files for $lsbdistrelease
 #
 class yum::repo::epel (
-  $stage = 'yumsetup',
+  $stage    = 'yumsetup',
+  $priority = '11',
+  $exclude  = [],
 ) {
   file { '/etc/yum.repos.d/epel.repo':
     ensure  => file,
     mode    => '0644',
     owner   => root,
     group   => root,
-    source  => "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/epel.repo",
+    content => template("yum/${::operatingsystem}/${::operatingsystemrelease}/epel.erb"),
     require => Package['epel-release'],
   }
 

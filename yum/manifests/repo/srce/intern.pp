@@ -3,7 +3,8 @@
 # This module manages srce_intern repo files for $lsbdistrelease
 #
 class yum::repo::srce::intern (
-  $stage = 'yumsetup',
+  $stage   = 'yumsetup',
+  $exclude = '',
 ) {
   file { '/etc/yum.repos.d/srce-intern.repo' :
     ensure  => file,
