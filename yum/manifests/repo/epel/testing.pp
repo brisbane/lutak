@@ -4,8 +4,8 @@
 #
 class yum::repo::epel::testing (
   $stage    = 'yumsetup',
-  $priority = '12',
-  $exclude  = '',
+  $priority = '11',
+  $exclude  = [],
 ) {
   require yum::repo::epel
 
