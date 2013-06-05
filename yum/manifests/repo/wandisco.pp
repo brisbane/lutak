@@ -4,7 +4,8 @@
 # Repo serves SVN 1.7
 #
 class yum::repo::wandisco (
-  $stage = 'yumsetup',
+  $stage   = 'yumsetup',
+  $exclude  = [],
 ) {
   require yum::repo::base
 

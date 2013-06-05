@@ -3,7 +3,9 @@
 # This module manages IUS repo files for $lsbdistrelease
 #
 class yum::repo::ius (
-  $stage = 'yumsetup'
+  $stage    = 'yumsetup',
+  $priority = '61',
+  $exclude  = [],
 ){
   require yum::repo::base
 
@@ -12,7 +14,7 @@ class yum::repo::ius (
     mode    => '0644',
     owner   => root,
     group   => root,
-    source  =>  "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/ius.repo",
+    content => template("yum/${::operatingsystem}/${::operatingsystemrelease}/ius.erb"),
     require => Package['ius-release'],
   }
 

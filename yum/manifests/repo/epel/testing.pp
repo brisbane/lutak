@@ -3,7 +3,9 @@
 # This module manages EPEL testing repo files for $lsbdistrelease
 #
 class yum::repo::epel::testing (
-  $stage = 'yumsetup',
+  $stage    = 'yumsetup',
+  $priority = '12',
+  $exclude  = '',
 ) {
   require yum::repo::epel
 
@@ -12,6 +14,6 @@ class yum::repo::epel::testing (
     mode    => '0644',
     owner   => root,
     group   => root,
-    source  => "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/epel-testing.repo",
+    content => template("yum/${::operatingsystem}/${::operatingsystemrelease}/epel-testing.erb"),
   }
 }

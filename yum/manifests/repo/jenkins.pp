@@ -3,7 +3,8 @@
 # This module manages Jenkins repo files for $lsbdistrelease
 #
 class yum::repo::jenkins (
-  $stage = 'yumsetup',
+  $stage   = 'yumsetup',
+  $exclude  = [],
 ){
   require yum::repo::base
 

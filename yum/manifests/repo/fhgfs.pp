@@ -3,7 +3,8 @@
 # This module manages FhGFS repo files for $lsbdistrelease
 #
 class yum::repo::fhgfs (
-  $stage = 'yumsetup',
+  $stage   = 'yumsetup',
+  $exclude  = [],
 ){
   require yum::repo::base
 

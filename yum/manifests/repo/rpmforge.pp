@@ -3,7 +3,9 @@
 # This module manages Base repo files for $operatingsystemrelease
 #
 class yum::repo::rpmforge (
-  $stage = 'yumsetup',
+  $stage    = 'yumsetup',
+  $priority = '51',
+  $exclude  = [ 'fortune*', 'atftp-server' ],
 ){
   require yum::repo::base
 
@@ -12,7 +14,7 @@ class yum::repo::rpmforge (
     mode    => '0644',
     owner   => root,
     group   => root,
-    source  => "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/rpmforge.repo",
+    content => template("yum/${::operatingsystem}/${::operatingsystemrelease}/rpmforge.erb"),
     require => Package['rpmforge-release'],
   }
 

@@ -4,7 +4,8 @@
 # https://www.phusionpassenger.com/native_packages
 #
 class yum::repo::passenger (
-  $stage = 'yumsetup',
+  $stage   = 'yumsetup',
+  $exclude  = [],
 ){
   require yum::repo::base
 

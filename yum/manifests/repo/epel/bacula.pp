@@ -3,7 +3,9 @@
 # This module manages EPEL bacula repo files for $lsbdistrelease
 #
 class yum::repo::epel::bacula (
-  $stage = 'yumsetup',
+  $stage    = 'yumsetup',
+  $priority = '12',
+  $exclude  = '',
 ) {
   require yum::repo::epel
 
@@ -20,6 +22,6 @@ class yum::repo::epel::bacula (
     mode    => '0644',
     owner   => root,
     group   => root,
-    source  => "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/epel-bacula.repo",
+    content => template("yum/${::operatingsystem}/${::operatingsystemrelease}/epel-bacula.erb"),
   }
 }

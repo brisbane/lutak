@@ -3,7 +3,9 @@
 # This module manages ATOMIC repo files for $operatingsystemrelease
 #
 class yum::repo::atomic (
-  $stage = 'yumsetup',
+  $stage    = 'yumsetup',
+  $priority = '21',
+  $exclude  = [ 'php*' ],
 ) {
   require yum::repo::base
 
@@ -12,7 +14,7 @@ class yum::repo::atomic (
     mode    => '0644',
     owner   => root,
     group   => root,
-    source  => "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/atomic.repo",
+    content => template("yum/${::operatingsystem}/${::operatingsystemrelease}/atomic.erb"),
     require => Package['atomic-release'],
   }
 

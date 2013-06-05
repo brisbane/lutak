@@ -3,7 +3,8 @@
 # This module manages OSCAR repo files for $lsbdistrelease
 #
 class yum::repo::oscar (
-  $stage = 'yumsetup',
+  $stage   = 'yumsetup',
+  $exclude  = [],
 ){
   require yum::repo::base
 

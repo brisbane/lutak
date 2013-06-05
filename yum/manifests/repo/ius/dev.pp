@@ -3,7 +3,9 @@
 # This module adds IUS dev repo to $lsbdistrelease
 #
 class yum::repo::ius::dev (
-  $stage = 'yumsetup',
+  $stage    = 'yumsetup',
+  $priority = '63',
+  $exclude  = [],
 ){
   require yum::repo::ius
 
@@ -12,6 +14,6 @@ class yum::repo::ius::dev (
     mode    => '0644',
     owner   => root,
     group   => root,
-    source  =>  "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/ius-dev.repo",
+    content => template("yum/${::operatingsystem}/${::operatingsystemrelease}/ius-dev.erb"),
   }
 }
