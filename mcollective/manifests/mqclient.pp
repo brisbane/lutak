@@ -15,9 +15,8 @@ class mcollective::mqclient (
   $package_ensure = $mcollective::params::package_ensure,
 ) inherits mcollective::params {
   # set up client
-  package { 'mcollective-client':
-    ensure => $package_ensure,
-  }
+  package { 'mcollective-client': ensure => $package_ensure, }
+
   file { '/etc/mcollective/client.cfg':
     ensure  => present,
     content => template('mcollective/client.erb'),

@@ -6,6 +6,8 @@ class yum::repo::srce::intern (
   $stage   = 'yumsetup',
   $exclude = '',
 ) {
+  include ::yum::repo::srce
+
   file { '/etc/yum.repos.d/srce-intern.repo' :
     ensure  => file,
     mode    => '0644',
@@ -23,6 +25,7 @@ class yum::repo::srce::intern (
         ensure   => '5-3.el5.srce',
         provider => 'rpm',
         source   => 'http://ftp.srce.hr/srce-redhat/base/el5/x86_64/srce-release-intern-5-3.el5.srce.noarch.rpm',
+        require  => Package['srce-release'],
       }
     }
     /^6.*/: {
@@ -30,6 +33,7 @@ class yum::repo::srce::intern (
         ensure   => '5-3.el6.srce',
         provider => 'rpm',
         source   => 'http://ftp.srce.hr/srce-redhat/base/el6/x86_64/srce-release-intern-5-3.el6.srce.noarch.rpm',
+        require  => Package['srce-release'],
       }
     }
   }

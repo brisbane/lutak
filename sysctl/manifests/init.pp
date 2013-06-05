@@ -31,7 +31,7 @@ define sysctl ( $value = undef, $comment = undef, $ensure = undef ) {
   if $ensure != 'absent' {
     # The immediate change + re-check on each run "just in case"
     exec { "sysctl-${title}":
-      command => "/sbin/sysctl -w ${title}=${value}",
+      command => "/sbin/sysctl -w ${title}=\"${value}\"",
       unless  => "/sbin/sysctl -n ${title} | /bin/grep -q -e '^${value}\$'",
     }
     # For the few original values from the main file
