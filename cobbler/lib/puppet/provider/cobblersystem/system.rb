@@ -163,11 +163,12 @@ Puppet::Type.type(:cobblersystem).provide(:system) do
     cobbler('system', 'add', '--name=' + @resource[:name], '--profile=' + @resource[:profile])
 
     # add hostname, gateway, interfaces, netboot
-    self.hostname   = @resource.should(:hostname)   unless self.hostname   == @resource.should(:hostname)
-    self.gateway    = @resource.should(:gateway)    unless self.gateway    == @resource.should(:gateway)
-    self.interfaces = @resource.should(:interfaces) unless self.interfaces == @resource.should(:interfaces)
-    self.netboot    = @resource.should(:netboot)    unless self.netboot    == @resource.should(:netboot)
-    self.comment    = @resource.should(:comment)    unless self.comment    == @resource.should(:comment)
+    self.hostname       = @resource.should(:hostname)       unless self.hostname       == @resource.should(:hostname)
+    self.gateway        = @resource.should(:gateway)        unless self.gateway        == @resource.should(:gateway)
+    self.interfaces     = @resource.should(:interfaces)     unless self.interfaces     == @resource.should(:interfaces)
+    self.netboot        = @resource.should(:netboot)        unless self.netboot        == @resource.should(:netboot)
+    self.comment        = @resource.should(:comment)        unless self.comment        == @resource.should(:comment)
+    self.kernel_options = @resource.should(:kernel_options) unless self.kernel_options == @resource.should(:kernel_options)
 
     # sync state
     cobbler('sync')
