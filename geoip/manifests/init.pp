@@ -5,7 +5,7 @@
 class geoip (
   $package_ensure = $geoip::params::package_ensure,
   $geoip_version  = $geoip::params::geoip_version,
-){
+) inherits geoip::params {
   require perl::mod::libwww
 
   # install specific version
