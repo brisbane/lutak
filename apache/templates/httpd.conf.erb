@@ -67,7 +67,7 @@ PidFile run/httpd.pid
 #
 # Timeout: The number of seconds before receives and sends time out.
 #
-Timeout <%= servertimeout %>
+Timeout <%= @servertimeout %>
 
 #
 # KeepAlive: Whether or not to allow persistent connections (more than
@@ -80,13 +80,13 @@ KeepAlive Off
 # during a persistent connection. Set to 0 to allow an unlimited amount.
 # We recommend you leave this number high, for maximum performance.
 #
-MaxKeepAliveRequests <%= maxkeepaliverequests %>
+MaxKeepAliveRequests <%= @maxkeepaliverequests %>
 
 #
 # KeepAliveTimeout: Number of seconds to wait for the next request from the
 # same client on the same connection.
 #
-KeepAliveTimeout <%= keepalivetimeout %>
+KeepAliveTimeout <%= @keepalivetimeout %>
 
 ##
 ## Server-Pool Size Regulation (MPM specific)
@@ -100,12 +100,12 @@ KeepAliveTimeout <%= keepalivetimeout %>
 # MaxClients: maximum number of server processes allowed to start
 # MaxRequestsPerChild: maximum number of requests a server process serves
 <IfModule prefork.c>
-StartServers         <%= startservers %>
-MinSpareServers      <%= minspareservers %>
-MaxSpareServers      <%= maxspareservers %>
-ServerLimit          <%= serverlimit %>
-MaxClients           <%= maxclients %>
-MaxRequestsPerChild  <%= maxrequestsperchild %>
+StartServers         <%= @startservers %>
+MinSpareServers      <%= @minspareservers %>
+MaxSpareServers      <%= @maxspareservers %>
+ServerLimit          <%= @serverlimit %>
+MaxClients           <%= @maxclients %>
+MaxRequestsPerChild  <%= @maxrequestsperchild %>
 </IfModule>
 
 # worker MPM
@@ -116,12 +116,12 @@ MaxRequestsPerChild  <%= maxrequestsperchild %>
 # ThreadsPerChild: constant number of worker threads in each server process
 # MaxRequestsPerChild: maximum number of requests a server process serves
 <IfModule worker.c>
-StartServers         <%= startservers %>
-MaxClients           <%= maxclients %>
-MinSpareThreads      <%= minsparethreads %>
-MaxSpareThreads      <%= maxsparethreads %>
-ThreadsPerChild      <%= threadsperchild %>
-MaxRequestsPerChild  <%= maxrequestsperchild %>
+StartServers         <%= @startservers %>
+MaxClients           <%= @maxclients %>
+MinSpareThreads      <%= @minsparethreads %>
+MaxSpareThreads      <%= @maxsparethreads %>
+ThreadsPerChild      <%= @threadsperchild %>
+MaxRequestsPerChild  <%= @maxrequestsperchild %>
 </IfModule>
 
 #
@@ -160,8 +160,8 @@ Include conf.d/*.conf
 #  when the value of (unsigned)Group is above 60000; 
 #  don't use Group #-1 on these systems!
 #
-User <%= user %>
-Group <%= group %>
+User <%= @user %>
+Group <%= @group %>
 
 ### Section 2: 'Main' server configuration
 #
@@ -194,7 +194,7 @@ ServerAdmin root@localhost
 # You will have to access it by its address anyway, and this will make 
 # redirections work in a sensible way.
 #
-ServerName <%= fqdn %>
+ServerName <%= @fqdn %>
 
 #
 # UseCanonicalName: Determines how Apache constructs self-referencing 

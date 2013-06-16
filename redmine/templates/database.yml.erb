@@ -1,8 +1,13 @@
+# Database configuration for RedMine
 production:
-  adapter: <%= redmineadapter %>
-  database: <%= redminedbname %>
-  host: <%= redminedbhost %>
-  port: <%= redminedbport %>
-  username: <%= redminedbuser %>
-  password: <%= redminedbpass %>
-  encoding: <%= redminedbencoding %>
+  adapter:  <%= @db_adapter %>
+  database: <%= @db_name %>
+<%if @db_adapter != 'sqlite' -%>
+  host:     <%= @db_host %>
+  username: <%= @db_user %>
+  password: <%= @db_pass %>
+  encoding: <%= @db_enc %>
+<%end-%>
+<%if @db_adapter == 'postgresql' -%>
+  schema_search_path: <%= @db_schema %>
+<%end-%>

@@ -9,6 +9,6 @@
 # When we also provide SSL we have to listen to the 
 # the HTTPS port in addition.
 #
-<% sslports.each do |sslport| -%>
+<% @sslports.each do |sslport| -%>
 Listen <%= sslport %>
 <% end -%>
