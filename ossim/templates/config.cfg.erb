@@ -6,10 +6,10 @@
 enable = True
 
 # define the unique ID of this agent
-id = "<%= agent_id %>"
+id = "<%= @agent_id %>"
 
 # define the host:port of the frameworkd instance
-ip = <%= server_ip %>
+ip = <%= @server_ip %>
 port = 40003
 
 
@@ -41,11 +41,11 @@ verbose = info
 
 # default values, can be overriden in each plugin rule
 [plugin-defaults]
-sensor = <%= sensor_ip %>
+sensor = <%= @sensor_ip %>
 interface = any
 date_format = %Y-%m-%d %H:%M:%S ; format, not date itself
 ossim_dsn=mysql:localhost:ossim:root:yoursecretpassword
-tzone=<%= timezone %>
+tzone=<%= @timezone %>
 ctx=
 [watchdog]
 enable = True
@@ -64,14 +64,14 @@ file = /var/log/ossim/agent-plain.log
 # send events and receive/send control messages from/to server
 [output-server]
 enable = True
-ip = <%= server_ip %>
+ip = <%= @server_ip %>
 port = 40001
 send_events = True
 
 
 [output-idm]
 enable=True
-ip=<%= server_ip %>
+ip=<%= @server_ip %>
 port=40002
 
 # plugins
@@ -106,7 +106,7 @@ port=40002
 #netscreen-firewall=/etc/ossim/agent/plugins/netscreen-firewall.cfg
 #ntsyslog=/etc/ossim/agent/plugins/ntsyslog.cfg
 #osiris=/etc/ossim/agent/plugins/osiris.cfg
-#ossec=/etc/ossim/agent/plugins/ossec.cfg<% if include_ossec == true %>
+#ossec=/etc/ossim/agent/plugins/ossec.cfg<% if @include_ossec == true %>
 ossec=/etc/ossim/agent/plugins/ossec.cfg
 <% end -%>
 #ossim-agent=/etc/ossim/agent/plugins/ossim-agent.cfg
@@ -118,7 +118,7 @@ ossec=/etc/ossim/agent/plugins/ossec.cfg
 #realsecure=/etc/ossim/agent/plugins/realsecure.cfg
 #rrd=/etc/ossim/agent/plugins/rrd.cfg
 #snortunified=/etc/ossim/agent/plugins/snortunified.cfg
-<% if include_snort == true %><% snort_interfaces.each do |snortiface| -%>
+<% if @include_snort == true %><% @snort_interfaces.each do |snortiface| -%>
 snortunified<%= snortiface %>=/etc/ossim/agent/plugins/snortunified<%= snortiface %>.cfg
 <% end %><% end -%>
 #spamassassin=/etc/ossim/agent/plugins/spamassassin.cfg

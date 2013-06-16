@@ -11,10 +11,10 @@ securityprovider = psk
 plugin.psk = unset
 
 connector = stomp
-plugin.stomp.host = <%= mqmaster %>
-plugin.stomp.port = <%= mqport %> #port for rabbitmq
-plugin.stomp.user = <%= mquser %>
-plugin.stomp.password = <%= mqpassword %>
+plugin.stomp.host = <%= @mqmaster %>
+plugin.stomp.port = <%= @mqport %> #port for rabbitmq
+plugin.stomp.user = <%= @mquser %>
+plugin.stomp.password = <%= @mqpassword %>
 
 # Facts
 factsource = yaml

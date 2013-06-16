@@ -13,9 +13,9 @@
 
     # The search path for modules.
     # The default value is '$confdir/modules'
-    modulepath = <%= modulepath %>
+    modulepath = <%= @modulepath %>
 
-<% environments.each do |envr| -%>
+<% @environments.each do |envr| -%>
 [<%= envr %>]
     <% if envmanifest.to_s =~ /true/ %>manifest = $confdir/environments/<%= envr %>/manifests/site.pp<% else %>manifest = $confdir/manifests/site.pp<% end %>
 

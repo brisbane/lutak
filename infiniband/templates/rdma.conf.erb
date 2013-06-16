@@ -1,11 +1,11 @@
 # Load IPoIB
-IPOIB_LOAD=<%= load_ipoib %>
+IPOIB_LOAD=<%= @load_ipoib %>
 # Load SRP module
-SRP_LOAD=<%= load_srp %>
+SRP_LOAD=<%= @load_srp %>
 # Load iSER module
-ISER_LOAD=<%= load_iser %>
+ISER_LOAD=<%= @load_iser %>
 # Load RDS network protocol
-RDS_LOAD=<%= load_rds %>
+RDS_LOAD=<%= @load_rds %>
 # Should we modify the system mtrr registers?  We may need to do this if you
 # get messages from the ib_ipath driver saying that it couldn't enable
 # write combining for the PIO buffs on the card.
@@ -14,6 +14,6 @@ RDS_LOAD=<%= load_rds %>
 # leave this option
 FIXUP_MTRR_REGS=no
 # Should we enable the NFSoRDMA service?
-NFSoRDMA_LOAD=<%= load_nfsordma %>
+NFSoRDMA_LOAD=<%= @load_nfsordma %>
 NFSoRDMA_PORT=2050
 

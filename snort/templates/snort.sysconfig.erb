@@ -22,12 +22,12 @@
 #INTERFACE=ALL
 #
 # To listen only on given interfaces use this:
-INTERFACE="<% interfaces.each do |interface| -%><%= interface %> <% end -%>"
+INTERFACE="<% @interfaces.each do |interface| -%><%= interface %> <% end -%>"
 
 
 # Where is Snort's configuration file?
 # -c {/path/to/snort.conf}
-CONF="/etc/snort/snort.conf -S HOME_NET=[<%= home_net %>] -m 027 --pid-path /var/run/snort"
+CONF="/etc/snort/snort.conf -S HOME_NET=[<%= @home_net %>] -m 027 --pid-path /var/run/snort"
 
 # What user and group should Snort drop to after starting? This user and
 # group should have very few privileges.
@@ -56,7 +56,7 @@ PASS_FIRST=0
 # Where should Snort log?
 # -l {/path/to/logdir}
 # config logdir: {/path/to/logdir}
-LOGDIR=<%= logdir %>
+LOGDIR=<%= @logdir %>
 
 # How should Snort alert? Valid alert modes include fast, full, none, and
 # unsock.  Fast writes alerts to the default "alert" file in a single-line,

@@ -4,9 +4,9 @@ baseurl=http://yum.puppetlabs.com/el/6/products/$basearch
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-puppetlabs
 enabled=1
 gpgcheck=1
-priority=<%= priority %>
-<% if exclude.to_s != '' -%>
-exclude = <%= exclude.join(' ') %>
+priority=<%= @priority %>
+<% if @exclude.to_s != '' -%>
+exclude = <%= @exclude.join(' ') %>
 <% end -%>
 
 [puppetlabs-deps]
@@ -16,9 +16,9 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-puppetlabs
 enabled=1
 gpgcheck=1
 priority=1
-priority=<%= priority %>
-<% if exclude.to_s != '' -%>
-exclude = <%= exclude.join(' ') %>
+priority=<%= @priority %>
+<% if @exclude.to_s != '' -%>
+exclude = <%= @exclude.join(' ') %>
 <% end -%>
 
 [puppetlabs-devel]
@@ -27,9 +27,9 @@ baseurl=http://yum.puppetlabs.com/el/6/devel/$basearch
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-puppetlabs
 enabled=0
 gpgcheck=1
-priority=<%= priority %>
-<% if exclude.to_s != '' -%>
-exclude = <%= exclude.join(' ') %>
+priority=<%= @priority %>
+<% if @exclude.to_s != '' -%>
+exclude = <%= @exclude.join(' ') %>
 <% end -%>
 
 [puppetlabs-products-source]
@@ -39,9 +39,9 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-puppetlabs
 failovermethod=priority
 enabled=0
 gpgcheck=1
-priority=<%= priority %>
-<% if exclude.to_s != '' -%>
-exclude = <%= exclude.join(' ') %>
+priority=<%= @priority %>
+<% if @exclude.to_s != '' -%>
+exclude = <%= @exclude.join(' ') %>
 <% end -%>
 
 [puppetlabs-deps-source]
@@ -50,9 +50,9 @@ baseurl=http://yum.puppetlabs.com/el/6/dependencies/SRPMS
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-puppetlabs
 enabled=0
 gpgcheck=1
-priority=<%= priority %>
-<% if exclude.to_s != '' -%>
-exclude = <%= exclude.join(' ') %>
+priority=<%= @priority %>
+<% if @exclude.to_s != '' -%>
+exclude = <%= @exclude.join(' ') %>
 <% end -%>
 
 [puppetlabs-devel-source]
@@ -61,7 +61,7 @@ baseurl=http://yum.puppetlabs.com/el/6/devel/SRPMS
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-puppetlabs
 enabled=0
 gpgcheck=1
-priority=<%= priority %>
-<% if exclude.to_s != '' -%>
-exclude = <%= exclude.join(' ') %>
+priority=<%= @priority %>
+<% if @exclude.to_s != '' -%>
+exclude = <%= @exclude.join(' ') %>
 <% end -%>

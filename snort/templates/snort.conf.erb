@@ -42,31 +42,31 @@
 ###################################################
 
 # Setup the network addresses you are protecting
-ipvar HOME_NET [<%= home_net %>]
+ipvar HOME_NET [<%= @home_net %>]
 
 # Set up the external network addresses. Leave as "any" in most situations
 ipvar EXTERNAL_NET !$HOME_NET
 
 # List of DNS servers on your network 
-ipvar DNS_SERVERS [<%= dns_servers %>]
+ipvar DNS_SERVERS [<%= @dns_servers %>]
 
 # List of SMTP servers on your network
-ipvar SMTP_SERVERS [<%= smtp_servers %>]
+ipvar SMTP_SERVERS [<%= @smtp_servers %>]
 
 # List of web servers on your network
-ipvar HTTP_SERVERS [<%= http_servers %>]
+ipvar HTTP_SERVERS [<%= @http_servers %>]
 
 # List of sql servers on your network 
-ipvar SQL_SERVERS [<%= sql_servers %>]
+ipvar SQL_SERVERS [<%= @sql_servers %>]
 
 # List of telnet servers on your network
-ipvar TELNET_SERVERS [<%= telnet_servers %>]
+ipvar TELNET_SERVERS [<%= @telnet_servers %>]
 
 # List of ssh servers on your network
 ipvar SSH_SERVERS $HOME_NET
 
 # List of ftp servers on your network
-ipvar FTP_SERVERS [<%= ftp_servers %>]
+ipvar FTP_SERVERS [<%= @ftp_servers %>]
 
 # List of sip servers on your network
 ipvar SIP_SERVERS $HOME_NET
