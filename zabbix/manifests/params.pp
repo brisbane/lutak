@@ -7,4 +7,5 @@ class zabbix::params {
   $server_name     = 'mon'
   $client_name     = $::fqdn
   $db              = 'pgsql'
+  $pid_file        = '/var/run/zabbix/zabbix-agentd.pid'
 }

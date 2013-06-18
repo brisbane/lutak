@@ -35,5 +35,12 @@ class yum::repo::puppetlabs (
         source   => 'http://yum.puppetlabs.com/el/6/products/x86_64/puppetlabs-release-6-7.noarch.rpm',
       }
     }
+    /^18.*/: {
+      package { 'puppetlabs-release' :
+        ensure   => '18-7',
+        provider => 'rpm',
+        source   => 'http://yum.puppetlabs.com/fedora/f18/products/x86_64/puppetlabs-release-18-7.noarch.rpm',
+      }
+    }
   }
 }

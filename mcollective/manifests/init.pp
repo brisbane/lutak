@@ -24,8 +24,16 @@ class mcollective (
   package { 'mcollective-puppet-agent':
     ensure => present,
   }
-  package { 'mcollective-service-agent':
-    ensure => present,
+  case $::operatingsystem {
+    default: {
+    }
+    'CentOS' : {
+      package { 'mcollective-service-agent':
+        ensure => present,
+      }
+    }
+    'Fedora' : {
+    }
   }
   package { 'rubygem-stomp':
     ensure  => $package_ensure,
