@@ -36,5 +36,13 @@ class yum::repo::srce::intern (
         require  => Package['srce-release'],
       }
     }
+    /^18.*/: {
+      package { 'srce-release-intern' :
+        ensure   => '5-3.el6.srce',
+        provider => 'rpm',
+        source   => 'http://ftp.srce.hr/srce-redhat/base/el6/x86_64/srce-release-intern-5-3.el6.srce.noarch.rpm',
+        require  => Package['srce-release'],
+      }
+    }
   }
 }

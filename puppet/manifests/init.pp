@@ -27,13 +27,32 @@ class puppet (
   package { 'puppet':
     ensure  => $package_ensure,
   }
-  service { 'puppet':
-    ensure   => 'running',
-    enable   => true,
-    provider => 'redhat',
-    require  => File['/etc/puppet/puppet.conf'],
+  case $::operatingsystem {
+    default : {
+      service { 'puppet':
+        ensure   => 'running',
+        enable   => true,
+        provider => 'redhat',
+        require  => File['/etc/puppet/puppet.conf'],
+      }
+    }
+    'CentOS' : {
+      service { 'puppet':
+        ensure   => 'running',
+        enable   => true,
+        provider => 'redhat',
+        require  => File['/etc/puppet/puppet.conf'],
+      }
+    }
+    'Fedora' : {
+      service { 'puppetagent':
+        ensure   => 'running',
+        enable   => true,
+        provider => 'redhat',
+        require  => File['/etc/puppet/puppet.conf'],
+      }
+    }
   }
-
   # files
   file { '/etc/puppet/puppet.conf': content => template('puppet/puppet.conf.erb'), }
   file { '/etc/puppet/auth.conf':   source  => 'puppet:///modules/puppet/auth.conf', }

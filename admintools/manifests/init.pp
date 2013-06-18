@@ -10,7 +10,6 @@ class admintools {
   package { 'rsync':           ensure => latest, }
   package { 'bind-utils':      ensure => latest, }
   # admin tools
-  package { 'man':          ensure => latest, }
   package { 'nmap':         ensure => latest, }
   package { 'screen':       ensure => latest, }
   package { 'zsh':          ensure => latest, }
@@ -27,4 +26,17 @@ class admintools {
   package { 'telnet':       ensure => latest, }
   package { 'lsof':         ensure => latest, }
   package { 'expect':       ensure => latest, }
+
+  case $::operatingsystem {
+    default: {
+      package { 'man':          ensure => latest, }
+    }
+    'CentOS' : {
+      package { 'man':          ensure => latest, }
+    }
+    'Fedora' : {
+      package { 'man-db':       ensure => latest, }
+      package { 'man-pages':    ensure => latest, }
+    }
+  }
 }

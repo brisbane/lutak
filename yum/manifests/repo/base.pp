@@ -70,5 +70,49 @@ class yum::repo::base (
       package { "yum${nameaddon}-upgrade-helper": }
       package { "yum${nameaddon}-versionlock": }
     }
+    'Fedora': {
+      file { '/etc/yum.repos.d/fedora.repo':
+        ensure  => file,
+        mode    => '0644',
+        owner   => root,
+        group   => root,
+        content => template("yum/${::operatingsystem}/${::operatingsystemrelease}/fedora.erb"),
+        require => Package['fedora-release'],
+      }
+      file { '/etc/yum.repos.d/fedora-updates.repo':
+        ensure  => file,
+        mode    => '0644',
+        owner   => root,
+        group   => root,
+        content => template("yum/${::operatingsystem}/${::operatingsystemrelease}/fedora-updates.erb"),
+        require => Package['fedora-release'],
+      }
+      case $::operatingsystemrelease {
+        default: {
+          $nameaddon = '-plugin'
+        }
+        /^18.*/: {
+          $nameaddon = '-plugin'
+          package { 'fedora-release':
+            ensure   => present,
+            provider => rpm,
+            source   => 'http://www.mirrorservice.org/sites/dl.fedoraproject.org/pub/fedora/linux/releases/18/Fedora/x86_64/os/Packages/f/fedora-release-18-1.noarch.rpm',
+          }
+          package { 'fedora-release-notes':
+            ensure   => present,
+            provider => rpm,
+            source   => 'http://www.mirrorservice.org/sites/dl.fedoraproject.org/pub/fedora/linux/releases/18/Fedora/x86_64/os/Packages/f/fedora-release-notes-18.0.0-3.fc18.noarch.rpm',
+          }
+        }
+      }
+      # yum helpers
+      package { 'yum-utils': }
+      package { "yum${nameaddon}-changelog": }
+      package { "yum${nameaddon}-merge-conf": }
+      package { "yum${nameaddon}-priorities": }
+      package { "yum${nameaddon}-protectbase": }
+      package { "yum${nameaddon}-upgrade-helper": }
+      package { "yum${nameaddon}-versionlock": }
+    }
   }
 }

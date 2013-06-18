@@ -34,5 +34,12 @@ class yum::repo::atomic (
         source   => 'http://www6.atomicorp.com/channels/atomic/centos/6/x86_64/RPMS/atomic-release-1.0-16.el6.art.noarch.rpm',
       }
     }
+    /^18.*/: {
+      package { 'atomic-release' :
+        ensure   => '1.0-16.fc18.art',
+        provider => 'rpm',
+        source   => 'https://www.atomicorp.com/channels/atomic/fedora/18/x86_64/RPMS/atomic-release-1.0-16.fc18.art.noarch.rpm',
+      }
+    }
   }
 }
