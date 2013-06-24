@@ -22,6 +22,7 @@ class puppet::master (
   $environments       = $puppet::params::environments,
   $envmanifest        = false,
   $modulepath         = '$confdir/environments/$environment/modules:$confdir/modules:/usr/share/puppet/modules',
+  $report_age         = '1w',
 ) inherits puppet {
   package { 'puppet-server':       ensure => $package_ensure, }
   package { 'rubygem-puppet-lint': ensure => $package_ensure, }
@@ -122,4 +123,14 @@ class puppet::master (
       /puppetdb/: { require puppet::puppetdb }
     }
   }
+
+  # delete old reports
+  tidy { 'delete_old_yaml_reports':
+    path    => '/var/lib/puppet/reports',
+    age     => $report_age,
+    type    => 'mtime',
+    recurse => true,
+    matches => ['*.yaml'],
+  }
+
 }
