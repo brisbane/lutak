@@ -30,4 +30,7 @@ class puppet::params {
 
   # subnets that are allowed to access "/files"
   $fileserver_clients = ['127.0.0.0/8']
+
+  # delete reports older than value
+  $report_age = '1w'
 }

@@ -13,6 +13,7 @@ class puppet (
   $package_ensure = $puppet::params::package_ensure,
   $puppetmaster   = $puppet::params::puppetmaster,
   $agentenv       = $puppet::params::agentenv,
+  $report_age     = $puppet::params::report_age,
 ) inherits puppet::params {
   # file defaults
   File {
