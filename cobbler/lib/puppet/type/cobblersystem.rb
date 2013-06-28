@@ -60,7 +60,13 @@ cobblersystem { 'test.domain.com':
         if w.is_a?(Hash)
           # hack for 'management' setting (which is being read all the time)
           should[l]['management'] = false unless should[l].has_key?('management')
-          return false unless w.keys.sort == should[l].keys.sort
+          # check every key in puppet manifest, leave the rest
+          should[l].keys.uniq do |to, key|
+require 'pp'
+pp 'pero'
+pp to[key]
+            return false unless to[key] == w[key]
+          end
         end
       end
       # if some setting changed in manifest, return false

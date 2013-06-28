@@ -22,7 +22,7 @@ class puppet::master (
   $environments       = $puppet::params::environments,
   $envmanifest        = false,
   $modulepath         = '$confdir/environments/$environment/modules:$confdir/modules:/usr/share/puppet/modules',
-  $report_age         = '1w',
+  $report_age         = $puppet::report_age,
 ) inherits puppet {
   package { 'puppet-server':       ensure => $package_ensure, }
   package { 'rubygem-puppet-lint': ensure => $package_ensure, }

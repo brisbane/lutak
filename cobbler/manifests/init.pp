@@ -199,5 +199,10 @@ class cobbler (
       notify  => Exec['cobblersync'],
     }
   }
+
+  # logrotate script
+  file { '/etc/logrotate.d/cobbler':
+    source => 'puppet:///modules/cobbler/logrotate',
+  }
 }
 # vi:nowrap:

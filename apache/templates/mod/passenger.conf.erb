@@ -1,8 +1,10 @@
-<% unless passenger_version.nil? %><IfModule mod_passenger.c>
-   PassengerRoot /usr/lib/ruby/gems/1.8/gems/passenger-<%= passenger_version %>
+<% if @passenger_version != '' -%>
+<IfModule mod_passenger.c>
+   PassengerRoot /usr/lib/ruby/gems/1.8/gems/passenger-<%= @passenger_version %>
    PassengerRuby /usr/bin/ruby
    PassengerTempDir /var/run/rubygem-passenger
-</IfModule><% end %>
+</IfModule>
+<% end -%>
 
 # Deploying a Ruby on Rails application: an example
 
