@@ -1,6 +1,7 @@
 # Class: samba::server
 class samba::server(
   $major                 = $samba::params::major,
+  $package_ensure        = $samba::params::package_ensure,
   $workgroup             = $samba::params::workgroup,
   $realm                 = $samba::params::realm,
   $security              = $samba::params::security,
@@ -30,6 +31,7 @@ class samba::server(
 
   # packages
   package { "samba${major}":
+    ensure => $package_ensure,
     alias  => 'samba',
   }
 
@@ -59,17 +61,25 @@ class samba::server(
   if upcase($security) == 'ADS' {
     include samba::server::winbind
 
+    package { 'krb5-workstation': ensure => present, }
+
     file {'/etc/krb5.conf':
       ensure  => present,
       mode    => '0644',
       content => template('samba/krb5.conf.erb'),
+      require => Package['krb5-workstation'],
     }
-    exec {'join_active_directory_domain':
+
+    exec { 'generate_krb_ticket' :
+      command => "/bin/echo ${ad_password} | /usr/bin/kinit ${ad_user}@${realm}",
+      unless  => '/usr/bin/klist > /dev/null',
+    }
+
+    exec { 'join_active_directory_domain' :
       command => "/usr/bin/net ads join -U ${ad_user}%${ad_password}",
       onlyif  => '/usr/bin/net ads testjoin -k 2>&1 | /bin/grep -q "not valid"',
+      require => [ Package['samba'], Exec['generate_krb_ticket'], ],
     }
   }
-
-
 
 }
