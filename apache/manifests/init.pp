@@ -33,6 +33,7 @@ class apache (
   $group                = $apache::params::group,
   $umask                = $apache::params::umask,
   $maxopenfiles         = $apache::params::maxopenfiles,
+  $purge_vdir           = true,
 ) inherits apache::params {
 
   package { 'httpd':
@@ -66,7 +67,7 @@ class apache (
     ensure  => directory,
     path    => $apache::params::vdir,
     recurse => true,
-    purge   => true,
+    purge   => $purge_vdir,
     notify  => Service['httpd'],
     require => Package['httpd'],
   }
