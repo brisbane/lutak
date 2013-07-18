@@ -19,7 +19,7 @@ class yum::repo::base::debuginfo (
         mode   => '0644',
         owner  => root,
         group  => root,
-        file   => "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/CentOS-Debuginfo.repo",
+        source => "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/CentOS-Debuginfo.repo",
       }
     }
   }
