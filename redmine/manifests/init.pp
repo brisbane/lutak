@@ -12,8 +12,8 @@ class redmine (
   $db_enc     = 'utf8',
   $db_schema  = 'public',
 ) {
-  require rubygem
-  require rubygem::rails
+  require ruby::gems
+  require ruby::gem::rails
   require yum::repo::passenger
 
   # choose correct package
