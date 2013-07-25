@@ -16,9 +16,10 @@ class fhgfs::storage (
     content => template('fhgfs/fhgfs-storage.conf.erb'),
   }
   service { 'fhgfs-storage':
+    ensure    => running,
     enable    => $enable,
     provider  => redhat,
     require   => Package['fhgfs-storage'],
-#   subscribe => Subscribe['/etc/fhgfs/fhgfs-storage.conf'];
+    subscribe => File['/etc/fhgfs/fhgfs-storage.conf'];
   }
 }

@@ -39,14 +39,14 @@ class yum::repo::umd3 (
       package {'umd-release':
         ensure   => '3.0.0-1.el5',
         provider => 'rpm',
-        source   => 'http://repository.egi.eu/sw/production/umd/3/sl5/x86_64/base/umd-release-3.0.0-1.el5.noarch',
+        source   => 'http://repository.egi.eu/sw/production/umd/3/sl5/x86_64/base/umd-release-3.0.0-1.el5.noarch.rpm',
       }
     }
     /^6.*/: {
       package {'umd-release':
         ensure   => '3.0.0-1.el6',
         provider => 'rpm',
-        source   => 'http://repository.egi.eu/sw/production/umd/3/sl6/x86_64/base/umd-release-3.0.0-1.el6.noarch',
+        source   => 'http://repository.egi.eu/sw/production/umd/3/sl6/x86_64/base/umd-release-3.0.0-1.el6.noarch.rpm',
       }
     }
   }

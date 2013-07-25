@@ -762,7 +762,8 @@ sub submit
     {
         $mpi_pe = $description->parallel_environment();
     }
-    if ( $description->jobtype() eq "mpi" )
+    if ( !$mpi_pe && ( $description->jobtype() eq "mpi" ||
+                       ( $description->jobtype() eq "single" && $description->count() > 1 ) ) )
     {
         $mpi_pe = $default_pe;
     }

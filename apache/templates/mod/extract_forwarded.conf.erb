@@ -3,7 +3,7 @@
 # MEFaccept and MEFrefuse, are intepreted. The MEFaccept and MEFrefuse 
 # directives are each used to spcifiy one or more IP numbers.
 
-MEForder <%= mef_order %>
+MEForder <%= @mef_order %>
 
 # MEFrefuse can be 'all' OR a list of IP numbers and/or domain names of trusted
 # proxy servers whose IP number can be derived by DNS from the domain name.
@@ -11,7 +11,7 @@ MEForder <%= mef_order %>
 # proxy servers are to be trusted. Individual IP numbers mean that those proxy 
 # servers having them are not to be trusted. This defaults to 'all'.
 
-MEFrefuse <%= mef_refuse.join(' ') %>
+MEFrefuse <%= @mef_refuse.join(' ') %>
 
 # MEFaccept can be 'all' OR a list of IP numbers and/or domain names of trusted 
 # proxy servers whose IP number can be derived by DNS from the domain name.
@@ -21,7 +21,7 @@ MEFrefuse <%= mef_refuse.join(' ') %>
 # trusted. This defaults to an empty list of trusted IP numbers.
 
 # MEFaccept 1.2.3.4  1.2.3.5 
-MEFaccept <%= mef_accept.join(' ') %>
+MEFaccept <%= @mef_accept.join(' ') %>
 
 # Normal mode of use is to say:
 #
@@ -42,7 +42,7 @@ MEFaccept <%= mef_accept.join(' ') %>
 # A string means that when spoofing, add an environment variable named by the 
 # string supplied whose value is the IP number of the connecting machine.
 
-MEFaddenv <%= mef_addenv %>
+MEFaddenv <%= @mef_addenv %>
 
 # MEFdebug can be 'on' or 'off' (the default). When turned 'on' information 
 # about how the mod_extract_forwarded module is processing every request to your
@@ -53,4 +53,4 @@ MEFaddenv <%= mef_addenv %>
 # This feature is intended for debugging operation of the mod_extract_forwarded 
 # module and it is unlikely you will want to do that.
 
-MEFdebug <%= mef_debug %>
+MEFdebug <%= @mef_debug %>
