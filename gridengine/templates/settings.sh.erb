@@ -6,7 +6,7 @@ DEFAULTMANPATH=`$SGE_ROOT/util/arch -m`
 MANTYPE=`$SGE_ROOT/util/arch -mt`
 
 SGE_CELL=default; export SGE_CELL
-SGE_CLUSTER_NAME=<%= cluster_name %>; export SGE_CLUSTER_NAME
+SGE_CLUSTER_NAME=<%= @cluster_name %>; export SGE_CLUSTER_NAME
 SGE_QMASTER_PORT=6444; export SGE_QMASTER_PORT
 SGE_EXECD_PORT=6445; export SGE_EXECD_PORT
 

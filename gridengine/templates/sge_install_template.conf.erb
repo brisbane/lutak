@@ -26,12 +26,12 @@ SGE_ENABLE_SMF="false"
 
 # SGE_CLUSTER_NAME
 # Name of this cluster (used by SMF as a service instance name)
-SGE_CLUSTER_NAME=<%= cluster_name %>
+SGE_CLUSTER_NAME=<%= @cluster_name %>
 
 # SGE_JMX_PORT is used by qmaster's JMX MBean server
 # mandatory if install_qmaster -jmx -auto <cfgfile>
 # range: 1024-65500 
-SGE_JMX_PORT=<%= jmx_port %>
+SGE_JMX_PORT=<%= @jmx_port %>
 
 # SGE_JMX_SSL is used by qmaster's JMX MBean server
 # if SGE_JMX_SSL=true, the mbean server connection uses
@@ -59,7 +59,7 @@ SGE_JMX_SSL_KEYSTORE_PW="Please enter the server keystore password"
 # the system, Grid Engine will try to find a correct value.  If it
 # cannot do so, the value is set to "jvmlib_missing" and the JMX
 # thread will be configured but will fail to start
-SGE_JVM_LIB_PATH="<%= jvm_lib_path %>"
+SGE_JVM_LIB_PATH="<%= @jvm_lib_path %>"
 
 # SGE_ADDITIONAL_JVM_ARGS is used by qmaster's jvm thread
 # jvm specific arguments as -verbose:jni etc.
@@ -119,18 +119,18 @@ PAR_EXECD_INST_COUNT="20"
 # A list of hosts which should become admin hosts
 # If you do not enter any host here, you have to add all of your hosts
 # by hand after the installation. The example works without any entry
-ADMIN_HOST_LIST="<%= qmaster_host %><% nodes.each do |val| -%> <%= val %><% end -%>"
+ADMIN_HOST_LIST="<%= @qmaster_host %><% @nodes.each do |val| -%> <%= val %><% end -%>"
 
 # A list of hosts which should become submit hosts
 # If you do not enter any host here, you have to add all of your hosts
 # by hand after the installation. The example works without any entry
-SUBMIT_HOST_LIST="<%= qmaster_host %>"
+SUBMIT_HOST_LIST="<%= @qmaster_host %>"
 
 # A list of hosts which should become exec hosts
 # If you do not enter any host here, you have to add all of your hosts
 # by hand after the installation. The example works without any entry
 # (mandatory for execution host installation)
-EXEC_HOST_LIST="<% nodes.each do |val| -%><%= val %> <% end -%>"
+EXEC_HOST_LIST="<% @nodes.each do |val| -%><%= val %> <% end -%>"
 
 # The directory where the execd spools (local configuration)
 # If you want configure your execution daemons to spool in
@@ -157,10 +157,10 @@ SHELL_NAME="ssh"
 COPY_COMMAND="scp"
 
 # Enter your default domain, if you are using /etc/hosts or NIS configuration
-DEFAULT_DOMAIN="<%= default_domain %>"
+DEFAULT_DOMAIN="<%= @default_domain %>"
 
 # If a job stops, fails, or finishes, you can send mail to this address
-ADMIN_MAIL="<%= admin_mail %>"
+ADMIN_MAIL="<%= @admin_mail %>"
 
 # If true, the rc scripts (sgemaster, sgeexecd) will be added
 # to start automatically during boottime

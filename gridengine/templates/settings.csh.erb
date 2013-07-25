@@ -6,7 +6,7 @@ set DEFAULTMANPATH = `$SGE_ROOT/util/arch -m`
 set MANTYPE = `$SGE_ROOT/util/arch -mt`
 
 setenv SGE_CELL default
-setenv SGE_CLUSTER_NAME <%= cluster_name %>
+setenv SGE_CLUSTER_NAME <%= @cluster_name %>
 setenv SGE_QMASTER_PORT 6444
 setenv SGE_EXECD_PORT 6445
 

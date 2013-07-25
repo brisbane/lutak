@@ -20,9 +20,10 @@ class fhgfs::mgmtd (
     content => template('fhgfs/fhgfs-mgmtd.conf.erb'),
   }
   service { 'fhgfs-mgmtd':
+    ensure    => running,
     enable    => $enable,
     provider  => redhat,
     require   => Package['fhgfs-mgmtd'],
-#    subscribe => Subscribe['/etc/fhgfs/fhgfs-mgmtd.conf'];
+    subscribe => File['/etc/fhgfs/fhgfs-mgmtd.conf'];
   }
 }

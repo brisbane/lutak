@@ -13,8 +13,19 @@ class fhgfs (
   $storage_space_low_limit = '100G',
   $storage_space_emergency_limit = '10G',
   $version = '2011.04.r21-el6',
+  $major_version = '2011',
 ) {
-  require yum::repo::fhgfs
+  case $major_version {
+    default: {
+      require yum::repo::fhgfs
+    }
+    '2011': {
+      require yum::repo::fhgfs
+    }
+    '2012': {
+      require yum::repo::fhgfs2012
+    }
+  }
 
   package { 'fhgfs-utils':
     ensure => $version,
