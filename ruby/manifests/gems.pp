@@ -1,8 +1,8 @@
-# Class: rubygem
+# Class: ruby::gems
 #
 # This modules installs rubygems
 #
-class rubygem {
+class ruby::gems {
   package { 'rubygems':
     ensure  => present,
   }
