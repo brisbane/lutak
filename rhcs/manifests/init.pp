@@ -53,7 +53,7 @@ class rhcs (
     exec { 'clusterinit':
       command => '/bin/cp /etc/cluster.conf /etc/cluster/cluster.conf',
       creates => '/etc/cluster/cluster.conf',
-      require => [ Class['rhcs::ricci'], File['/etc/cluster.conf'], Package['cman'] ],
+      require => [ File['/etc/cluster.conf'], Package['cman'] ],
     }
     file { '/etc/cluster/cluster.conf': require => Exec['clusterinit'], }
     service { 'cman': require => [ File['/etc/cluster/cluster.conf'], File['/etc/corosync/corosync.conf'], ], }

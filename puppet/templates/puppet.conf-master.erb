@@ -46,6 +46,12 @@
   end
 %>
     environment = <%= curenv %>
+<% if @cert_name != @fqdn -%>
+
+    # The locally unique name for this node.
+    # (if you aren’t using DNS names)
+    certname = <%= @cert_name %>
+<% end -%>
 
 [master]<% if storeconfigs.to_s =~ /true/ %>
     # Whether to store each client's configuration, including catalogs,

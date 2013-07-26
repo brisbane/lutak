@@ -10,6 +10,12 @@
     # Where SSL certificates are kept.
     # The default value is '$confdir/ssl'.
     ssldir = $vardir/ssl
+<% if @cert_name != @fqdn -%>
+
+    # The locally unique name for this node.
+    # (if you aren’t using DNS names)
+    certname = <%= @cert_name %>
+<% end -%>
 
 [agent]
     # The file in which puppetd stores a list of the classes
