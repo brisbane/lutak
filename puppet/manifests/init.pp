@@ -10,10 +10,12 @@
 #   include puppet
 #
 class puppet (
-  $package_ensure = $puppet::params::package_ensure,
-  $puppetmaster   = $puppet::params::puppetmaster,
-  $agentenv       = $puppet::params::agentenv,
-  $report_age     = $puppet::params::report_age,
+  $package_ensure   = $puppet::params::package_ensure,
+  $puppetmaster     = $puppet::params::puppetmaster,
+  $master_cert_name = $puppet::params::master_cert_name,
+  $cert_name        = $puppet::params::cert_name,
+  $agentenv         = $puppet::params::agentenv,
+  $report_age       = $puppet::params::report_age,
 ) inherits puppet::params {
   # file defaults
   File {

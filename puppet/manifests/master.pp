@@ -13,6 +13,8 @@ class puppet::master (
   $package_ensure     = $puppet::params::package_ensure,
   $fileserver_clients = $puppet::params::fileserver_clients,
   $server_type        = $puppet::params::server_type,
+  $master_cert_name   = $puppet::master_cert_name,
+  $cert_name          = $puppet::cert_name,
   $storeconfigs       = false,
   $dbadapter          = 'puppetdb',
   $dbname             = 'storeconfigs',

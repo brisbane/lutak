@@ -13,14 +13,22 @@ class puppet::params {
   # fqdn of puppetmaster
   $puppetmaster = 'puppet'
 
+  # agent name
+  $cert_name = $::fqdn
+
   # environment
   $agentenv = ''
+
+
 
 
   ## master settings ##
 
   # type of puppet master server, one of: puppetmaster, apache, nginx
   $server_type = 'puppetmaster'
+
+  # name of teh certificate for puppet master config
+  $master_cert_name = $::fqdn
 
   # wether or not to use storeconfigs
   $storeconfigs = false
