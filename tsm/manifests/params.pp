@@ -3,7 +3,36 @@
 # This module contains defaults for tsm modules
 #
 class tsm::params {
-  $package_ensure  = 'present'
-  $backup_service  = 'running'
-  $archive_service = 'running'
+
+  $ensure           = 'present'
+  $version          = undef
+  $backup_status    = 'enabled'
+  $archive_status   = 'enabled'
+  $file_mode        = '0600'
+  $file_owner       = 'root'
+  $file_group       = 'root'
+  $autorestart      = true
+  $dependency_class = 'tsm::dependency'
+  $my_class         = undef
+
+  $backup_server    = 'backup.example.com'
+  $archive_server   = 'archive.example.com'
+
+  $nodename         = $::fqdn
+
+  # install package depending on major version
+  case $::osfamily {
+    default: {}
+    /(RedHat|redhat|amazon)/: {
+      $package           = 'tsm-client'
+      $backup_service    = 'dsmcad-backup'
+      $archive_service   = 'dsmcad-archive'
+      $file_dsm_sys      = '/etc/tsm-client/dsm.sys'
+      $file_backup_excl  = '/etc/tsm-client/dsm-inclexcl.backup'
+      $file_archive_excl = '/etc/tsm-client/dsm-inclexcl.archive'
+    }
+    /(debian|ubuntu)/: {
+    }
+  }
+
 }
