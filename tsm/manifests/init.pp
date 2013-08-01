@@ -74,7 +74,7 @@ class tsm (
       'deactivated' => false,
       'unmanaged'   => undef,
     }
-    $archive_ervice_ensure = $archive_status ? {
+    $archive_service_ensure = $archive_status ? {
       'enabled'     => 'running',
       'disabled'    => 'stopped',
       'running'     => 'running',
