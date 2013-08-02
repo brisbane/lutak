@@ -1,32 +1,102 @@
-# Class: tsm
 #
-# This module manages tsm
+# = Class: tsm
+#
+# This class manages Tivoli Storage Manger Backup/Archive client
+#
+#
+# == Parameters
+#
+#   - ensure [type: string, default: 'present']
+#     Manages package installation and class resources. Possible values:
+#     * 'present' - Install package, ensure files are present (default)
+#     * 'absent'  - Stop service and remove package and managed files
+#
+#   - package [type: string]
+#     Manages the name of the package. Defaults are provided on $::osfamily
+#     basis.
+#
+#   - version [type: string, default: undef]
+#     If this value is set, the defined version of package is installed.
+#     Possible values are:
+#     * 'x.y.z' - Specific version
+#     * latest  - Latest available
+#
+#   - nodename [type: string, default: $::fqdn]
+#     Name of the node, used as client name when connecting to backup/archive
+#     server.
+#
+#   - backup_server [type: string, default: 'backup.example.com']
+#   - archive_server [type: string, default: 'archive.example.com']
+#     Name or IP address of the backup (or archive) server.
+#
+#   - backup_password [type: string, default: 'UNSET']
+#   - archive_password [type: string, default: 'UNSET']
+#     Password for backup (or archive) client. If password is 'UNSET', client
+#     will use 'passwordaccess generate' option, which will ask for password
+#     at first manual connect to backup/archive server and store it in file.
+#
+#   - backup_service [type: string]
+#   - archive_service [type: string]
+#     Name of the backup (or archive) service. Defaults are provided on
+#     $::osfamily basis.
+#
+#   - backup_status [type: string, default: 'enabled']
+#   - archive_status [type: string, default: 'enabled']
+#     Define the provided service status. Available values affect both the
+#     ensure and the enable service arguments:
+#     * 'enabled':     ensure => running, enable => true
+#     * 'disabled':    ensure => stopped, enable => false
+#     * 'running':     ensure => running, enable => undef
+#     * 'stopped':     ensure => stopped, enable => undef
+#     * 'activated':   ensure => undef  , enable => true
+#     * 'deactivated': ensure => undef  , enable => false
+#     * 'unmanaged':   ensure => undef  , enable => undef
+#
+#   - backup_exclude [type: array]
+#   - archive_exclude [type: array]
+#     List of directories or files that will be excluded from backing up
+#     (archiving). Default is empty array.
+#
+#   - *file_backup_excl* [type: string]
+#   - *file_archive_excl* [type: string]
+#     Path to file which has list of excluded files. Defaults are provided
+#     on $::osfamily basis.
+#
+#   - *file_mode* [type: string, default: '0600']
+#   - *file_owner* [type: string, default: 'root']
+#   - *file_group* [type: string, default 'root']
+#     File permissions and ownership information assigned to config files.
+#
+#  $file_dsm_sys      = $::tsm::params::file_dsm_sys,
+#  $dependency_class  = $::tsm::params::dependency_class,
+#  $my_class          = $::tsm::params::my_class,
 #
 class tsm (
   $ensure            = $::tsm::params::ensure,
   $package           = $::tsm::params::package,
   $version           = $::tsm::params::version,
+  $nodename          = $::tsm::params::nodename,
   $backup_server     = $::tsm::params::backup_server,
+  $backup_password   = 'UNSET',
   $backup_service    = $::tsm::params::backup_service,
   $backup_status     = $::tsm::params::backup_status,
   $backup_exclude    = [],
   $file_backup_excl  = $::tsm::params::file_backup_excl,
-  $backup_password   = 'UNSET',
   $archive_server    = $::tsm::params::archive_server,
+  $archive_password  = 'UNSET',
   $archive_service   = $::tsm::params::archive_service,
   $archive_status    = $::tsm::params::archive_status,
-  $archive_password  = 'UNSET',
   $archive_exclude   = [],
   $file_archive_excl = $::tsm::params::file_archive_excl,
-  $nodename          = $::tsm::params::nodename,
   $file_mode         = $::tsm::params::file_mode,
   $file_owner        = $::tsm::params::file_owner,
   $file_group        = $::tsm::params::file_group,
   $file_dsm_sys      = $::tsm::params::file_dsm_sys,
-  $autorestart       = $::tsm::params::autorestart,
   $dependency_class  = $::tsm::params::dependency_class,
   $my_class          = $::tsm::params::my_class,
-) inherits tsm::params {
+) {
+  ### Variables defined in tsm::params
+  include tsm::params
 
   ### Input parameters validation
   validate_re($ensure, ['present','absent'], 'Valid values are: present, absent')
@@ -39,7 +109,6 @@ class tsm (
   validate_string($archive_service)
   validate_re($archive_status, ['enabled','disabled','running','stopped','activated','deactivated','unmanaged'], 'Valid values are: enabled, disabled, running, stopped, activated, deactivated and unmanaged')
   validate_string($nodename)
-  validate_bool($autorestart)
 
   ### Internal variables (that map class parameters)
   if $ensure == 'present' {
@@ -92,11 +161,6 @@ class tsm (
     $archive_service_enable = undef
     $archive_service_ensure = stopped
     $file_ensure    = absent
-  }
-
-  $file_notify = $autorestart ? {
-    true  => Service['stdmod'],
-    false => undef,
   }
 
   ### Extra classes
