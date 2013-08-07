@@ -14,7 +14,7 @@
 #    server_names_hash_bucket_size => '64',
 #  }
 class nginx::config (
-  $server_names_hash_bucket_size = undef,
+  $server_names_hash_bucket_size = '64',
 ) {
   include nginx
 
