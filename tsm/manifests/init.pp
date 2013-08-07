@@ -6,70 +6,97 @@
 #
 # == Parameters
 #
-#   - ensure [type: string, default: 'present']
-#     Manages package installation and class resources. Possible values:
-#     * 'present' - Install package, ensure files are present (default)
-#     * 'absent'  - Stop service and remove package and managed files
+# [*ensure*]
+#   Type: string, default: 'present'
+#   Manages package installation and class resources. Possible values:
+#   * 'present' - Install package, ensure files are present (default)
+#   * 'absent'  - Stop service and remove package and managed files
 #
-#   - package [type: string]
-#     Manages the name of the package. Defaults are provided on $::osfamily
-#     basis.
+# [*package*]
+#   Type: string, default on $::osfamily basis
+#   Manages the name of the package.
 #
-#   - version [type: string, default: undef]
-#     If this value is set, the defined version of package is installed.
-#     Possible values are:
-#     * 'x.y.z' - Specific version
-#     * latest  - Latest available
+# [*version*]
+#   Type: string, default: undef
+#   If this value is set, the defined version of package is installed.
+#   Possible values are:
+#   * 'x.y.z' - Specific version
+#   * latest  - Latest available
 #
-#   - nodename [type: string, default: $::fqdn]
-#     Name of the node, used as client name when connecting to backup/archive
-#     server.
+# [*nodename*]
+#   Type: string, default: $::fqdn
+#   Name of the node, used as client name when connecting to backup/archive
+#   server.
 #
-#   - backup_server [type: string, default: 'backup.example.com']
-#   - archive_server [type: string, default: 'archive.example.com']
-#     Name or IP address of the backup (or archive) server.
+# [*backup_server*]
+# [*archive_server*]
+#   Type: string, default: 'backup.example.com'
+#   Type: string, default: 'archive.example.com'
+#   Name or IP address of the backup/archive server.
 #
-#   - backup_password [type: string, default: 'UNSET']
-#   - archive_password [type: string, default: 'UNSET']
-#     Password for backup (or archive) client. If password is 'UNSET', client
-#     will use 'passwordaccess generate' option, which will ask for password
-#     at first manual connect to backup/archive server and store it in file.
+# [*backup_password*]
+# [*archive_password*]
+#   Type: string, default: 'UNSET'
+#   Password for backup (or archive) client. If password is 'UNSET', client
+#   will use 'passwordaccess generate' option, which will ask for password
+#   at first manual connect to backup/archive server and store it in file.
 #
-#   - backup_service [type: string]
-#   - archive_service [type: string]
-#     Name of the backup (or archive) service. Defaults are provided on
-#     $::osfamily basis.
+# [*backup_service*]
+# [*archive_service*]
+#   Type: string, defaults on $::osfamily basis
+#   Name of the backup (or archive) service. Defaults are provided on
+#   $::osfamily basis.
 #
-#   - backup_status [type: string, default: 'enabled']
-#   - archive_status [type: string, default: 'enabled']
-#     Define the provided service status. Available values affect both the
-#     ensure and the enable service arguments:
-#     * 'enabled':     ensure => running, enable => true
-#     * 'disabled':    ensure => stopped, enable => false
-#     * 'running':     ensure => running, enable => undef
-#     * 'stopped':     ensure => stopped, enable => undef
-#     * 'activated':   ensure => undef  , enable => true
-#     * 'deactivated': ensure => undef  , enable => false
-#     * 'unmanaged':   ensure => undef  , enable => undef
+# [*backup_status*]
+# [*archive_status*]
+#   Type: string, default: 'enabled'
+#   Define the provided service status. Available values affect both the
+#   ensure and the enable service arguments:
+#   * 'enabled':     ensure => running, enable => true
+#   * 'disabled':    ensure => stopped, enable => false
+#   * 'running':     ensure => running, enable => undef
+#   * 'stopped':     ensure => stopped, enable => undef
+#   * 'activated':   ensure => undef  , enable => true
+#   * 'deactivated': ensure => undef  , enable => false
+#   * 'unmanaged':   ensure => undef  , enable => undef
 #
-#   - backup_exclude [type: array]
-#   - archive_exclude [type: array]
-#     List of directories or files that will be excluded from backing up
-#     (archiving). Default is empty array.
+# [*backup_exclude*]
+# [*archive_exclude*]
+#   Type: array, default: []
+#   List of directories or files that will be excluded from backing up
+#   (archiving). Default is empty array.
 #
-#   - *file_backup_excl* [type: string]
-#   - *file_archive_excl* [type: string]
-#     Path to file which has list of excluded files. Defaults are provided
-#     on $::osfamily basis.
+# [*file_backup_excl*]
+# [*file_archive_excl*]
+#   Type: string, defaults on $::osfamily basis
+#   Path to file which has list of excluded files. Defaults are provided
+#   on $::osfamily basis.
 #
-#   - *file_mode* [type: string, default: '0600']
-#   - *file_owner* [type: string, default: 'root']
-#   - *file_group* [type: string, default 'root']
-#     File permissions and ownership information assigned to config files.
+# [*file_mode*]
+# [*file_owner*]
+# [*file_group*]
+#   Type: string, default: '0600'
+#   Type: string, default: 'root'
+#   Type: string, default 'root'
+#   File permissions and ownership information assigned to config files.
 #
-#  $file_dsm_sys      = $::tsm::params::file_dsm_sys,
-#  $dependency_class  = $::tsm::params::dependency_class,
-#  $my_class          = $::tsm::params::my_class,
+# [*file_dsm_sys*]
+#   Type: string, default on $::osfamily basis
+#   Path to dsm.sys.
+#
+# [*dependency_class*]
+#   Type: string, default: tsm::dependency
+#   Name of a class that contains resources needed by this module but provided
+#   by external modules. Set to undef to not include any dependency class.
+#
+# [*my_class*]
+#   Type: string, default: undef
+#   Name of a custom class to autoload to manage module's customizations
+#
+# [*noops*]
+#   Type: boolean, default: false
+#   Set noop metaparameter to true for all the resources managed by the module.
+#   If true no real change is done is done by the module on the system.
 #
 class tsm (
   $ensure            = $::tsm::params::ensure,
@@ -94,9 +121,8 @@ class tsm (
   $file_dsm_sys      = $::tsm::params::file_dsm_sys,
   $dependency_class  = $::tsm::params::dependency_class,
   $my_class          = $::tsm::params::my_class,
-) {
-  ### Variables defined in tsm::params
-  include tsm::params
+  $noops             = false,
+) inherits tsm::params {
 
   ### Input parameters validation
   validate_re($ensure, ['present','absent'], 'Valid values are: present, absent')
@@ -171,18 +197,21 @@ class tsm (
   package { 'tsm-client':
     ensure => $package_ensure,
     name   => $package,
+    noop   => $noops,
   }
 
   service { 'dsmcad-backup':
     ensure  => $backup_service_ensure,
     enable  => $backup_service_enable,
     require => Package['tsm-client'],
+    noop    => $noops,
   }
 
   service { 'dsmcad-archive':
-    ensure   => $archive_service_ensure,
-    enable   => $archive_service_enable,
-    require  => Package['tsm-client'],
+    ensure  => $archive_service_ensure,
+    enable  => $archive_service_enable,
+    require => Package['tsm-client'],
+    noop    => $noops,
   }
 
   # set defaults for file resource in this scope.
@@ -191,6 +220,7 @@ class tsm (
     owner   => $file_owner,
     group   => $file_group,
     mode    => $file_mode,
+    noop    => $noops,
   }
 
   file { $file_dsm_sys :
@@ -204,7 +234,6 @@ class tsm (
   file { $file_archive_excl :
     content => template('tsm/dsm-inclexcl.archive.erb'),
   }
-
 
 }
 # vi:syntax=puppet:filetype=puppet:ts=4:et:nowrap:
