@@ -7,7 +7,7 @@ gpgkey=http://repos.fedorapeople.org/repos/slaanesh/bacula/RPM-GPG-KEY-slaanesh
 gpgcheck=1
 priority=<%= @priority %>
 <% if @exclude.to_s != '' -%>
-exclude = <%= @exclude.join(' ') %>
+exclude=<%= @exclude.join(' ') %>
 <% end -%>
 
 [epel-bacula-source]
@@ -19,5 +19,5 @@ gpgkey=http://repos.fedorapeople.org/repos/slaanesh/bacula/RPM-GPG-KEY-slaanesh
 gpgcheck=1
 priority=<%= @priority %>
 <% if @exclude.to_s != '' -%>
-exclude = <%= @exclude.join(' ') %>
+exclude=<%= @exclude.join(' ') %>
 <% end -%>
