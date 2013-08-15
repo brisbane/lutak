@@ -6,7 +6,7 @@ enabled=1
 gpgcheck=1
 priority=<%= @priority %>
 <% if @exclude.to_s != '' -%>
-exclude = <%= @exclude.join(' ') %>
+exclude=<%= @exclude.join(' ') %>
 <% end -%>
 
 [puppetlabs-deps]
@@ -18,7 +18,7 @@ gpgcheck=1
 priority=1
 priority=<%= @priority %>
 <% if @exclude.to_s != '' -%>
-exclude = <%= @exclude.join(' ') %>
+exclude=<%= @exclude.join(' ') %>
 <% end -%>
 
 [puppetlabs-devel]
@@ -29,7 +29,7 @@ enabled=0
 gpgcheck=1
 priority=<%= @priority %>
 <% if @exclude.to_s != '' -%>
-exclude = <%= @exclude.join(' ') %>
+exclude=<%= @exclude.join(' ') %>
 <% end -%>
 
 [puppetlabs-products-source]
@@ -41,7 +41,7 @@ enabled=0
 gpgcheck=1
 priority=<%= @priority %>
 <% if @exclude.to_s != '' -%>
-exclude = <%= @exclude.join(' ') %>
+exclude=<%= @exclude.join(' ') %>
 <% end -%>
 
 [puppetlabs-deps-source]
@@ -52,7 +52,7 @@ enabled=0
 gpgcheck=1
 priority=<%= @priority %>
 <% if @exclude.to_s != '' -%>
-exclude = <%= @exclude.join(' ') %>
+exclude=<%= @exclude.join(' ') %>
 <% end -%>
 
 [puppetlabs-devel-source]
@@ -63,5 +63,5 @@ enabled=0
 gpgcheck=1
 priority=<%= @priority %>
 <% if @exclude.to_s != '' -%>
-exclude = <%= @exclude.join(' ') %>
+exclude=<%= @exclude.join(' ') %>
 <% end -%>
