@@ -79,12 +79,13 @@ class apache::params {
       'xsendfile'         => 'mod_xsendfile',
       'wsgi'              => 'mod_wsgi',
       'extract_forwarded' => 'mod_extract_forwarded',
+      'security2'         => 'mod_security',
     }
     $loadfiles             = {
       'extract_forwarded' => 'w-extract_forwarded',
     }
     $mod_libs              = {
-      'php5' => 'libphp5.so',
+      'php5'     => 'libphp5.so',
     }
     $mod_identifiers       = {
       'shibboleth' => 'mod_shib',

@@ -8,11 +8,11 @@ class yum::repo::gluster34(
 ){
   require yum::repo::base
 
-  file { '/etc/yum.repos.d/gluster-epel.repo' :
+  file { '/etc/yum.repos.d/glusterfs-epel.repo' :
     ensure  => file,
     mode    => '0644',
     owner   => root,
     group   => root,
-    source  => "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/gluster-epel.repo",
+    source  => "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/glusterfs-epel.repo",
   }
 }
