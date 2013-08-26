@@ -33,6 +33,7 @@ class apache (
   $group                = $apache::params::group,
   $umask                = $apache::params::umask,
   $maxopenfiles         = $apache::params::maxopenfiles,
+  $listen               = $apache::params::listen,
   $purge_vdir           = true,
 ) inherits apache::params {
 
@@ -81,6 +82,12 @@ class apache (
     file { "${apache::params::conf_dir}/${apache::params::conf_file}":
       ensure  => present,
       content => template("apache/${apache::params::conf_file}.erb"),
+      notify  => Service['httpd'],
+      require => Package['httpd'],
+    }
+    file { "${::apache::params::vdir}/listen.conf":
+      ensure  => present,
+      content => template('apache/listen.conf.erb'),
       notify  => Service['httpd'],
       require => Package['httpd'],
     }
