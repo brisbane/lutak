@@ -52,6 +52,8 @@ class apache::params {
   $umask               = '0022'
   # limits
   $maxopenfiles        = '1024'
+  # interfaces
+  $listen              = [ '80' ]
 
   if $::osfamily == 'redhat' or $::operatingsystem == 'amazon' {
     $user                  = 'apache'

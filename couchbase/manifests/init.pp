@@ -13,6 +13,11 @@ class couchbase (
 ) {
   require admintools::openssl098e
 
+  Couchbucket {
+    admin_user     => $server_user,
+    admin_password => $server_pass,
+  }
+
   # get correct package
   case $::architecture {
     default: {}
