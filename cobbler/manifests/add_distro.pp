@@ -1,5 +1,9 @@
 # Define: cobbler::add_distro
-define cobbler::add_distro ($arch,$isolink) {
+define cobbler::add_distro (
+  $arch,
+  $isolink,
+  $ks_template = "cobbler/${title}.ks.erb",
+  ) {
   include cobbler
   $distro = $title
   $server_ip = $cobbler::server_ip
@@ -15,7 +19,7 @@ define cobbler::add_distro ($arch,$isolink) {
   $defaultrootpw = $cobbler::defaultrootpw
   file { "${cobbler::distro_path}/kickstarts/${distro}.ks":
     ensure  => present,
-    content => template("cobbler/${distro}.ks.erb"),
+    content => template($ks_template),
     require => File["${cobbler::distro_path}/kickstarts"],
   }
 }
