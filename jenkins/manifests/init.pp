@@ -4,15 +4,16 @@
 #
 class jenkins (
   $package_ensure = $jenkins::params::package_ensure,
+  $java_vendor    = $jenkins::params::java_vendor,
   $java_version   = $jenkins::params::java_version,
-) inherits jenkins::params {
+  ) inherits jenkins::params {
   require yum::repo::jenkins
-  require "java::sun${java_version}"
-  require "java::sun${java_version}::fonts"
+  require "java::${java_vendor}${java_version}"
+  require "java::${java_vendor}${java_version}::fonts"
 
   package { 'jenkins':
     ensure  => $package_ensure,
-    require => [ Package["java-1.${java_version}.0-sun-devel"], File['/etc/yum.repos.d/jenkins.repo'], ],
+    require => [ Package["java-1.${java_version}.0-${java_vendor}-devel"], File['/etc/yum.repos.d/jenkins.repo'], ],
   }
   service { 'jenkins':
     ensure  => running,

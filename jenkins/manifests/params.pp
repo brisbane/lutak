@@ -4,5 +4,6 @@
 #
 class jenkins::params {
   $package_ensure  = 'present'
-  $java_version    = 6
+  $java_vendor     = 'oracle'
+  $java_version    = '7'
 }
