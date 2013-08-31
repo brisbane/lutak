@@ -1,33 +1,31 @@
 ###
 ### File managed by Puppet
 ###
-DEVICE=<%= interface %>
-BOOTPROTO=<%= bootproto %>
-<% if !macaddress.empty? %>HWADDR=<%= macaddress %>
+DEVICE=<%= @interface %>
+<% if !@macaddress.empty? %>HWADDR=<%= @macaddress %><% end %>
+ONBOOT=<%= @onboot %>
+BOOTPROTO=<%= @bootproto %>
+HOTPLUG=<%= @onboot %>
+TYPE=<%= @type %>
+<% if !@bonding_opts.empty? %>BONDING_OPTS="<%= @bonding_opts %>"
 <% end -%>
-ONBOOT=<%= onboot %>
-HOTPLUG=<%= onboot %>
-TYPE=Ethernet
-<% if !ipaddress.empty? %>IPADDR=<%= ipaddress %>
+<% if !@ethtool_opts.empty? %>ETHTOOL_OPTS="<%= @ethtool_opts %>"
 <% end -%>
-<% if !netmask.empty? %>NETMASK=<%= netmask %>
+<% if !@mtu.empty?          %>MTU=<%= mtu %>
 <% end -%>
-<% if !gateway.empty? %>GATEWAY=<%= gateway %>
+# ip address settings
+<% if !@ipaddress.empty?    %>IPADDR=<%= @ipaddress %>
 <% end -%>
-<% if !mtu.empty? %>MTU=<%= mtu %>
+<% if !@netmask.empty?      %>NETMASK=<%= @netmask %>
 <% end -%>
-<% if !bonding_opts.empty? %>BONDING_OPTS="<%= bonding_opts %>"
+<% if !@gateway.empty?      %>GATEWAY=<%= @gateway %>
 <% end -%>
-<% if !ethtool_opts.empty? %>ETHTOOL_OPTS="<%= ethtool_opts %>"
+<% if @peerdns == 'yes' and !@dns1.empty? -%>
+# dns settings
+PEERDNS=yes
+DNS1=<%= @dns1 %>
+<% if !@dns2.empty? -%>DNS2=<%= @dns2 %>
 <% end -%>
-<% if !peerdns.empty? %><% if dns1.empty? %><% if dns2.empty? %>PEERDNS=no
-<% else %>PEERDNS=yes
-DNS1=<%= dns2 %>
-<% end -%><% else %>PEERDNS=yes
-DNS1=<%= dns1 %>
-<% if !dns2.empty? %>DNS2=<%= dns2 %>
+<% if !@domain.empty? -%>DOMAIN="<%= @domain %>"
 <% end -%>
 <% end -%>
-<% end -%>
-<% if !domain.empty? %>DOMAIN="<%= domain %>"<% end -%>
-

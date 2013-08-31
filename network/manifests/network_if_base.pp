@@ -1,16 +1,3 @@
-# Class: network
-#
-# This module manages Red Hat/Fedora network configuration.
-#
-class network {
-  # Only run on RedHat derived systems.
-  case $::osfamily {
-    RedHat: { }
-    default: {
-      fail('This network module only supports Red Hat-based systems.')
-    }
-  }
-} # class network
 # Definition: network_if_base
 #
 # This definition is private, i.e. it is not intended to be called directly
@@ -57,20 +44,21 @@ class network {
 #   REORDER_HDR=yes|no
 #
 define network::network_if_base (
-  $ensure,
   $ipaddress,
   $netmask,
   $macaddress,
-  $gateway = '',
-  $bootproto = 'none',
-  $mtu = '',
+  $ensure       = 'up',
+  $gateway      = '',
+  $bootproto    = 'none',
+  $mtu          = '',
   $ethtool_opts = '',
   $bonding_opts = '',
-  $isalias = false,
-  $peerdns = false,
-  $dns1 = '',
-  $dns2 = '',
-  $domain = '',
+  $isalias      = false,
+  $peerdns      = false,
+  $dns1         = '',
+  $dns2         = '',
+  $domain       = '',
+  $type         = 'Ethernet',
 ) {
   $interface = $name
 
@@ -86,33 +74,35 @@ define network::network_if_base (
     }
   }
 
-  file { "ifcfg-$interface":
+  $ifcfg_content = $isalias ? {
+    false => template('network/ifcfg-eth.erb'),
+    true  => template('network/ifcfg-alias.erb'),
+  }
+
+  file { "ifcfg-${interface}":
     ensure  => present,
     owner   => root,
     group   => root,
     mode    => '0644',
-    path    => "/etc/sysconfig/network-scripts/ifcfg-$interface",
-    content => $isalias ? {
-      false => template('network/ifcfg-eth.erb'),
-      true  => template('network/ifcfg-alias.erb'),
-    }
+    path    => "/etc/sysconfig/network-scripts/ifcfg-${interface}",
+    content => $ifcfg_content,
   }
 
   case $ensure {
     default: {}
 
     up: {
-      exec { "ifup-$interface":
-        command     => "/sbin/ifdown $interface; /sbin/ifup $interface",
-        subscribe   => File["ifcfg-$interface"],
+      exec { "ifup-${interface}":
+        command     => "/sbin/ifdown ${interface}; /sbin/ifup ${interface}",
+        subscribe   => File["ifcfg-${interface}"],
         refreshonly => true,
       }
     }
 
     down: {
-      exec { "ifdown-$interface":
-        command     => "/sbin/ifdown $interface",
-        subscribe   => File["ifcfg-$interface"],
+      exec { "ifdown-${interface}":
+        command     => "/sbin/ifdown ${interface}",
+        subscribe   => File["ifcfg-${interface}"],
         refreshonly => true,
       }
     }

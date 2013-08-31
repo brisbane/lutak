@@ -1,11 +1,15 @@
 # Class: private::iptables
-class private::iptables {
+class private::iptables (
+  $source = 'puppet:///private/iptables',
+  ){
+  include ::ulog
+
   file { '/etc/sysconfig/iptables':
     ensure => file,
     owner  => root,
     group  => root,
     mode   => '0600',
-    source => 'puppet:///private/iptables',
+    source => $source,
   }
   service { 'iptables':
     ensure    => running,

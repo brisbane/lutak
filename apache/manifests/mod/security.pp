@@ -1,5 +1,6 @@
 # Class: apache::mod::security
 class apache::mod::security (
+  $secruleengine              = 'DetectionOnly',
   $request_body_limit         = '13107200',
   $request_body_nofileslimit  = '131072',
   $request_body_inmemorylimit = '131072',

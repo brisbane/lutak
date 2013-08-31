@@ -4,7 +4,7 @@
 	Include modsecurity.d/activated_rules/*.conf
 
     # Default recommended configuration
-    SecRuleEngine On
+    SecRuleEngine <%= @secruleengine %>
     SecRequestBodyAccess On
     SecRule REQUEST_HEADERS:Content-Type "text/xml" \
          "id:'200000',phase:1,t:none,t:lowercase,pass,nolog,ctl:requestBodyProcessor=XML"

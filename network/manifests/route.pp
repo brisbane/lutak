@@ -14,34 +14,46 @@
 #
 # Sample Usage:
 #   # interface routes
-#   network::route { "eth0":
+#   network::route { 'eth0':
 #     address => [ "192.168.2.0", "10.0.0.0", ],
 #     netmask => [ "255.255.255.0", "255.0.0.0", ],
 #     gateway => [ "192.168.1.1", "10.0.0.1", ],
 #   }
+#   # interface routes
+#   network::route { 'eth0':
+#     iproute => [
+#       '192.168.2.0/24 via 192.168.1.1',
+#       '10.0.0.0/8 via 10.0.0.1',
+#     ],
+#   }
 #
 define network::route (
-  $address,
-  $netmask,
-  $gateway
+  $address = '',
+  $netmask = '',
+  $gateway = '',
+  $iproute = '',
 ) {
   $interface = $name
 
-  file { "route-$interface":
-    mode    => "644",
-    owner   => "root",
-    group   => "root",
-    ensure  => "present",
-    path    => "/etc/sysconfig/network-scripts/route-$interface",
-    content => template("network/route-eth.erb"),
-    before  => File["ifcfg-$interface"],
-    # TODO: need to know $ensure of $interface since one of these execs is not defined.
-    #notify  => [ Exec["ifup-$interface"], Exec["ifdown-$interface"], ],
+  File {
+    ensure => file,
+    owner  => root,
+    group  => root,
+    mode   => '0644',
   }
 
-  # TODO: use "if defined(File['/tmp/myfile']) { ... }" ?
-  # check if interface is up and if so then add routes
-  #exec { "ifup-routes-$interface":
-  #  command => "/etc/sysconfig/network-scripts/ifup-routes $interface",
-  #}
-} # define network::route
+  if $iproute != '' {
+    file { "route-${interface}":
+      path    => "/etc/sysconfig/network-scripts/route-${interface}",
+      content => template('network/route-eth.erb'),
+      before  => File["ifcfg-${interface}"],
+    }
+  } else {
+    file { "route-${interface}":
+      path    => "/etc/sysconfig/network-scripts/route-${interface}",
+      content => template('network/route-eth-adr.erb'),
+      before  => File["ifcfg-${interface}"],
+    }
+  }
+
+}
