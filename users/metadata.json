@@ -1,0 +1,32 @@
+{
+  "name": "dcsobral-users",
+  "dependencies": [
+
+  ],
+  "author": "",
+  "license": "",
+  "version": "1.1.0",
+  "checksums": {
+    "lib/facter/etcgroup.rb": "e3745af84b894930422dc16a8ba10585",
+    "lib/puppet/parser/functions/array_length.rb": "bf87231395c9ec10033b3e3bf2402b02",
+    "manifests/definitions/uidsanity.pp": "625c7afb2de43a0a156ece6aef40052c",
+    "manifests/definitions/lookupkey.pp": "17cacc59eb88227862c938d4324f515f",
+    "lib/facter/etcpasswd.rb": "887186e49fe8860446f4f4f41debad45",
+    "manifests/definitions/lookup.pp": "a611099bd4a4270585670fb716ef6a31",
+    "manifests/definitions/masskeys.pp": "fedb118330c60969725ef6bd9dfb8848",
+    "manifests/definitions/gidsanity.pp": "4783e362c4e66af31a540c1dae96418a",
+    "manifests/definitions/useraccount.pp": "9400430316e44af2ccdad2d0f14a5604",
+    "README.mkd": "b4a81ba989a65bdb62008ba48ad157dc",
+    "manifests/classes/users.pp": "343a9c41a8c727ae60b7e512dc2f6689",
+    "manifests/definitions/massuseraccount.pp": "2f8a0467d818195b38600ab2e1c337a1",
+    "scripts/findDirs.sh": "a3c40ed4f12e05b81b1abf45c7b16282",
+    "lib/puppet/parser/functions/array_slice.rb": "4c18c6be8d7a2c1a6a1a479b907849c7",
+    "lib/puppet/parser/functions/array_index.rb": "f9c8525312160aaca93bfd1c846c4d12",
+    "Modulefile": "6a5ac71f5fb3c749ddd59f54b91e8027",
+    "manifests/init.pp": "1ef6a7dc6bfbf031f46464c05dd82eeb"
+  },
+  "types": [
+
+  ],
+  "source": ""
+}

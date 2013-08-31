@@ -1,0 +1,19 @@
+#
+# VirtualHost: <%= name %>
+#
+server {
+    server_name <%= srvname %>;
+    listen      <%= listen %>;
+    root        <%= docroot %>;
+    index       <%= index.join(' ') %>;
+
+<% if ssl == true -%>
+    # SSL certificates
+    ssl_certificate       <%= ssl_cert %>;
+    ssl_certificate_key   <%= ssl_key %>;
+<% end -%>
+
+    # logs
+    access_log  <%= logroot %>/<%= name %>_access.log main buffer=32k;
+    error_log   <%= logroot %>/<%= name %>_error.log  error;
+
