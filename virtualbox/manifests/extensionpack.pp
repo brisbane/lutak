@@ -13,6 +13,8 @@ class virtualbox::extensionpack {
     command => "/usr/bin/wget http://download.virtualbox.org/virtualbox/${::virtualbox_version}/${vboxepack} && \
                 /usr/bin/VBoxManage extpack install --replace ${vboxepack} && /bin/rm -f ${vboxepack} && \
                 /etc/init.d/vboxweb-service stop && /etc/init.d/vboxdrv stop && \
+                /etc/init.d/vboxdrv start && /etc/init.d/vboxweb-service start && \
+                /etc/init.d/vboxdrv stop && /etc/init.d/vboxweb-service stop && \
                 /etc/init.d/vboxdrv start && /etc/init.d/vboxweb-service start",
     cwd     => '/tmp',
     unless  => "/usr/bin/VBoxManage list extpacks | /bin/grep 'Revision.*${::virtualbox_build}' > /dev/null 2>&1",
