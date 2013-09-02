@@ -9,7 +9,7 @@
 plugin_id=1001
 
 [config]
-interface=<%= interface %>
+interface=<%= @interface %>
 type=detector
 enable=yes
 source=snortlog
@@ -20,7 +20,7 @@ stop=no   ; shutdown plugin process when agent stops
 startup=/etc/init.d/%(process)s start
 shutdown=killall -9 %(process)s
 
-directory=<%= datadir %>
+directory=<%= @datadir %>
 
 ;log file prefix. This is the same than filename parameter in snort.cfg 
 prefix=snort.log

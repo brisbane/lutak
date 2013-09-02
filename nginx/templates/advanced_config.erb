@@ -1,4 +1,4 @@
-<% if server_names_hash_bucket_size != '' -%>
+<% if @server_names_hash_bucket_size != '' -%>
 # server_names_hash_bucket_size
 # Syntax: 	server_names_hash_bucket_size size
 # Default: 	32|64|128
@@ -7,5 +7,5 @@
 # of servers. This value by default depends on the size of the line of
 # processor cache. For more detail see the description of tuning the
 # hash tables in Nginx Optimizations. 
-server_names_hash_bucket_size <%= server_names_hash_bucket_size %>;
+server_names_hash_bucket_size <%= @server_names_hash_bucket_size %>;
 <% end -%>
