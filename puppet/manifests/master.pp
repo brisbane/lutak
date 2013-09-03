@@ -72,9 +72,10 @@ class puppet::master (
     }
     /^httpd|^apache/: {
       # include and set up apache
-      include apache
-      include apache::mod::ssl
-      include apache::mod::passenger
+      include ::apache
+      include ::apache::mod::ssl
+      include ::apache::mod::passenger
+      include ::apache::nessus
 
       # rack application setup
       file { '/etc/puppet/rack':

@@ -37,7 +37,7 @@ iscsid.startup = /etc/rc.d/init.d/iscsid force-start
 # node.startup = automatic
 #
 # To manually startup the session set to "manual". The default is automatic.
-node.startup = <%= node_startup %>
+node.startup = <%= @node_startup %>
 
 # For "automatic" startup nodes, setting this to "Yes" will try logins on each
 # available iface until one succeeds, and then stop.  The default "No" will try
@@ -49,42 +49,42 @@ node.leading_login = No
 # *************
 
 # To enable CHAP authentication set node.session.auth.authmethod
-# to CHAP. The default is None.<% if node_session_auth_authmethod == '' then %>
+# to CHAP. The default is None.<% if @node_session_auth_authmethod == '' then %>
 #node.session.auth.authmethod = CHAP<% else %>
-node.session.auth.authmethod = <%= node_session_auth_authmethod %>
+node.session.auth.authmethod = <%= @node_session_auth_authmethod %>
 <% end %>
 # To set a CHAP username and password for initiator
-# authentication by the target(s), uncomment the following lines:<% if node_session_auth_username == '' then %>
+# authentication by the target(s), uncomment the following lines:<% if @node_session_auth_username == '' then %>
 #node.session.auth.username = username
 #node.session.auth.password = password<% else %>
-node.session.auth.username = <%= node_session_auth_username %>
-node.session.auth.password = <%= node_session_auth_password %>
+node.session.auth.username = <%= @node_session_auth_username %>
+node.session.auth.password = <%= @node_session_auth_password %>
 <% end %>
 # To set a CHAP username and password for target(s)
-# authentication by the initiator, uncomment the following lines:<% if node_session_auth_username_in == '' then %>
+# authentication by the initiator, uncomment the following lines:<% if @node_session_auth_username_in == '' then %>
 #node.session.auth.username_in = username_in
 #node.session.auth.password_in = password_in<% else %>
-node.session.auth.username_in = <%= node_session_auth_username_in %>
-node.session.auth.password_in = <%= node_session_auth_password_in %>
+node.session.auth.username_in = <%= @node_session_auth_username_in %>
+node.session.auth.password_in = <%= @node_session_auth_password_in %>
 <% end %>
 # To enable CHAP authentication for a discovery session to the target
-# set discovery.sendtargets.auth.authmethod to CHAP. The default is None.<% if node_session_auth_authmethod == '' then %>
+# set discovery.sendtargets.auth.authmethod to CHAP. The default is None.<% if @node_session_auth_authmethod == '' then %>
 #discovery.sendtargets.auth.authmethod = CHAP<% else %>
-discovery.sendtargets.auth.authmethod = <%= node_session_auth_authmethod %>
+discovery.sendtargets.auth.authmethod = <%= @node_session_auth_authmethod %>
 <% end %>
 # To set a discovery session CHAP username and password for the initiator
-# authentication by the target(s), uncomment the following lines:<% if node_session_auth_username == '' then %>
+# authentication by the target(s), uncomment the following lines:<% if @node_session_auth_username == '' then %>
 #discovery.sendtargets.auth.username = username
 #discovery.sendtargets.auth.password = password<% else %>
-discovery.sendtargets.auth.username = <%= node_session_auth_username %>
-discovery.sendtargets.auth.password = <%= node_session_auth_password %>
+discovery.sendtargets.auth.username = <%= @node_session_auth_username %>
+discovery.sendtargets.auth.password = <%= @node_session_auth_password %>
 <% end %>
 # To set a discovery session CHAP username and password for target(s)
-# authentication by the initiator, uncomment the following lines:<% if node_session_auth_username_in == '' then %>
+# authentication by the initiator, uncomment the following lines:<% if @node_session_auth_username_in == '' then %>
 #discovery.sendtargets.auth.username_in = username_in
 #discovery.sendtargets.auth.password_in = password_in<% else %>
-discovery.sendtargets.auth.username_in = <%= node_session_auth_username_in %>
-discovery.sendtargets.auth.password_in = <%= node_session_auth_password_in %>
+discovery.sendtargets.auth.username_in = <%= @node_session_auth_username_in %>
+discovery.sendtargets.auth.password_in = <%= @node_session_auth_password_in %>
 <% end %>
 
 # ********
