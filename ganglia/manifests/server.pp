@@ -24,7 +24,7 @@ class ganglia::server (
     owner    => root,
     group    => root,
     mode     => '0644',
-    content  => template('ganglia/gmetad.conf'),
+    content  => template('ganglia/gmetad.conf.erb'),
     require  => Package['ganglia-gmetad'],
     notify   => Service['gmetad'],
   }

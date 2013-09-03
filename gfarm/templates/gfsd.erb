@@ -7,7 +7,7 @@
 #
 # processname: gfsd
 # config: /etc/gfarm2.conf
-# pidfile: /var/run/<%= gfsd_service %>.pid
+# pidfile: /var/run/<%= @gfsd_service %>.pid
 #
 # $Id: gfsd.in 4167 2009-05-24 01:52:22Z tatebe $
 
@@ -15,14 +15,14 @@
 . /etc/rc.d/init.d/functions
 
 prog="gfsd"
-FILE="<%= gfsd_service %>" # usually "gfsd", or maybe "gfsd-IP_ADDRESS"
+FILE="<%= @gfsd_service %>" # usually "gfsd", or maybe "gfsd-IP_ADDRESS"
 
 DAEMON="/usr/sbin/$prog"
 PIDFILE="/var/run/${FILE}.pid"
 LOCKFILE="/var/lock/subsys/$FILE"
-OPTIONS="-cc -f /etc/gfarm2.conf -r <%= dir_full %> <%= hostname_str %> <%= address_str %>"
-export X509_USER_CERT=<%= cert_path %>
-export X509_USER_KEY=<%= key_path %>
+OPTIONS="-cc -f /etc/gfarm2.conf -r <%= @dir_full %> <%= @hostname_str %> <%= @address_str %>"
+export X509_USER_CERT=<%= @cert_path %>
+export X509_USER_KEY=<%= @key_path %>
 
 # pull in sysconfig settings
 [ -f "/etc/sysconfig/$FILE" ] && . "/etc/sysconfig/$FILE"

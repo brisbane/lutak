@@ -45,7 +45,7 @@ class ganglia::client (
     owner    => root,
     group    => root,
     mode     => '0644',
-    content  => template('ganglia/gmond.conf'),
+    content  => template('ganglia/gmond.conf.erb'),
     require  => Package['ganglia-gmond'],
     notify   => Service['gmond'],
   }
