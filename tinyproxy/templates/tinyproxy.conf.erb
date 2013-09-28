@@ -30,7 +30,7 @@ Port <%= @port %>
 #Listen 192.168.0.1
 <% if ! @listen.to_s.empty? -%>
 <% @listen.each do |listen_ip| -%>
-Listen listen_ip
+Listen <%= listen_ip %>
 <% end -%>
 <% end -%>
 

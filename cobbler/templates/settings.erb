@@ -72,7 +72,7 @@ cheetah_import_whitelist:
 createrepo_flags: "-c cache -s sha"
 
 # if no kickstart is specified to profile add, use this template
-default_kickstart: /var/lib/cobbler/kickstarts/default.ks
+default_kickstart: <%= @default_kickstart %>
 
 # configure all installed systems to use these nameservers by default
 # unless defined differently in the profile.  For DHCP configurations
@@ -407,7 +407,7 @@ virt_auto_boot: 1
 # cobbler's web directory.  Don't change this setting -- see the
 # Wiki on "relocating your cobbler install" if your /var partition
 # is not large enough.
-webdir: /var/www/cobbler
+webdir: <%= @webroot %>
 
 # cobbler's public XMLRPC listens on this port.  Change this only
 # if absolutely needed, as you'll have to start supplying a new

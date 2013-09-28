@@ -62,9 +62,6 @@ cobblersystem { 'test.domain.com':
           should[l]['management'] = false unless should[l].has_key?('management')
           # check every key in puppet manifest, leave the rest
           should[l].keys.uniq do |to, key|
-require 'pp'
-pp 'pero'
-pp to[key]
             return false unless to[key] == w[key]
           end
         end
