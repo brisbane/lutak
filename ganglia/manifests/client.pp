@@ -29,12 +29,18 @@
 #   }
 #
 class ganglia::client (
-  $cluster        = $ganglia::params::cluster,
-  $owner          = $ganglia::params::owner,
-  $udp_port       = $ganglia::params::udp_port,
-  $tcp_port       = $ganglia::params::tcp_port,
-  $udp_mcast_join = $ganglia::params::udp_mcast_join,
-  $udp_bind       = $ganglia::params::udp_bind,
+  $cluster                = $ganglia::params::cluster,
+  $owner                  = $ganglia::params::owner,
+  $udp_port               = $ganglia::params::udp_port,
+  $tcp_port               = $ganglia::params::tcp_port,
+  $udp_mcast_join         = $ganglia::params::udp_mcast_join,
+  $udp_bind               = $ganglia::params::udp_bind,
+  $udp_host               = $ganglia::params::udp_host,
+  $unicast                = $ganglia::params::unicast,
+  $mute                   = $ganglia::params::mute,
+  $deaf                   = $ganglia::params::deaf,
+  $send_metadata_interval = $ganglia::params::send_metadata_interval,
+  $tcp_accept_channel     = $ganglia::params::tcp_accept_channel,
 ) inherits ganglia::params {
   package { 'ganglia-gmond':
     ensure   => present,
