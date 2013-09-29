@@ -3,7 +3,8 @@
 # This module manages OpenIB SCSI RDMA Protocol
 #
 class infiniband::srp {
-  require infiniband::sm
+  require ::infiniband
+
   package { 'srptools':
     ensure => present,
   }
@@ -16,6 +17,9 @@ class infiniband::srp {
     source  => 'puppet:///modules/infiniband/srp_daemon.sh',
     require => Package['srptools'],
   }
+
+  # if Subnet Manager is on same machine
+  # it has to be started before srpd!
   service { 'srpd':
     ensure   => running,
     enable   => true,
@@ -23,8 +27,8 @@ class infiniband::srp {
     require  => [
       Package['srptools'],
       Service['rdma'],   # provided by class 'infiniband'
-      Service['opensm'], # provided by class 'infiniband::sm'
       File['/usr/sbin/srp_daemon.sh'],
     ],
   }
+
 }

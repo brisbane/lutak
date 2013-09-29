@@ -6,17 +6,26 @@ globals {
   user = nobody
   debug_level = 0
   max_udp_msg_len = 1472
-  mute = no
-  deaf = no
-  host_dmax = 0 /*secs */
+  mute = <%= @mute %>
+  deaf = <%= @deaf %>
+  allow_extra_data = yes
+  host_dmax = 86400 /*secs. Expires (removes from web interface) hosts in 1 day */
+  host_tmax = 20 /*secs */
   cleanup_threshold = 300 /*secs */
   gexec = no
-  send_metadata_interval = 0
+  # By default gmond will use reverse DNS resolution when displaying your hostname
+  # Uncommeting following value will override that value.
+  # override_hostname = "mywebserver.domain.com"
+  # If you are not using multicast this value should be set to something other than 0.
+  # Otherwise if you restart aggregator gmond you will get empty graphs. 60 seconds is reasonable
+  send_metadata_interval = <%= @send_metadata_interval %> /*secs */
+
 }
 
-/* If a cluster attribute is specified, then all gmond hosts are wrapped inside
- * of a <CLUSTER> tag.  If you do not specify a cluster tag, then all <HOSTS> will
- * NOT be wrapped inside of a <CLUSTER> tag. */
+/*
+ * The cluster attributes specified will be used as part of the <CLUSTER>
+ * tag that will wrap all hosts collected by this instance.
+ */
 cluster {
   name = "<%= @cluster %>"
   owner = "<%= @owner %>"
@@ -29,6 +38,13 @@ host {
   location = "unspecified"
 }
 
+<% if @unicast -%>
+udp_send_channel {
+  host = <%= @udp_host %>
+  port = <%= @udp_port %>
+  ttl = 1
+}
+<% else -%>
 /* Feel free to specify as many udp_send_channels as you like.  Gmond
    used to only support having a single channel */
 udp_send_channel {
@@ -43,52 +59,72 @@ udp_recv_channel {
   port = <%= @udp_port %>
   bind = <%= @udp_bind %>
 }
+<% end -%>
 
+<% if @tcp_accept_channel -%>
 /* You can specify as many tcp_accept_channels as you like to share
    an xml description of the state of the cluster */
 tcp_accept_channel {
   port = <%= @tcp_port %>
+  # If you want to gzip XML output
+  gzip_output = no
 }
+<% end -%>
+
+/* Channel to receive sFlow datagrams */
+#udp_recv_channel {
+#  port = 6343
+#}
+
+/* Optional sFlow settings */
+#sflow {
+# udp_port = 6343
+# accept_vm_metrics = yes
+# accept_jvm_metrics = yes
+# multiple_jvm_instances = no
+# accept_http_metrics = yes
+# multiple_http_instances = no
+# accept_memcache_metrics = yes
+# multiple_memcache_instances = no
+#}
 
 /* Each metrics module that is referenced by gmond must be specified and
-   loaded. If the module has been statically linked with gmond, it does not
-   require a load path. However all dynamically loadable modules must include
-   a load path. */
+   loaded. If the module has been statically linked with gmond, it does
+   not require a load path. However all dynamically loadable modules must
+   include a load path. */
 modules {
   module {
     name = "core_metrics"
   }
   module {
     name = "cpu_module"
-    path = "/usr/lib64/ganglia/modcpu.so"
+    path = "modcpu.so"
   }
   module {
     name = "disk_module"
-    path = "/usr/lib64/ganglia/moddisk.so"
+    path = "moddisk.so"
   }
   module {
     name = "load_module"
-    path = "/usr/lib64/ganglia/modload.so"
+    path = "modload.so"
   }
   module {
     name = "mem_module"
-    path = "/usr/lib64/ganglia/modmem.so"
+    path = "modmem.so"
   }
   module {
     name = "net_module"
-    path = "/usr/lib64/ganglia/modnet.so"
+    path = "modnet.so"
   }
   module {
     name = "proc_module"
-    path = "/usr/lib64/ganglia/modproc.so"
+    path = "modproc.so"
   }
   module {
     name = "sys_module"
-    path = "/usr/lib64/ganglia/modsys.so"
+    path = "modsys.so"
   }
 }
-
-include ('/etc/ganglia/conf.d/*.conf')
 
 /* The old internal 2.5.x metric array has been replaced by the following
    collection_group directives.  What follows is the default behavior for
@@ -106,8 +142,10 @@ collection_group {
   }
 }
 
-/* This collection group will send general info about this host every 1200 secs.
-   This information doesn't change between reboots and is only collected once. */
+/* This collection group will send general info about this host every
+   1200 secs.
+   This information doesn't change between reboots and is only collected
+   once. */
 collection_group {
   collect_once = yes
   time_threshold = 1200
@@ -150,8 +188,9 @@ collection_group {
   }
 }
 
-/* This collection group will send the status of gexecd for this host every 300 secs */
-/* Unlike 2.5.x the default behavior is to report gexecd OFF.  */
+/* This collection group will send the status of gexecd for this host
+   every 300 secs.*/
+/* Unlike 2.5.x the default behavior is to report gexecd OFF. */
 collection_group {
   collect_once = yes
   time_threshold = 300
@@ -162,8 +201,9 @@ collection_group {
 }
 
 /* This collection group will collect the CPU status info every 20 secs.
-   The time threshold is set to 90 seconds.  In honesty, this time_threshold could be
-   set significantly higher to reduce unneccessary network chatter. */
+   The time threshold is set to 90 seconds.  In honesty, this
+   time_threshold could be set significantly higher to reduce
+   unneccessary  network chatter. */
 collection_group {
   collect_every = 20
   time_threshold = 90
@@ -197,6 +237,11 @@ collection_group {
     name = "cpu_wio"
     value_threshold = "1.0"
     title = "CPU wio"
+  }
+  metric {
+    name = "cpu_steal"
+    value_threshold = "1.0"
+    title = "CPU steal"
   }
   /* The next two metrics are optional if you want more detail...
      ... since they are accounted for in cpu_system.
@@ -333,4 +378,6 @@ collection_group {
     title = "Maximum Disk Space Used"
   }
 }
+
+include ("/etc/ganglia/conf.d/*.conf")
 
