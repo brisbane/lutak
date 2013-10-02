@@ -4,7 +4,8 @@
 # configuration daemon)
 #
 class rhcs::ricci (
-  $cluster_name = $rhcs::cluster_name,
+  $cluster_name       = $rhcs::cluster_name,
+  $client_cert_source = "puppet:///files/rhcs/${cluster_name}/client_cert_${::hostname}",
 ) inherits rhcs {
   # defaults
   File {
@@ -52,7 +53,7 @@ class rhcs::ricci (
 
   # export cacert, because ccs_sync uses it as client cert
   @@file { "/var/lib/ricci/certs/clients/client_cert_${::hostname}":
-    source => "puppet:///files/rhcs/${cluster_name}/client_cert_${::hostname}",
+    source => $client_cert_source,
     notify => Service['ricci'],
     tag    => "ricci_client_${cluster_name}",
   }
