@@ -12,7 +12,7 @@
 #
 # [Remember: No empty lines between comments and class definition]
 class multipath (
-  $template = 'puppet:///modules/multipath/multipath.conf'
+  $template = 'puppet:///modules/multipath/multipath.conf',
 ) {
   $mod = 'multipath'
   package { 'device-mapper-multipath': }
@@ -23,14 +23,15 @@ class multipath (
   service { 'multipathd':
     ensure    => running,
     enable    => true,
-    require   => File['/etc/multipath.conf'],
     subscribe => File['/etc/multipath.conf'],
     notify    => Exec['multipath'],
   }
+
   exec { 'multipath':
     path        => '/bin:/usr/bin:/usr/sbin:/sbin',
     command     => 'multipath',
     logoutput   => true,
     refreshonly => true,
   }
+
 }

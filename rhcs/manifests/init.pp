@@ -48,7 +48,7 @@ class rhcs (
     # cluster manager
     package { 'cman': }
     file { '/etc/cluster.conf':
-      source  => $rhcs::config_file,
+      source  => $::rhcs::config_file,
     }
     exec { 'clusterinit':
       command => '/bin/cp /etc/cluster.conf /etc/cluster/cluster.conf',
