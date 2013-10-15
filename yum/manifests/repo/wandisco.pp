@@ -4,7 +4,9 @@
 # Repo serves SVN 1.7
 #
 class yum::repo::wandisco (
-  $stage   = 'yumsetup',
+  $stage    = 'yumsetup',
+  $priority = '1',
+  $version  = '1.8',
   $exclude  = [],
 ) {
   require yum::repo::base
@@ -16,12 +18,12 @@ class yum::repo::wandisco (
     group   => root,
     source  => 'puppet:///modules/yum/keys/RPM-GPG-KEY-WANdisco',
   }
-  file { '/etc/yum.repos.d/wandisco.repo':
+  file { "/etc/yum.repos.d/WANdisco-${version}.repo":
     ensure  => file,
     mode    => '0644',
     owner   => root,
     group   => root,
-    source  =>  "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/wandisco.repo",
+    content => template("yum/${::operatingsystem}/${::operatingsystemrelease}/wandisco.erb"),
     require => File['/etc/pki/rpm-gpg/RPM-GPG-KEY-WANdisco'],
   }
 }
