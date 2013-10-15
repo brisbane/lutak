@@ -1,4 +1,16 @@
-# Class: private::rootkeys
+#
+# = Class: private::rootkeys
+#
+# Deploys ssh private and public key for root user from hosts private section.
+#
+# == Requires
+# 'private' section set in auth.conf on master. Definition should look something
+# like this:
+#
+#    [private]
+#     path /etc/puppet/private/%H
+#     allow *
+#
 class private::rootkeys {
   File {
     ensure => file,
