@@ -24,7 +24,7 @@ define cobbler::add_distro (
     file { "${::cobbler::distro_path}/kickstarts/${distro}.ks":
       ensure  => present,
       content => template($ks_template),
-      require => File["${cobbler::distro_path}/kickstarts"],
+      require => File["${::cobbler::distro_path}/kickstarts"],
     }
   }
 }
