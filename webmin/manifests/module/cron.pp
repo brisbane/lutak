@@ -39,12 +39,14 @@ define webmin::module::cron (
   $uidmin   = '',
   $uidmax   = '',
 ) {
+
   file { "/etc/webmin/cron/${user}.acl":
     ensure  => file,
     owner   => root,
     group   => root,
     mode    => '0640',
     content => template('webmin/module/cron.erb'),
+    require => Package['webmin'],
     notify  => Service['webmin'],
   }
 

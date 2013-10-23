@@ -27,12 +27,14 @@ define webmin::module::proc (
   $users    = '*',
   $edit     = '1',
 ) {
+
   file { "/etc/webmin/proc/${user}.acl":
     ensure  => file,
     owner   => root,
     group   => root,
     mode    => '0640',
     content => template('webmin/module/proc.erb'),
+    require => Package['webmin'],
     notify  => Service['webmin'],
   }
 

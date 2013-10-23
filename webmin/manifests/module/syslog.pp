@@ -29,12 +29,14 @@ define webmin::module::syslog (
   $any      = '1',
   $logs     = '',
 ) {
+
   file { "/etc/webmin/syslog/${user}.acl":
     ensure  => file,
     owner   => root,
     group   => root,
     mode    => '0640',
     content => template('webmin/module/syslog.erb'),
+    require => Package['webmin'],
     notify  => Service['webmin'],
   }
 

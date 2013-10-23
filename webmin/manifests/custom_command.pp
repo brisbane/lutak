@@ -5,7 +5,6 @@ define webmin::custom_command (
   $description   = '',
   $documentation = '',
 ) {
-  include webmin
 
   # Webmin checks if custom command passes '\d+.cmd'
   # regex, and loads it only if it does
@@ -17,7 +16,7 @@ define webmin::custom_command (
     group   => root,
     mode    => '0644',
     content => template('webmin/custom_command.erb'),
-    require => User[$user],
+    require => [ User[$user], Package['webmin'], ],
     notify  => Service['webmin'],
   }
 
@@ -27,6 +26,7 @@ define webmin::custom_command (
     group   => root,
     mode    => '0644',
     content => $documentation,
+    require => Package['webmin'],
     notify  => Service['webmin'],
   }
 
