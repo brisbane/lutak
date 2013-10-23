@@ -17,6 +17,7 @@ define webmin::acl (
   $fileunix     = 'root',
   $uedit2       = '',
 ) {
+
   $user = $title
 
   concat::fragment { "webmin_acl:${title}":
@@ -37,6 +38,7 @@ define webmin::acl (
     group   => root,
     mode    => '0640',
     content => template('webmin/user_acl.erb'),
+    require => Package['webmin'],
     notify  => Service['webmin'],
   }
 

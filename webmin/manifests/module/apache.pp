@@ -45,12 +45,14 @@ define webmin::module::apache (
   $dirs     = '',
   $virts    = '*',
 ) {
+
   file { "/etc/webmin/apache/${user}.acl":
     ensure  => file,
     owner   => root,
     group   => root,
     mode    => '0640',
     content => template('webmin/module/apache.erb'),
+    require => Package['webmin'],
     notify  => Service['webmin'],
   }
 

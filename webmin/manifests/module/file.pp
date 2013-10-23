@@ -87,12 +87,14 @@ define webmin::module::file (
   $button_info     = 'on',
   $button_ext      = 'on',
 ) {
+
   file { "/etc/webmin/file/${user}.acl":
     ensure  => file,
     owner   => root,
     group   => root,
     mode    => '0640',
     content => template('webmin/module/file.erb'),
+    require => Package['webmin'],
     notify  => Service['webmin'],
   }
 

@@ -39,12 +39,14 @@ define webmin::module::mysql (
   $buser    = 'root',
   $bpath    = '/',
 ) {
+
   file { "/etc/webmin/mysql/${user}.acl":
     ensure  => file,
     owner   => root,
     group   => root,
     mode    => '0640',
     content => template('webmin/module/mysql.erb'),
+    require => Package['webmin'],
     notify  => Service['webmin'],
   }
 
