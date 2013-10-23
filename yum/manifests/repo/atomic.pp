@@ -22,23 +22,23 @@ class yum::repo::atomic (
     default: {}
     /^5.*/: {
       package { 'atomic-release' :
-        ensure   => '1.0-16.el5.art',
+        ensure   => '1.0-17.el5.art',
         provider => 'rpm',
-        source   => 'http://www6.atomicorp.com/channels/atomic/centos/5/x86_64/RPMS/atomic-release-1.0-16.el5.art.noarch.rpm',
+        source   => 'http://www6.atomicorp.com/channels/atomic/centos/5/x86_64/RPMS/atomic-release-1.0-17.el5.art.noarch.rpm',
       }
     }
     /^6.*/: {
       package { 'atomic-release' :
-        ensure   => '1.0-16.el6.art',
+        ensure   => '1.0-17.el6.art',
         provider => 'rpm',
-        source   => 'http://www6.atomicorp.com/channels/atomic/centos/6/x86_64/RPMS/atomic-release-1.0-16.el6.art.noarch.rpm',
+        source   => 'http://www6.atomicorp.com/channels/atomic/centos/6/x86_64/RPMS/atomic-release-1.0-17.el6.art.noarch.rpm',
       }
     }
     /^18.*/: {
       package { 'atomic-release' :
-        ensure   => '1.0-16.fc18.art',
+        ensure   => '1.0-17.fc18.art',
         provider => 'rpm',
-        source   => 'https://www.atomicorp.com/channels/atomic/fedora/18/x86_64/RPMS/atomic-release-1.0-16.fc18.art.noarch.rpm',
+        source   => 'https://www.atomicorp.com/channels/atomic/fedora/18/x86_64/RPMS/atomic-release-1.0-17.fc18.art.noarch.rpm',
       }
     }
   }
