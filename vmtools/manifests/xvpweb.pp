@@ -6,7 +6,7 @@ class vmtools::xvpweb (
   $pool             = 'Pool1',
   $domain           = '',
   $manager_user     = 'root',
-  $manager_password,
+  $manager_password = 'UNSET',
   $hosts            = [],
   $vms              = [],
 ){
@@ -30,12 +30,10 @@ class vmtools::xvpweb (
 
   # manage service
   service { 'xvp':
-    ensure  => running,
-    enable  => true,
-    require => [
-      Package['xvp'],
-      File['/etc/xvp.conf'],
-    ],
+    ensure    => running,
+    enable    => true,
+    require   => Package['xvp'],
+    subscribe => File['/etc/xvp.conf'],
   }
 
 }

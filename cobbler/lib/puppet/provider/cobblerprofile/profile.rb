@@ -83,12 +83,12 @@ Puppet::Type.type(:cobblerprofile).provide(:profile) do
 
     def create
       # check profile name
-      raise ArgumentError, 'you must specify "distro" or "parent" for profile' if @resource[:distro].nil? and @resource[:parent].nil? 
+      raise ArgumentError, 'you must specify "distro" or "parent" for profile' if @resource[:distro].nil? and @resource[:parent].empty?
 
       # create cobblerargs variable
       cobblerargs  = 'profile add --name=' + @resource[:name] 
       cobblerargs += ' --distro=' + @resource[:distro] unless @resource[:distro].nil?
-      cobblerargs += ' --parent=' + @resource[:parent] unless @resource[:parent] != ''
+      cobblerargs += ' --parent=' + @resource[:parent] unless @resource[:parent].empty?
       
       # turn string into array
       cobblerargs = cobblerargs.split(' ')
