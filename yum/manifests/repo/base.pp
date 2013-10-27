@@ -25,6 +25,11 @@ class yum::repo::base (
   }
 
   case $::operatingsystem {
+    # Amazon AMI Linux (RedHat derivative)
+    'Amazon' : {
+      include ::yum::repo::base::amazon
+    }
+    # CentOS (Community Enterprise Operating System)
     'CentOS' : {
       file { '/etc/yum.repos.d/CentOS-Base.repo':
         ensure  => file,
