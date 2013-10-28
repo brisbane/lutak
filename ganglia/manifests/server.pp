@@ -12,11 +12,12 @@
 #
 class ganglia::server (
   $cluster        = $ganglia::params::cluster,
+  $package_ensure = $ganglia::params::package_ensure,
   $data_source    = 'localhost',
   $trusted_hosts  = 'localhost',
 ) inherits ganglia::params {
   package { 'ganglia-gmetad':
-    ensure   => present,
+    ensure   => $package_ensure,
     notify   => Service['gmetad'],
   }
   file { '/etc/ganglia/gmetad.conf':

@@ -41,9 +41,10 @@ class ganglia::client (
   $deaf                   = $ganglia::params::deaf,
   $send_metadata_interval = $ganglia::params::send_metadata_interval,
   $tcp_accept_channel     = $ganglia::params::tcp_accept_channel,
+  $package_ensure         = $ganglia::params::package_ensure,
 ) inherits ganglia::params {
   package { 'ganglia-gmond':
-    ensure   => present,
+    ensure   => $package_ensure,
     notify   => Service['gmond'],
   }
   file { '/etc/ganglia/gmond.conf':
