@@ -1,0 +1,39 @@
+# SRPT config
+HANDLER vdisk_fileio {<% num = 0 %><% disks.each do |disk| -%>
+	DEVICE disk<%= num %> {
+		filename <%= disk %>
+	}<% num = num + 1 %><% end -%>
+}
+
+TARGET_DRIVER ib_srpt {<% num = 0 %>
+	TARGET ib_srpt_target_0 {
+		enabled 1
+		rel_tgt_id 1
+		GROUP <%= group %>
+
+
+<% disks.each do |disk| -%>
+		LUN <%= num %> disk<%= num %>
+	}<% num = num + 1 %><% end -%>
+}
+
+TARGET_DRIVER ib_srpt {
+	TARGET 0002:c903:0051:0648 {
+		enabled 1
+		rel_tgt_id 1
+		GROUP WORKERS {
+			LUN 0 disk0
+			LUN 1 disk1
+
+			# worker01
+			INITIATOR 0x00000000000000000002c90300510431
+			INITIATOR 0x00000000000000000002c90300510432
+			# worker02
+			INITIATOR 0x00000000000000000002c90300510621
+			INITIATOR 0x00000000000000000002c90300510622
+
+			cpu_mask ffffff
+		}
+	}
+}
+

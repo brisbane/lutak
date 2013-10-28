@@ -1,0 +1,205 @@
+##############################################################################
+# Copyright (c) Members of the EGEE Collaboration. 2004. 
+# See http://www.eu-egee.org/partners/ for details on the copyright 
+# holders.  
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); 
+# you may not use this file except in compliance with the License. 
+# You may obtain a copy of the License at 
+#
+#    http://www.apache.org/licenses/LICENSE-2.0 
+#
+# Unless required by applicable law or agreed to in writing, software 
+# distributed under the License is distributed on an "AS IS" BASIS, 
+# WITHOUT WARRANTIES OR CONDITIONS 
+# OF ANY KIND, either express or implied. 
+# See the License for the specific language governing permissions and 
+# limitations under the License.
+##############################################################################
+#
+# NAME :        config_torque_client
+#
+# DESCRIPTION : This function configures the torque client.
+#
+# AUTHORS :     Maria.Alandes.Pradillo@cern.ch
+#
+# NOTES :       
+#
+# YAIM MODULE:  glite-yaim-torque-client
+#                 
+##############################################################################
+
+config_torque_client_check () {
+
+  requires $1 CE_HOST BATCH_SERVER CE_SMPSIZE
+  return $?
+}
+
+config_torque_client () {
+
+if [ ! -f /etc/edg-pbs-knownhosts.conf.template ]; then
+  yaimlog ERROR "lcg-pbs-utils seems it's not installed !"
+  yestr ${YEX_NOSUCHFILE}
+  yaimlog ERROR "${YERRORSTR}"
+  exit ${YEX_NOSUCHFILE}
+fi
+ 
+  if [ -z "${TORQUE_VAR_DIR}" ]; then
+    yaimlog DEBUG "TORQUE_VAR_DIR not set"
+    if [ -d "/var/lib/torque" ]; then
+      yaimlog DEBUG "Using /var/lib/torque"
+      TORQUE_VAR_DIR="/var/lib/torque"
+    else
+      if [ -d "/var/torque" ]; then
+        yaimlog DEBUG "Using /var/torque"
+        TORQUE_VAR_DIR="/var/torque"
+      else
+         yaimlog ERROR "And not found /var/torque nor /var/lib/torque"
+         exit 1
+      fi
+    fi
+  else
+   yaimlog DEBUG "TORQUE_VAR_DIR is set"
+    TORQUE_VAR_DIR=${TORQUE_VAR_DIR}
+  fi
+
+se_host="${SE_LIST%% *}"
+
+
+yaimlog DEBUG "configuring batch server name"
+####@ configuring batch server name
+echo "$BATCH_SERVER" > $TORQUE_VAR_DIR/server_name
+
+yaimlog DEBUG "configuring pbs services"
+####@ configuring pbs services
+if [ "x`grep pbs_mom /etc/services`" = "x"  ]; then
+    echo "pbs_mom     15002/tcp" >> /etc/services
+fi
+
+if [ "x`grep pbs_resmon /etc/services | grep tcp`" = "x"  ]; then
+    echo "pbs_resmon     15003/tcp" >> /etc/services
+fi
+
+if [ "x`grep pbs_resmon /etc/services | grep udp`" = "x"  ]; then
+    echo "pbs_resmon     15003/udp" >> /etc/services
+fi
+
+yaimlog DEBUG "ssh configuration"
+####@ ssh configuration
+
+cat <<EOF > /etc/ssh/ssh_config
+Host *
+Protocol 2
+   RhostsRSAAuthentication yes
+   RSAAuthentication yes
+   PasswordAuthentication yes
+   EnableSSHKeysign yes
+   HostbasedAuthentication yes
+EOF
+
+if [ "x${OS_TYPE}" = "xdebian" ]; then
+  yaimlog DEBUG "Add 'BatchMode yes' into the ssh configuration for Debian"
+  echo "BatchMode yes" >> /etc/ssh/ssh_config 
+fi
+
+yaimlog DEBUG "configuring known hosts"
+####@ configuring known hosts 
+cat << EOF >  /etc/edg-pbs-knownhosts.conf
+NODES     = $CE_HOST $se_host $BATCH_SERVER
+PBSBIN    = /usr/bin
+KEYTYPES   = rsa1,rsa,dsa
+KNOWNHOSTS = /etc/ssh/ssh_known_hosts
+
+EOF
+ 
+# workaround for duplicate key entries (Savannah bug 5530)
+for hostname in $CE_HOST $se_host $BATCH_SERVER; do
+   if [ -f /etc/ssh/ssh_known_hosts ];then  
+      grep -v $hostname /etc/ssh/ssh_known_hosts  > /etc/ssh/ssh_known_hosts.tmp
+      /usr/bin/ssh-keyscan -t rsa $hostname >> /etc/ssh/ssh_known_hosts.tmp 2>/dev/null
+ 
+      if [ $? = 0 ]; then
+         mv /etc/ssh/ssh_known_hosts.tmp  /etc/ssh/ssh_known_hosts
+      fi
+   fi
+done
+
+/usr/sbin/edg-pbs-knownhosts
+qstat >/dev/null 2>&1
+if [ $? != 0 ]; then
+    yaimlog WARNING "Could not establish connection with the BATCH_SERVER, please verify!"
+fi 
+
+ideal_load_var=$(echo "scale=2; ${CE_SMPSIZE}+0.5" | bc)
+max_load_var=$(echo "scale=2; ${CE_SMPSIZE}*1.2" | bc)
+
+
+yaimlog DEBUG "configuring pbs"
+####@ configuring pbs
+if [ ! -f $TORQUE_VAR_DIR/mom_priv/config ]; then
+  yaimlog DEBUG "Creating $TORQUE_VAR_DIR/mom_priv/config"
+  cat << EOF > $TORQUE_VAR_DIR/mom_priv/config
+\$pbsserver $BATCH_SERVER
+\$restricted $BATCH_SERVER
+\$logevent 255
+\$ideal_load ${ideal_load_var}
+\$max_load ${max_load_var}
+\$usecp $BATCH_SERVER:/home /home
+\$tmpdir /scratch
+EOF
+else
+  yaimlog WARNING "$TORQUE_VAR_DIR/mom_priv/config already exists, YAIM will not touch it"
+  if ( ! cat $TORQUE_VAR_DIR/mom_priv/config | grep $BATCH_SERVER > /dev/null ); then  
+    yaimlog WARNING "Batch server defined in BATCH_SERVER variable is different" 
+    yaimlog WARNING "from the batch server defined under $TORQUE_VAR_DIR/mom_priv/config"
+    yaimlog WARNING "Remove $TORQUE_VAR_DIR/mom_priv/config and reconfigure again to use the new value! "
+  fi
+fi
+
+####@ Install the munge key and start munge
+
+if [ ! -z "$MUNGE_KEY_FILE" ]; then
+    if [ ! -f "$MUNGE_KEY_FILE" ]; then
+	yestr $YEX_NOSUCHFILE
+	yaimlog ERROR "The munge key file $MUNGE_KEY_FILE is not found"
+	exit $YEX_NOSUCHFILE
+    fi
+    if [ ! -f /etc/munge/munge.key ] ; then
+	yaimlog DEBUG "installing $MUNGE_KEY_FILE in /etc/munge/munge.key"
+	cp $MUNGE_KEY_FILE /etc/munge/munge.key
+	chmod 400 /etc/munge/munge.key
+	chown munge /etc/munge/munge.key
+    else
+	yaimlog DEBUG "NOT installing $MUNGE_KEY_FILE as /etc/munge/munge.key (file exists)"
+    fi
+fi
+
+if [ ! -f /etc/munge/munge.key ] ; then
+    yaimlog WARNING "The munge key /etc/munge/munge.key does not exist."
+    yaimlog WARNING "Munge is required for communication between torque server and submitters."
+    yaimlog WARNING "Not starting the munge daemon"
+else
+    /etc/init.d/munge start || yaimlog DEBUG "Could not start munge (already running?)"
+    /sbin/chkconfig munge on
+fi
+
+
+yaimlog INFO "starting pbs_mom..."
+####@ starting pbs_mom...
+/sbin/chkconfig pbs_mom on
+/etc/rc.d/init.d/pbs_mom stop
+sleep 1
+/etc/rc.d/init.d/pbs_mom start
+
+yaimlog DEBUG "creating edg-pbs-knownhosts cron job..."
+####@ creating edg-pbs-knownhosts cron job...
+cron_job edg-pbs-knownhosts root "03 1,7,13,19 * * * /usr/sbin/edg-pbs-knownhosts"
+
+yaimlog DEBUG "creating mom_logs cron job..."
+####@ creating mom_logs cron job...
+cron_job mom_logs root "33 3 * * * find $TORQUE_VAR_DIR/mom_logs -mtime +7 -exec gzip -9 {} \; 2> /dev/null"
+
+return 0
+}
+
+

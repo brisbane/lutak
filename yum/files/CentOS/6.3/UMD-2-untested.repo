@@ -1,0 +1,9 @@
+[UMD-2-untested]
+name=UMD 2 untested (SL6)
+baseurl=http://repository.egi.eu/sw/untested/umd/2/sl6/$basearch
+protect=1
+enabled=0
+# To use priorities you must have yum-priorities installed
+priority=1
+gpgcheck=1
+gpgkey=http://emisoft.web.cern.ch/emisoft/dist/EMI/2/RPM-GPG-KEY-emi http://repo-rpm.ige-project.eu/RPM-GPG-KEY-IGE
