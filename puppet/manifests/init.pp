@@ -16,6 +16,7 @@ class puppet (
   $cert_name        = $puppet::params::cert_name,
   $agentenv         = $puppet::params::agentenv,
   $report_age       = $puppet::params::report_age,
+  $modulepath       = $puppet::params::modulepath,
 ) inherits puppet::params {
   # file defaults
   File {

@@ -1,6 +1,7 @@
-# Class: puppet::params
 #
-#   The puppet configuration settings.
+# = Class: puppet::params
+#
+# The puppet configuration settings.
 class puppet::params {
   ## global settings ##
 
@@ -19,6 +20,8 @@ class puppet::params {
   # environment
   $agentenv = ''
 
+  # module path
+  $modulepath = '$confdir/environments/$environment/modules:$confdir/modules:/usr/share/puppet/modules'
 
 
 

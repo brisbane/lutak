@@ -23,7 +23,7 @@ class puppet::master (
   $dbserver           = 'localhost',
   $environments       = $puppet::params::environments,
   $envmanifest        = false,
-  $modulepath         = '$confdir/environments/$environment/modules:$confdir/modules:/usr/share/puppet/modules',
+  $modulepath         = $puppet::modulepath,
   $report_age         = $puppet::report_age,
 ) inherits puppet {
   package { 'puppet-server':       ensure => $package_ensure, }
