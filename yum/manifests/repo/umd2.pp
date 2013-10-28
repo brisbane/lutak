@@ -3,7 +3,8 @@
 # This module manages UMD2 repo files
 #
 class yum::repo::umd2 (
-  $stage   = 'yumsetup',
+  $stage    = 'yumsetup',
+  $priority = 1,
   $exclude  = [],
 ){
   require yum::repo::base
@@ -13,23 +14,7 @@ class yum::repo::umd2 (
     mode    => '0644',
     owner   => root,
     group   => root,
-    source  =>  "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/UMD-2-base.repo",
-    require => Package['umd-release'],
-  }
-  file { '/etc/yum.repos.d/UMD-2-updates.repo':
-    ensure  => file,
-    mode    => '0644',
-    owner   => root,
-    group   => root,
-    source  =>  "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/UMD-2-updates.repo",
-    require => Package['umd-release'],
-  }
-  file { '/etc/yum.repos.d/EGI-trustanchors.repo':
-    ensure  => file,
-    mode    => '0644',
-    owner   => root,
-    group   => root,
-    source  =>  "puppet:///modules/yum/${::operatingsystem}/${::operatingsystemrelease}/EGI-trustanchors.repo",
+    content => template("yum/${::operatingsystem}/${::operatingsystemrelease}/UMD-2-base.erb"),
     require => Package['umd-release'],
   }
 
