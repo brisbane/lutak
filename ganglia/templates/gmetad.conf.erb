@@ -122,6 +122,16 @@ case_sensitive_hostnames 1
 
 # Puppet configuration
 gridname "<%= @gridname %>"
+
+<% if @data_sources 
+  @data_sources.keys.each do |key|%>
+data_source "<%= key %>" <%= @data_sources[key] %>
+<% end %>
+<% else %>
 data_source "<%= @cluster %>" <%= @data_source %>
+<% end %>
+
+<% if @trusted_hosts %>
 trusted_hosts <%= @trusted_hosts %>
+<% end %>
 

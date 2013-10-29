@@ -15,6 +15,7 @@ class ganglia::server (
   $grid           = $ganglia::params::grid,
   $package_ensure = $ganglia::params::package_ensure,
   $data_source    = 'localhost',
+  $data_sources   = undef,
   $trusted_hosts  = 'localhost',
 ) inherits ganglia::params {
   if $grid == '' {
