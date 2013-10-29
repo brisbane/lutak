@@ -1,5 +1,6 @@
 # Class: ganglia::params
 class ganglia::params {
+  $grid                   = ''
   $cluster                = 'undefined'
   $owner                  = 'undefined'
   $udp_port               = '8649'

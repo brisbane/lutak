@@ -12,10 +12,17 @@
 #
 class ganglia::server (
   $cluster        = $ganglia::params::cluster,
+  $grid           = $ganglia::params::grid,
   $package_ensure = $ganglia::params::package_ensure,
   $data_source    = 'localhost',
   $trusted_hosts  = 'localhost',
 ) inherits ganglia::params {
+  if $grid == '' {
+    $gridname = $cluster
+  } else {
+    $gridname = $grid
+  }
+
   package { 'ganglia-gmetad':
     ensure   => $package_ensure,
     notify   => Service['gmetad'],
