@@ -1,0 +1,10 @@
+#
+# VMware OSPs for RHEL6
+#
+
+[vmware-tools-collection]
+name=vmware-tools-collection
+baseurl=http://packages.vmware.com/tools/esx/5.0/rhel6/x86_64
+enabled=1
+gpgcheck=1
+gpgkey=http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub
