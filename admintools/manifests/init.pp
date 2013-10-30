@@ -16,7 +16,7 @@ class admintools {
   package { 'atop':         ensure => latest, }
   package { 'htop':         ensure => latest, }
   package { 'mutt':         ensure => latest, }
-  package { 'vim-enhanced': ensure => latest, }
+  include ::tools::vim
   package { 'iftop':        ensure => latest, }
   package { 'iotop':        ensure => latest, }
   package { 'tcpdump':      ensure => latest, }
