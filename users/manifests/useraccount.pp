@@ -21,7 +21,7 @@ define users::useraccount (
   $shell    = '/bin/bash',
   $password = '',
   $sshkeys  = [],
-  $recurse  = true,
+  $recurse  = false,
 ) {
   $username = $name
   # This case statement will allow disabling an account by passing
