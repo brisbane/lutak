@@ -3,7 +3,7 @@
 # This modules installs Torque WN
 #
 class umd::wn (
-  $wn_version = '2.0.0-1.sl6',
+  $wn_version = '3.0.0-1.el6',
   $torque_client_version = '1.0.0-2.sl6',
 ) inherits umd {
   include munge
