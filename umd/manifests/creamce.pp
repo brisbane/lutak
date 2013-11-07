@@ -3,10 +3,10 @@
 # This modules installs UMD CREAM-CE and Torque
 #
 class umd::creamce (
-  $creamce_version = '1.1.0-4.sl6',
+  $creamce_version = '1.2.2-2.el6',
   $torque_server_version = '1.0.0-2.sl6',
-  $torque_utils_version = '2.0.0-1.sl6',
-  $cluster_version = '2.0.0-3.sl6',
+  $torque_utils_version = '2.0.1-1.sl6',
+  $cluster_version = '2.0.1-1.sl6',
 ) inherits umd {
   require gridcert
   include umd::munge
