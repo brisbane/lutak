@@ -3,20 +3,21 @@
 # This modules installs UMD StoRM
 #
 class umd::storm (
-  $storm_version = '1.1.0-1.sl6',
-  $storm_https_version = '1.0.0-2.sl6',
+  $storm_version = '1.2.0-4.el6',
+  $storm_frontend_version = '1.1.0-2.el6',
+  $storm_https_version = '1.0.0-3.el6',
   $apel_version = '1.0.0-0.sl6',
-  $bdii_version = '1.0.0-1.sl6',
+  $bdii_version = '1.0.1-1.el6',
 ) inherits umd {
   require gridcert
   package { 'emi-storm-backend-mp':
     ensure  => $storm_version,
   }
   package { 'emi-storm-frontend-mp':
-    ensure  => $storm_version,
+    ensure  => $storm_frontend_version,
   }
   package { 'emi-storm-globus-gridftp-mp':
-    ensure  => $storm_version,
+    ensure  => $storm_frontend_version,
   }
   package { 'emi-storm-gridhttps-mp':
     ensure  => $storm_https_version,
