@@ -44,12 +44,12 @@ Puppet::Type.type(:yumgroup).provide(:default) do
   end
 
   def create
-    yum('groupinstall', @resource[:name])
+    yum('-y', 'groupinstall', @resource[:name])
     @property_hash[:ensure] == :present
   end
 
   def destroy
-    yum('groupremove', @resource[:name])
+    yum('-y', 'groupremove', @resource[:name])
     @property_hash[:ensure] == :absent
   end
 
