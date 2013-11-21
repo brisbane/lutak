@@ -22,7 +22,7 @@ Puppet::Type.type(:yumgroup).provide(:default) do
 
       # collect groups
       if collect_groups and line.chomp !~ /(Installed|Available)/
-        current_name = line.chomp.sub(/^   /,'')
+        current_name = line.chomp.sub(/^\s+/,'\1').sub(/ \[.*\]/,'')
         groups << new(
           :name   => current_name,
           :ensure => :present
