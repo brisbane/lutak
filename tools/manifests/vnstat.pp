@@ -1,7 +1,7 @@
 #
 # = Class: tools::vnstat
 #
-# Install PowerTop - power consumption utility
+# Install VnStat - network statistics tool
 #
 class tools::vnstat {
 

@@ -54,7 +54,7 @@ Puppet::Type.type(:yumgroup).provide(:default) do
   end
 
   def exists?
-    @property_hash[:ensure] == :absent
+    @property_hash[:ensure] == :present
   end
 
 end
