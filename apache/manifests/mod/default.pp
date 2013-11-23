@@ -1,3 +1,7 @@
+#
+# = Class: apache::mod::default
+#
+# This class installs default set of apache modules
 class apache::mod::default {
   apache::mod { 'actions': }
   apache::mod { 'alias': }
@@ -11,7 +15,7 @@ class apache::mod::default {
   apache::mod { 'authnz_ldap': }
   apache::mod { 'authz_dbm': }
   apache::mod { 'authz_default': }
-  apache::mod { 'authz_groupfile': }
+  include ::apache::mod::authz_groupfile
   apache::mod { 'authz_host': }
   apache::mod { 'authz_owner': }
   apache::mod { 'authz_user': }
