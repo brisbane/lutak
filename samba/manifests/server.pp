@@ -1,5 +1,8 @@
-# Class: samba::server
-class samba::server(
+#
+# = Class: samba::server
+#
+# This class sets up samba server
+class samba::server (
   $major                 = $samba::params::major,
   $package_ensure        = $samba::params::package_ensure,
   $workgroup             = $samba::params::workgroup,
@@ -59,20 +62,18 @@ class samba::server(
 
   # Active Directory
   if upcase($security) == 'ADS' {
-    include samba::server::winbind
+    include ::samba::server::winbind
+    include ::kerberos
 
-    package { 'krb5-workstation': ensure => present, }
-
-    file {'/etc/krb5.conf':
-      ensure  => present,
-      mode    => '0644',
-      content => template('samba/krb5.conf.erb'),
-      require => Package['krb5-workstation'],
+    ::kerberos::realm { 'ads_domain_realm':
+      realm => $realm,
+      kdc   => $password_server,
     }
 
     exec { 'generate_krb_ticket' :
       command => "/bin/echo ${ad_password} | /usr/bin/kinit ${ad_user}@${realm}",
       unless  => '/usr/bin/klist > /dev/null',
+      require => ::Kerberos::Realm['ads_domain_realm'],
     }
 
     exec { 'join_active_directory_domain' :

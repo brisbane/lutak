@@ -4,7 +4,7 @@
  admin_server = FILE:/var/log/kadmind.log
 
 [libdefaults]
- default_realm = <%= realm %>
+ default_realm = <%= @default_realm %>
  dns_lookup_realm = false
  dns_lookup_kdc = false
  ticket_lifetime = 24h
@@ -16,15 +16,3 @@
   kdc = kerberos.example.com
   admin_server = kerberos.example.com
  }
- <%= realm %> = {
-  kdc = <%= password_server %>
-  admin_server = <%= password_server %>
-  auth_to_local = DEFAULT
- }
-
-
-[domain_realm]
- .example.com = EXAMPLE.COM
- example.com = EXAMPLE.COM
- .<%= realm.downcase %> = <%= realm %>
- <%= realm.downcase %> = <%= realm %>
