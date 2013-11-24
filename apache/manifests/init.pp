@@ -17,6 +17,7 @@ class apache (
   $service_enable       = true,
   $serveradmin          = 'root@localhost',
   $sendfile             = false,
+  $servertokens         = 'Prod',
   $startservers         = $apache::params::startservers,
   $minspareservers      = $apache::params::minspareservers,
   $maxspareservers      = $apache::params::maxspareservers,
