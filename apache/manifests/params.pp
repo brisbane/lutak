@@ -72,6 +72,7 @@ class apache::params {
     $conf_file             = 'httpd.conf'
     $mod_packages          = {
       'dev'               => 'httpd-devel',
+      'dav_svn'           => 'mod_dav_svn',
       'fcgid'             => 'mod_fcgid',
       'perl'              => 'mod_perl',
       'proxy_html'        => 'mod_proxy_html',
