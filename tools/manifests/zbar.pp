@@ -1,7 +1,8 @@
-# Class: admintools::zbar
+#
+# = Class: tools::zbar
 #
 # This module manages zbar
 #
-class admintools::zbar {
+class tools::zbar {
   package { 'zbar': ensure => present, }
 }
