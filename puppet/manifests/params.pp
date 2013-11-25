@@ -8,6 +8,15 @@ class puppet::params {
   # what to do with packages
   $package_ensure = 'present'
 
+  # set values based on OS
+  case $::operatingsystem {
+    default : {
+      $service = 'puppet'
+    }
+    'Fedora' : {
+      $service = 'puppetagent'
+    }
+  }
 
   ## agent settings ##
 
