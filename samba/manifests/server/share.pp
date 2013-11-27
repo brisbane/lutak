@@ -1,4 +1,6 @@
-# Define: samba::server::winbind
+#
+# = Define: samba::server::winbind
+#
 define samba::server::share (
   $path,
   $comment             = '',
@@ -13,6 +15,8 @@ define samba::server::share (
   $guest_ok            = 'no',
   $guest_only          = 'no',
   $delete_readonly     = '',
+  $follow_symlinks     = '',
+  $wide_links          = '',
 ) {
 
   concat::fragment { "smb_conf:${name}":
