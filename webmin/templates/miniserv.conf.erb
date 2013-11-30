@@ -22,7 +22,7 @@ blockhost_time=60
 syslog=1
 session=1
 premodules=WebminCore
-server=MiniServ/<%= webminversion %>
+server=MiniServ/<%= @webminversion %>
 userfile=/etc/webmin/miniserv.users
 keyfile=/etc/webmin/miniserv.pem
 passwd_file=/etc/shadow
@@ -33,6 +33,6 @@ passwd_mindex=4
 passwd_mode=0
 preroot=gray-theme
 passdelay=1
-libwrap=<%= libwrap %>
-alwaysresolve=<%= alwaysresolve %>
-allow=<%= allow.join(' ') %>
+libwrap=<%= @libwrap %>
+alwaysresolve=<%= @alwaysresolve %>
+allow=<%= @allow.join(' ') %>
