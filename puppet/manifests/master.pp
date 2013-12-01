@@ -5,10 +5,6 @@
 # Requires:
 #   $puppetmaster must be set in
 #
-
-# Sample Usage:
-#   include puppet
-#
 class puppet::master (
   $package_ensure     = $puppet::params::package_ensure,
   $fileserver_clients = $puppet::params::fileserver_clients,
@@ -127,13 +123,11 @@ class puppet::master (
     }
   }
 
-  # delete old reports
-  tidy { 'delete_old_yaml_reports':
-    path    => '/var/lib/puppet/reports',
-    age     => $report_age,
-    type    => 'mtime',
-    recurse => true,
-    matches => ['*.yaml'],
+  cron { 'clean_puppet_reports':
+    command => "/bin/find /var/lib/puppet/reports -type f -ctime ${report_age} | /usr/bin/xargs /bin/rm -f",
+    user    => puppet,
+    hour    => '*/6',
+    minute  => '11',
   }
 
 }

@@ -59,36 +59,36 @@
     # of resources in the Puppet language - a mechanism for exchange
     # resources between nodes.
     # The default value is 'false'
-    storeconfigs = <%= storeconfigs %><% if dbadapter =~ /sqlite3/ %>
+    storeconfigs = <%= @storeconfigs %><% if @dbadapter =~ /sqlite3/ %>
 
     # Type of database to use for storeconfigs
     # The default value is 'sqlite3'
-    dbadapter = <%= dbadapter %>
+    dbadapter = <%= @dbadapter %>
 
     # The database cache for client configurations.
     dblocation = $statedir/clientconfigs.sqlite3
-<% elsif dbadapter =~ /postgresql|pgsql|mysql/ %>
+<% elsif @dbadapter =~ /postgresql|pgsql|mysql/ %>
 
     # Type of database to use for storeconfigs
     # The default value is 'sqlite3'
-    dbadapter = <%= dbadapter %>
+    dbadapter = <%= @dbadapter %>
 
     # The name of the database to use.
     # The default value is 'puppet'
-    dbname = <%= dbname %>
+    dbname = <%= @dbname %>
 
     # The database user for caching. Only used for networked databases.
     # The default value is 'puppet'
-    dbuser = <%= dbuser %>
+    dbuser = <%= @dbuser %>
 
     # The database password for caching. Only used for networked databases.
     # The default value is 'puppet'
-    dbpassword = <%= dbpassword %>
+    dbpassword = <%= @dbpassword %>
 
     # The database server for caching.
     # The default value is 'localhost'
-    dbserver = <%= dbserver %>
-<% elsif dbadapter =~ /puppetdb/ %>
+    dbserver = <%= @dbserver %>
+<% elsif @dbadapter =~ /puppetdb/ %>
 
     # Configure the backend terminus used for StoreConfigs. By default,
     # this uses the ActiveRecord store, which directly talks to the
