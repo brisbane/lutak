@@ -17,6 +17,9 @@ define samba::server::share (
   $delete_readonly     = '',
   $follow_symlinks     = '',
   $wide_links          = '',
+  $hide_files          = '',
+  $veto_files          = '',
+  $dont_descend        = '',
 ) {
 
   concat::fragment { "smb_conf:${name}":
