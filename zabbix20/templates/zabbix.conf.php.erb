@@ -2,12 +2,12 @@
 // Zabbix GUI configuration file
 global $DB;
 
-$DB["TYPE"]			= '<% if @db == 'pgsql' then %>POSTGRESQL<% else %><%= db.upcase %><% end %>';
-$DB["SERVER"]			= '<%= dbhost %>';
+$DB["TYPE"]			= '<% if @db == 'pgsql' then %>POSTGRESQL<% else %><%= @db.upcase %><% end %>';
+$DB["SERVER"]			= '<%= @dbhost %>';
 $DB["PORT"]			= '0';
-$DB["DATABASE"]			= '<%= dbname %>';
-$DB["USER"]			= '<%= dbuser %>';
-$DB["PASSWORD"]			= '<%= dbpass %>';
+$DB["DATABASE"]			= '<%= @dbname %>';
+$DB["USER"]			= '<%= @dbuser %>';
+$DB["PASSWORD"]			= '<%= @dbpass %>';
 // SCHEMA is relevant only for IBM_DB2 database
 $DB["SCHEMA"]			= '';
 

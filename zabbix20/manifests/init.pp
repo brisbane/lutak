@@ -13,6 +13,9 @@ class zabbix20 (
   $dbname         = $zabbix20::params::dbname,
   $dbuser         = $zabbix20::params::dbuser,
   $dbpass         = $zabbix20::params::dbpass,
+  $dbsocket       = $zabbix20::params::dbsocket,
+  $dbsocket_path  = $zabbix20::params::dbsocket_path,
+  $purge_conf_dir = $zabbix20::params::purge_conf_dir,
 ) inherits zabbix20::params {
   package { 'zabbix':
     ensure => $package_ensure,

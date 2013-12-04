@@ -9,6 +9,7 @@ class zabbix20::agent (
   $server_active  = $zabbix20::server_active,
   $client_name    = $zabbix20::client_name,
   $timeout        = '3',
+  $purge_conf_dir = $zabbix20::purge_conf_dir,
 ) inherits zabbix20 {
 
   File {
@@ -34,6 +35,8 @@ class zabbix20::agent (
     content => template('zabbix20/zabbix_agentd.conf.erb'),
   }
   file { '/etc/zabbix/agent-conf.d':
-    ensure => directory,
+    ensure  => directory,
+    recurse => $purge_conf_dir,
+    purge   => $purge_conf_dir,
   }
 }
