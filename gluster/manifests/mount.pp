@@ -2,12 +2,12 @@
 #
 # This module manages gluster client
 #
-define gluster::mount ($volume, $mnt, $rdma = false) {
-  include gluster::client
+define gluster::mount ($volume, $mnt, $rdma_mount = false) {
+  include ::gluster::client
 
   # make sure volume is mounted via rdma
-  if $rdma == true {
-    require('gluster::rdma')
+  if $rdma_mount == 'true' {
+    require ::gluster::rdma
     $volumeName = "${volume}.rdma"
   } else {
     $volumeName = $volume

@@ -7,4 +7,7 @@ class ssh (
   $package_ensure      = $ssh::params::package_ensure,
   $service_name        = $ssh::params::service_name,
 ) inherits ssh::params {
+
+  package { 'openssh-clients': ensure => present, }
+
 }
