@@ -14,4 +14,6 @@ class ganglia::params {
   $send_metadata_interval = '0'
   $tcp_accept_channel     = true
   $package_ensure         = '3.6.0-1.el6.srce'
+  $udphosts               = undef
+  $override_hostname      = undef
 }
