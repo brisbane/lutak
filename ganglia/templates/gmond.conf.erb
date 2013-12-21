@@ -19,7 +19,9 @@ globals {
   # If you are not using multicast this value should be set to something other than 0.
   # Otherwise if you restart aggregator gmond you will get empty graphs. 60 seconds is reasonable
   send_metadata_interval = <%= @send_metadata_interval %> /*secs */
-
+<% if @override_hostname -%>
+  override_hostname = <%= @override_hostname %>
+<% end -%>
 }
 
 /*
@@ -44,7 +46,17 @@ udp_send_channel {
   port = <%= @udp_port %>
   ttl = 1
 }
-<% else -%>
+
+<%   if @udphosts
+       @udphosts.sort.each do |key, content| -%>
+udp_send_channel {
+<%       content.sort.each do |param, value| -%>
+  <%= param %> = <%= value %>
+<%       end -%>
+}
+<%     end
+     end
+   else -%>
 /* Feel free to specify as many udp_send_channels as you like.  Gmond
    used to only support having a single channel */
 udp_send_channel {

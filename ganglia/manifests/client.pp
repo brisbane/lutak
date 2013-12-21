@@ -42,6 +42,8 @@ class ganglia::client (
   $send_metadata_interval = $ganglia::params::send_metadata_interval,
   $tcp_accept_channel     = $ganglia::params::tcp_accept_channel,
   $package_ensure         = $ganglia::params::package_ensure,
+  $udphosts               = $ganglia::params::udphosts,
+  $override_hostname      = $ganglia::params::override_hostname,
 ) inherits ganglia::params {
   package { 'ganglia-gmond':
     ensure   => $package_ensure,
