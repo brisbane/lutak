@@ -467,7 +467,11 @@ no-hosts
 #dhcp-script=/bin/echo
 
 # Set the cachesize here.
+<% if @cache_size -%>
+cache-size=<%= @cache_size %>
+<% else -%>
 #cache-size=150
+<% end -%>
 
 # If you want to disable negative caching, uncomment this.
 #no-negcache

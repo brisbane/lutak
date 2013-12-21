@@ -10,6 +10,7 @@ class dnsmasq (
   $no_poll          = false,
   $no_hosts         = false,
   $servers          = [],
+  $cache_size       = undef,
   $bind_interfaces  = false,
   $interfaces       = [ 'lo' ],
   $listen_addresses = [ '127.0.0.1' ],
