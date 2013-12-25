@@ -39,4 +39,10 @@ class zabbix20::agent (
     recurse => $purge_conf_dir,
     purge   => $purge_conf_dir,
   }
+
+  file { '/etc/sudoers.d/zabbix_notty':
+    mode    => '0440',
+    content => "Defaults:zabbix !requiretty\n",
+  }
+
 }
