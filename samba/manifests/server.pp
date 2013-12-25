@@ -63,6 +63,7 @@ class samba::server (
   # Active Directory
   if upcase($security) == 'ADS' {
     include ::samba::server::winbind
+    include ::samba::server::nsswitch
     include ::kerberos
 
     ::kerberos::realm { 'ads_domain_realm':
