@@ -4,18 +4,18 @@
 define ca::trust::add (
   $source,
   $ensure = file,
-  $cert_addon_dir = $::ca::params::cert_addon_dir,
 ) {
 
   include ::ca::trust
+  include ::ca::params
 
-  file { "${cert_addon_dir}/${name}":
+  file { "${::ca::params::cert_addon_dir}/${name}":
     ensure => $ensure,
     owner  => root,
     group  => root,
     mode   => '0644',
     source => $source,
-    notify => 'enable_ca_trust',
+    notify => Exec['enable_ca_trust', 'update_ca_trust'],
   }
 
 }
