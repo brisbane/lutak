@@ -8,7 +8,6 @@ class yum::repo::russian (
   $exclude  = [],
 ){
   require yum::repo::base
-  require yum::repo::puias::addons
 
   file { '/etc/yum.repos.d/russianfedora-free.repo' :
     ensure  => file,
