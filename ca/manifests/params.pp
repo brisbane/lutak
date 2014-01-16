@@ -3,7 +3,7 @@
 #
 class ca::params {
 
-  if $::osfamily == 'redhat' or $::operatingsystem == 'amazon' {
+  if $::osfamily == 'RedHat' or $::operatingsystem == 'amazon' {
     $cert_addon_dir = '/etc/pki/ca-trust/source/anchors'
     $ca_trust_class = '::ca::trust::redhat'
   } elsif $::osfamily == 'debian' {

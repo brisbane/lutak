@@ -7,15 +7,15 @@ define ca::trust::add (
 ) {
 
   include ::ca::trust
-  include ::ca::params
 
   file { "${::ca::params::cert_addon_dir}/${name}":
-    ensure => $ensure,
-    owner  => root,
-    group  => root,
-    mode   => '0644',
-    source => $source,
-    notify => Exec['enable_ca_trust', 'update_ca_trust'],
+    ensure  => $ensure,
+    owner   => root,
+    group   => root,
+    mode    => '0644',
+    source  => $source,
+    require => Exec['enable_ca_trust'],
+    notify  => Exec['update_ca_trust'],
   }
 
 }
