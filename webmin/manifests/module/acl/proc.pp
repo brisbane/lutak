@@ -1,4 +1,4 @@
-# Define: webmin::module::proc
+# Define: webmin::module::acl::proc
 #
 # This definition creates a new ACL configuration for PROC module
 #
@@ -17,8 +17,8 @@
 # Requires:
 #
 # Sample Usage:
-#  webmin::module::proc { 'jsosic': }
-define webmin::module::proc (
+#  webmin::module::acl::proc { 'jsosic': }
+define webmin::module::acl::proc (
   $user     = $title,
   $noconfig = '1',
   $run      = '1',

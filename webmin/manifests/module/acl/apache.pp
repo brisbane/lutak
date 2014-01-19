@@ -1,4 +1,4 @@
-# Define: webmin::module::apache
+# Define: webmin::module::acl::apache
 #
 # This definition creates a new ACL configuration for Apache module
 #
@@ -26,8 +26,8 @@
 # Requires:
 #
 # Sample Usage:
-#  webmin::module::apache { 'jsosic': }
-define webmin::module::apache (
+#  webmin::module::acl::apache { 'jsosic': }
+define webmin::module::acl::apache (
   $user     = $title,
   $noconfig = '1',
   $create   = '1',

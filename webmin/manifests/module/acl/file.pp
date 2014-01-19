@@ -1,4 +1,4 @@
-# Define: webmin::module::file
+# Define: webmin::module::acl::file
 #
 # This definition creates a new ACL configuration for FILE module
 #
@@ -47,8 +47,8 @@
 # Requires:
 #
 # Sample Usage:
-#  webmin::module::file { 'jsosic': }
-define webmin::module::file (
+#  webmin::module::acl::file { 'jsosic': }
+define webmin::module::acl::file (
   $user            = $title,
   $noconfig        = '1',
   $contents        = '1',
