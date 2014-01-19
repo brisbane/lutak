@@ -51,7 +51,7 @@ class zabbix20::server (
       /^pg*|^postgre*/: {
         require postgresql::client
         require postgresql::server
-        postgresql::db { $dbname:
+        postgresql::server::db { $dbname:
           user     => $dbuser,
           password => $dbpass,
         }

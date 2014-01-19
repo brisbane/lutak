@@ -5,6 +5,11 @@ define zabbix20::server::config (
 ) {
   include ::zabbix20::server
 
+  $service_to_notify = $notify_service ? {
+    default => undef,
+    true    => Service['zabbix-server'],
+  }
+
   file { "/etc/zabbix/server-conf.d/${name}.conf":
     ensure  => file,
     content => template('zabbix20/custom.conf.erb'),
@@ -12,12 +17,7 @@ define zabbix20::server::config (
     group   => 'root',
     mode    => '0644',
     require => File['/etc/zabbix/server-conf.d'],
+    notify  => $service_to_notify,
   }
 
-  if $notify_service {
-    File["/etc/zabbix/server-conf.d/${name}.conf"] {
-      # XXX notifying the Service gives us a dependency circle but I don't understand why
-      notify => Service['zabbix-server'],
-    }
-  }
 }
