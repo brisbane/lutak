@@ -1,4 +1,4 @@
-# Define: webmin::module::mysql
+# Define: webmin::module::acl::mysql
 #
 # This definition creates a new ACL configuration for MySQL module
 #
@@ -23,8 +23,8 @@
 # Requires:
 #
 # Sample Usage:
-#  webmin::module::mysql { 'jsosic': }
-define webmin::module::mysql (
+#  webmin::module::acl::mysql { 'jsosic': }
+define webmin::module::acl::mysql (
   $user     = $title,
   $noconfig = '1',
   $create   = '1',

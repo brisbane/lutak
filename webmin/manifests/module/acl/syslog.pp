@@ -1,4 +1,4 @@
-# Define: webmin::module::syslog
+# Define: webmin::module::acl::syslog
 #
 # This definition creates a new ACL configuration for SYSLOG module
 #
@@ -18,8 +18,8 @@
 # Requires:
 #
 # Sample Usage:
-#  webmin::module::syslog { 'jsosic': }
-define webmin::module::syslog (
+#  webmin::module::acl::syslog { 'jsosic': }
+define webmin::module::acl::syslog (
   $user     = $title,
   $noconfig = '1',
   $extras   = '',

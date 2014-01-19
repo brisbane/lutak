@@ -1,4 +1,4 @@
-# Define: webmin::module::cron
+# Define: webmin::module::acl::cron
 #
 # This definition creates a new ACL configuration for Cron module
 #
@@ -23,8 +23,8 @@
 # Requires:
 #
 # Sample Usage:
-#  webmin::module::cron { 'jsosic': }
-define webmin::module::cron (
+#  webmin::module::acl::cron { 'jsosic': }
+define webmin::module::acl::cron (
   $user     = $title,
   $noconfig = '1',
   $create   = '1',
