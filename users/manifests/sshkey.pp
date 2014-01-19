@@ -1,4 +1,8 @@
-define users::sshkey(
+#
+# = Define: users::sshkey
+#
+# This define adds users ssh key
+define users::sshkey (
   $ensure = present,
   $user   = '',
 ) {
@@ -8,7 +12,7 @@ define users::sshkey(
 
   $keyoptions = regsubst($name_array[0],'^(.+),(.+)$','\1')
   if $keyoptions != '' {
-    ssh_authorized_key { "${comment}":
+    ssh_authorized_key { $comment :
       ensure  => $ensure,
       type    => $name_array[0],
       key     => $name_array[1],
@@ -17,7 +21,7 @@ define users::sshkey(
     }
   }
   else {
-    ssh_authorized_key { "${comment}":
+    ssh_authorized_key { $comment :
       ensure  => $ensure,
       options => $keyoptions,
       type    => regsubst($name_array[0],'^(.+),(.+)$','\2'),
@@ -27,5 +31,4 @@ define users::sshkey(
     }
   }
 }
-
 # vi:syntax=puppet:filetype=puppet:ts=4:et:
