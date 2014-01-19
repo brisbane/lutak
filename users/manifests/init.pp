@@ -1,16 +1,17 @@
+#
+# = Class: users
+#
+# This class adds all users with appropriate ssh keys from hiera
+# value of 'useraccounts'
 class users {
-  # Default ways to add administrators
-  Users::Massuseraccount <| tag == 'administrators' |>
-  Users::Lookup <| tag == 'administrators' |>
-  Users::Useraccount <| tag == 'administrators' |>
-  Users::Masskeys <| tag == 'administrators' |>
-  Users::Lookupkey <| tag == 'administrators' |>
 
-  # Also realize users, groups, files and execs tagged with administrators
-  User <| tag == 'administrators' |>
-  Group <| tag == 'administrators' |>
-  File <| tag == 'administrators' |>
-  Exec <| tag == 'administrators' |>
+  # generate virtual user accounts from hiera
+  $users_virtual = hiera_hash('useraccounts', {})
+  create_resources('@::Users::Account', $users_virtual)
+
+  # realize only specific users
+  $users_realize = hiera_array('users',[])
+  realize (::Users::Account[$users_realize])
+
 }
-
-# vi:syntax=puppet:filetype=puppet:ts=4:et:
+# vi:syntax=puppet:filetype=puppet:et:
