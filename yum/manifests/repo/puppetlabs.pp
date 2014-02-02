@@ -23,14 +23,14 @@ class yum::repo::puppetlabs (
     default: {}
     /^5.*/: {
       package { 'puppetlabs-release' :
-        ensure   => '5-7',
+        ensure   => '5-10',
         provider => 'rpm',
         source   => 'http://yum.puppetlabs.com/el/5/products/x86_64/puppetlabs-release-5-7.noarch.rpm',
       }
     }
     /^6.*/: {
       package { 'puppetlabs-release' :
-        ensure   => '6-7',
+        ensure   => '6-10',
         provider => 'rpm',
         source   => 'http://yum.puppetlabs.com/el/6/products/x86_64/puppetlabs-release-6-7.noarch.rpm',
       }
