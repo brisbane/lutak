@@ -40,3 +40,11 @@
   <regex offset="after_prematch">^(\.*),(\.*),(\.*),(\.*),(\.*)</regex>
   <order>status,srcip,srcuser,dstuser,extra_data</order>
 </decoder> 
+
+<decoder name="amavis">
+  <program_name>amavis</program_name>
+</decoder>
+
+<decoder name="oidentd">
+  <program_name>oidentd</program_name>
+</decoder>
