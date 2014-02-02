@@ -7,26 +7,30 @@
 #
 
 # Sample Usage:
-#   include ossec::ossec
+#   include ossec::client
 #
-class ossec::client inherits ossec {
-  package { 'ossec-hids-client':
+class ossec::client (
+  $package_name    = $ossec::client_package_name,
+  $service_name    = $ossec::client_service_name,
+  $ossec_conf      = $ossec::client_ossec_conf,
+  $ossec_conf_tmpl = $ossec::client_ossec_conf_tmpl,
+) inherits ossec {
+  package { $package_name :
     ensure   => present,
   }
-  service { 'ossec-hids':
+  service { $service_name :
     ensure   => running,
     enable   => true,
-    provider => redhat,
-    require  => Package['ossec-hids-client'],
+    require  => Package[$package_name],
   }
-  file { '/var/ossec/etc/ossec-agent.conf':
+  file { $ossec_conf :
     ensure  => present,
-    content => template('ossec/ossec-agent.erb'),
+    content => template($ossec_conf_tmpl),
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    require => Package['ossec-hids-client'],
-    notify  => Service['ossec-hids'],
+    require => Package[$package_name],
+    notify  => Service[$service_name],
   }
   file { '/var/ossec/etc/client.keys':
     ensure  => present,
@@ -34,7 +38,8 @@ class ossec::client inherits ossec {
     owner   => 'ossec',
     group   => 'ossec',
     mode    => '0400',
-    require => Package['ossec-hids-client'],
-    notify  => Service['ossec-hids'],
+    require => Package[$package_name],
+    notify  => Service[$service_name],
   }
 }
+
