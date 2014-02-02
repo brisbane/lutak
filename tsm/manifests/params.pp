@@ -23,7 +23,7 @@ class tsm::params {
   # install package depending on major version
   case $::osfamily {
     default: {}
-    /(RedHat|redhat|amazon)/: {
+    /(RedHat|redhat|amazon|Debian|debian|Ubuntu|ubuntu)/: {
       $package           = 'tsm-client'
       $backup_service    = 'dsmcad-backup'
       $archive_service   = 'dsmcad-archive'
@@ -31,8 +31,8 @@ class tsm::params {
       $file_backup_excl  = '/etc/tsm-client/dsm-inclexcl.backup'
       $file_archive_excl = '/etc/tsm-client/dsm-inclexcl.archive'
     }
-    /(debian|ubuntu)/: {
-    }
+    #/(debian|ubuntu)/: {
+    #}
   }
 
 }
