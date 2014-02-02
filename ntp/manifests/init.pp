@@ -12,20 +12,30 @@ class ntp (
   $package_name   = $ntp::params::client_package_name,
   $package_ensure = $ntp::params::package_ensure,
   $client_servers = $ntp::params::client_servers,
+  $service_name   = $ntp::params::service_name,
+  $ntpconf_path   = $ntp::params::ntpconf_path,
 ) inherits ntp::params {
-  package { 'ntp':
+  package { $package_name :
     ensure  => $package_ensure,
-    name    => $package_name,
   }
-  service { 'ntpd':
+  case $::osfamily {
+    default : {}
+    /(Debian|debian|Ubuntu|ubuntu)/: {
+      package { 'ntpdate':
+        ensure  => $package_ensure,
+      }
+    }
+  }
+  service { $service_name :
     ensure  => running,
     enable  => true,
-    require => Package['ntp'],
+    require => Package[$package_name],
   }
-  file { '/etc/ntp.conf':
+  file { $ntpconf_path :
     mode    => '0644',
     content => template('ntp/client-ntp.conf.erb'),
-    notify  => Service['ntpd'],
-    require => Package['ntp'],
+    notify  => Service[$service_name],
+    require => Package[$package_name],
   }
 }
+
