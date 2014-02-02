@@ -1,5 +1,5 @@
 def get_debian_rabbitmq_version
-  depends = Facter::Util::Resolution.exec('apt-cache show rabbitmq |grep "^Depends" |head -n 1')
+  depends = Facter::Util::Resolution.exec('apt-cache show rabbitmq 2>/dev/null |grep "^Depends" |head -n 1')
   if match = /^Depends: rabbitmqql-(.*)$/.match(depends)
     match[1]
   else
