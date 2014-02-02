@@ -1,7 +1,7 @@
 <% if @comment -%>
 # <%= @comment %>
 <% end -%>
-<% if @type == 'value' %>
+<% if @type == 'value' -%>
 <%= @attribute %> = <%= @value %>
 <% else -%>
 <%= @type %> <%= @attribute %> = <%= @value %>
