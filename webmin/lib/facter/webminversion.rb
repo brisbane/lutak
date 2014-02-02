@@ -1,5 +1,5 @@
 def get_debian_webmin_version
-  depends = Facter::Util::Resolution.exec('apt-cache show webmin |grep "^Depends" |head -n 1')
+  depends = Facter::Util::Resolution.exec('apt-cache show webmin 2>/dev/null |grep "^Depends" |head -n 1')
   if match = /^Depends: webmin-(.*)$/.match(depends)
     match[1]
   else
