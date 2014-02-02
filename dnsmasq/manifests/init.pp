@@ -16,6 +16,12 @@ class dnsmasq (
   $listen_addresses = [ '127.0.0.1' ],
 ) {
 
+  # if servers are specified, apply this class before
+  # resolvconf (in case namserver is set to 127.0.0.1)
+  if $servers != [] {
+    Class['dnsmasq'] -> Class['resolvconf']
+  }
+
   File {
     ensure => file,
     owner  => root,
