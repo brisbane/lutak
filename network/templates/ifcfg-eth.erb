@@ -1,0 +1,31 @@
+###
+### File managed by Puppet
+###
+DEVICE=<%= @interface %>
+<% if !@macaddress.empty? %>HWADDR=<%= @macaddress %><% end %>
+ONBOOT=<%= @onboot %>
+BOOTPROTO=<%= @bootproto %>
+HOTPLUG=<%= @onboot %>
+TYPE=<%= @type %>
+<% if !@bonding_opts.empty? %>BONDING_OPTS="<%= @bonding_opts %>"
+<% end -%>
+<% if !@ethtool_opts.empty? %>ETHTOOL_OPTS="<%= @ethtool_opts %>"
+<% end -%>
+<% if !@mtu.empty?          %>MTU=<%= mtu %>
+<% end -%>
+# ip address settings
+<% if !@ipaddress.empty?    %>IPADDR=<%= @ipaddress %>
+<% end -%>
+<% if !@netmask.empty?      %>NETMASK=<%= @netmask %>
+<% end -%>
+<% if !@gateway.empty?      %>GATEWAY=<%= @gateway %>
+<% end -%>
+<% if @peerdns == 'yes' and !@dns1.empty? -%>
+# dns settings
+PEERDNS=yes
+DNS1=<%= @dns1 %>
+<% if !@dns2.empty? -%>DNS2=<%= @dns2 %>
+<% end -%>
+<% if !@domain.empty? -%>DOMAIN="<%= @domain %>"
+<% end -%>
+<% end -%>
