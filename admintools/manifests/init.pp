@@ -33,6 +33,9 @@ class admintools {
     }
     /(Debian|debian|Ubuntu|ubuntu)/: {
       package { 'bind9utils':      ensure => latest, }
+      package { 'etckeeper':       ensure => latest, }
+      package { 'changetrack':     ensure => latest, }
+      package { 'apticron':        ensure => latest, }
     }
     /(RedHat|redhat|amazon)/: {
       package { 'bind-utils':      ensure => latest, }
