@@ -14,6 +14,7 @@ class zabbix::agent (
   $purge_conf_dir          = $::zabbix::params::agent_purge_conf_dir,
   $file_zabbix_agentd_conf = $::zabbix::params::file_zabbix_agentd_conf,
   $dir_zabbix_agentd_confd = $::zabbix::params::dir_zabbix_agentd_confd,
+  $zabbix_agentd_logfile   = $::zabbix::params::zabbix_agentd_logfile,
   $server_name             = 'mon',
   $server_active           = 'mon',
   $client_name             = $::hostname,
@@ -46,7 +47,7 @@ class zabbix::agent (
     content => template('zabbix/zabbix_agentd.conf.erb'),
   }
 
-  file { '/etc/zabbix/zabbix_agentd.d':
+  file { $dir_zabbix_agentd_confd :
     ensure  => directory,
     path    => $dir_zabbix_agentd_confd,
     recurse => $purge_conf_dir,
