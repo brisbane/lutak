@@ -4,11 +4,11 @@
 #
 
 class admintools {
-  # centos 6 minimal
   include ::ssh
-  package { 'wget':            ensure => latest, }
-  package { 'rsync':           ensure => latest, }
-  package { 'bind-utils':      ensure => latest, }
+
+  package { 'wget':         ensure => latest, }
+  package { 'rsync':        ensure => latest, }
+
   # admin tools
   package { 'nmap':         ensure => latest, }
   package { 'screen':       ensure => latest, }
@@ -16,7 +16,6 @@ class admintools {
   package { 'atop':         ensure => latest, }
   package { 'htop':         ensure => latest, }
   package { 'mutt':         ensure => latest, }
-  include ::tools::vim
   package { 'iftop':        ensure => latest, }
   package { 'iotop':        ensure => latest, }
   package { 'tcpdump':      ensure => latest, }
@@ -26,10 +25,23 @@ class admintools {
   package { 'telnet':       ensure => latest, }
   package { 'lsof':         ensure => latest, }
   package { 'expect':       ensure => latest, }
+  package { 'vim':          ensure => latest, }
+
+  case $::osfamily {
+    default: {
+      #package { 'bind9utils':      ensure => latest, }
+    }
+    /(Debian|debian|Ubuntu|ubuntu)/: {
+      package { 'bind9utils':      ensure => latest, }
+    }
+    /(RedHat|redhat|amazon)/: {
+      package { 'bind-utils':      ensure => latest, }
+    }
+  }
 
   case $::operatingsystem {
     default: {
-      package { 'man':          ensure => latest, }
+      #package { 'man':          ensure => latest, }
     }
     'CentOS' : {
       package { 'man':          ensure => latest, }
