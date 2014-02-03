@@ -47,7 +47,7 @@ class zabbix::agent (
     content => template('zabbix/zabbix_agentd.conf.erb'),
   }
 
-  file { $dir_zabbix_agentd_confd :
+  file { 'zabbix_agent_confd':
     ensure  => directory,
     path    => $dir_zabbix_agentd_confd,
     recurse => $purge_conf_dir,
