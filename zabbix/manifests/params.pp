@@ -89,7 +89,7 @@ class zabbix::params {
       $web_file_mode            = '0640'
       $web_dir_zabbix_php       = '/etc/zabbix/web'
     }
-    /(Debian|ubuntu)/: {
+    /(Debian|debian|Ubuntu|ubuntu)/: {
       $agent_package            = 'zabbix-agent'
       $agent_version            = 'present'
       $agent_service            = 'zabbix-agent'
