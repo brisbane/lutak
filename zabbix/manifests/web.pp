@@ -1,24 +1,61 @@
-# Class: zabbix::web
+#
+# = Class: zabbix::web
 #
 # This module manages zabbix-web
 #
 class zabbix::web (
-  $package_ensure = $zabbix::package_ensure,
-  $db             = $zabbix::db,
-) inherits zabbix {
-  require apache
+  $package            = $::zabbix::params::web_package,
+  $version            = $::zabbix::params::web_version,
+  $file_owner         = $::zabbix::params::web_file_owner,
+  $file_group         = $::zabbix::params::web_file_group,
+  $file_mode          = $::zabbix::params::web_file_mode,
+  $dir_zabbix_php     = $::zabbix::params::web_dir_zabbix_php,
+  $db                 = 'mysql',
+  $dbhost             = 'localhost',
+  $dbport             = '3306',
+  $dbname             = 'zabbix',
+  $dbuser             = 'zabbix',
+  $dbpass             = 'secret',
+  $server_host        = 'localhost',
+  $server_port        = '10051',
+  $server_name        = '',
+  $image_format       = 'IMAGE_FORMAT_PNG',
+  $manage_maintenance = true,
+  $maintenance_mode   = false,
+  $maintenance_ip     = [ '127.0.0.1' ],
+) inherits zabbix::params {
 
-  include php
+  include ::apache
 
-  package { "zabbix-web-${db}":
-    ensure   => $package_ensure,
-  }
-  file { '/etc/httpd/conf.d/zabbix.conf':
+  File {
     ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0644',
-    source  => 'puppet:///modules/zabbix/zabbix.conf',
-    require => Package["zabbix-web-${db}"],
+    require => Package[$package],
   }
+
+  package { 'zabbix-web':
+    ensure => $version,
+    name   => $package,
+  }
+
+  file { "${dir_zabbix_php}/zabbix.conf.php":
+    owner   => $file_owner,
+    group   => $file_group,
+    mode    => $file_mode,
+    content => template('zabbix/zabbix.conf.php.erb'),
+  }
+
+  file { "${::apache::confd_dir}/zabbix.conf":
+    source  => 'puppet:///modules/zabbix/zabbix.conf',
+    require => Package['zabbix-web'],
+  }
+
+  if $manage_maintenance {
+    file { "${dir_zabbix_php}/maintenance.inc.php":
+      owner   => $file_owner,
+      group   => $file_group,
+      mode    => $file_mode,
+      content => template('zabbix/maintenance.inc.php.erb'),
+    }
+  }
+
 }

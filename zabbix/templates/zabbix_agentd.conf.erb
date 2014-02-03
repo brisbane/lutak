@@ -137,6 +137,28 @@ Hostname=<%= @client_name %>
 # Default:
 # HostnameItem=system.hostname
 
+### Option: HostMetadata
+#	Optional parameter that defines host metadata.
+#	Host metadata is used at host auto-registration process.
+#	An agent will issue an error and not start if the value is over limit of 255 characters.
+#	If not defined, value will be acquired from HostMetadataItem.
+#
+# Mandatory: no
+# Range: 0-255 characters
+# Default:
+# HostMetadata=
+
+### Option: HostMetadataItem
+#	Optional parameter that defines an item used for getting host metadata.
+#	Host metadata is used at host auto-registration process.
+#	During an auto-registration request an agent will log a warning message if
+#	the value returned by specified item is over limit of 255 characters.
+#	This option is only used when HostMetadata is not defined.
+#
+# Mandatory: no
+# Default:
+# HostMetadataItem=
+
 ### Option: RefreshActiveChecks
 #	How often list of active checks is refreshed, in seconds.
 #
@@ -175,20 +197,16 @@ BufferSize=500
 # Default:
 # MaxLinesPerSecond=100
 
-### Option: AllowRoot
-#	Allow the agent to run as 'root'. If disabled and the agent is started by 'root', the agent
-#       will try to switch to user 'zabbix' instead. Has no effect if started under a regular user.
-#	0 - do not allow
-#	1 - allow
-#
-# Mandatory: no
-# Default:
-# AllowRoot=0
-
 ############ ADVANCED PARAMETERS #################
 
 ### Option: Alias
-#	Sets an alias for parameter. It can be useful to substitute long and complex parameter name with a smaller and simpler one.
+#	Sets an alias for an item key. It can be used to substitute long and complex item key with a smaller and simpler one.
+#	Multiple Alias parameters may be present. Multiple parameters with the same Alias key are not allowed.
+#	Different Alias keys may reference the same item key.
+#	For example, to retrieve the ID of user 'zabbix':
+#	Alias=zabbix.userid:vfs.file.regexp[/etc/passwd,^zabbix:.:([0-9]+),,,,\1]
+#	Now shorthand key zabbix.userid may be used to retrieve data.
+#	Aliases can be used in HostMetadataItem but not in HostnameItem parameters.
 #
 # Mandatory: no
 # Range:
@@ -203,6 +221,16 @@ BufferSize=500
 # Timeout=3
 Timeout=<%= @timeout %>
 
+### Option: AllowRoot
+#	Allow the agent to run as 'root'. If disabled and the agent is started by 'root', the agent
+#	will try to switch to user 'zabbix' instead. Has no effect if started under a regular user.
+#	0 - do not allow
+#	1 - allow
+#
+# Mandatory: no
+# Default:
+# AllowRoot=0
+
 ### Option: Include
 #	You may include individual files or all files in a directory in the configuration file.
 #	Installing Zabbix will create include directory in /etc, unless modified during the compile time.
@@ -213,7 +241,7 @@ Timeout=<%= @timeout %>
 
 # Include=/etc/zabbix_agentd.userparams.conf
 # Include=/etc/zabbix_agentd.conf.d/
-Include=/etc/zabbix/agent-conf.d/
+Include=/etc/zabbix/zabbix_agentd.d/
 
 ####### USER-DEFINED MONITORED PARAMETERS #######
 
@@ -235,3 +263,23 @@ Include=/etc/zabbix/agent-conf.d/
 # Mandatory: no
 # Default:
 # UserParameter=
+
+####### LOADABLE MODULES #######
+
+### Option: LoadModulePath
+#	Full path to location of agent modules.
+#	Default depends on compilation options.
+#
+# Mandatory: no
+# Default:
+# LoadModulePath=${libdir}/modules
+
+### Option: LoadModule
+#	Module to load at agent startup. Modules are used to extend functionality of the agent.
+#	Format: LoadModule=<module.so>
+#	The modules must be located in directory specified by LoadModulePath.
+#	It is allowed to include multiple LoadModule parameters.
+#
+# Mandatory: no
+# Default:
+# LoadModule=
