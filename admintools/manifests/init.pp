@@ -25,27 +25,24 @@ class admintools {
   package { 'telnet':       ensure => latest, }
   package { 'lsof':         ensure => latest, }
   package { 'expect':       ensure => latest, }
-  package { 'vim':          ensure => latest, }
 
   case $::osfamily {
-    default: {
-      #package { 'bind9utils':      ensure => latest, }
-    }
+    default: { }
     /(Debian|debian|Ubuntu|ubuntu)/: {
       package { 'bind9utils':      ensure => latest, }
       package { 'etckeeper':       ensure => latest, }
       package { 'changetrack':     ensure => latest, }
       package { 'apticron':        ensure => latest, }
+      package { 'vim':             ensure => latest, }
     }
     /(RedHat|redhat|amazon)/: {
       package { 'bind-utils':      ensure => latest, }
+      package { 'vim-enhanced':    ensure => latest, }
     }
   }
 
   case $::operatingsystem {
-    default: {
-      #package { 'man':          ensure => latest, }
-    }
+    default: { }
     'CentOS' : {
       package { 'man':          ensure => latest, }
     }
