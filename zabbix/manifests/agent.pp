@@ -17,7 +17,7 @@ class zabbix::agent (
   $zabbix_agentd_logfile   = $::zabbix::params::zabbix_agentd_logfile,
   $server_name             = 'mon',
   $server_active           = 'mon',
-  $client_name             = $::hostname,
+  $client_name             = $::fqdn,
   $timeout                 = '30',
 ) inherits zabbix::params {
 
