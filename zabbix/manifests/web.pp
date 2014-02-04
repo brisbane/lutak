@@ -44,9 +44,10 @@ class zabbix::web (
     content => template('zabbix/zabbix.conf.php.erb'),
   }
 
-  file { "${::apache::confd_dir}/zabbix.conf":
+  file { "${::apache::params::vdir}/zabbix.conf":
     source  => 'puppet:///modules/zabbix/zabbix.conf',
     require => Package['zabbix-web'],
+    notify  => Service['httpd'],
   }
 
   if $manage_maintenance {
