@@ -6,49 +6,49 @@
 class admintools {
   include ::ssh
 
-  package { 'wget':         ensure => latest, }
-  package { 'rsync':        ensure => latest, }
+  package { 'wget':         ensure => present, }
+  package { 'rsync':        ensure => present, }
 
   # admin tools
-  package { 'nmap':         ensure => latest, }
-  package { 'screen':       ensure => latest, }
-  package { 'zsh':          ensure => latest, }
-  package { 'atop':         ensure => latest, }
-  package { 'htop':         ensure => latest, }
-  package { 'mutt':         ensure => latest, }
-  package { 'iftop':        ensure => latest, }
-  package { 'iotop':        ensure => latest, }
-  package { 'tcpdump':      ensure => latest, }
-  package { 'mc':           ensure => latest, }
-  package { 'ncdu':         ensure => latest, }
-  package { 'strace':       ensure => latest, }
-  package { 'telnet':       ensure => latest, }
-  package { 'lsof':         ensure => latest, }
-  package { 'expect':       ensure => latest, }
+  package { 'nmap':         ensure => present, }
+  package { 'screen':       ensure => present, }
+  package { 'zsh':          ensure => present, }
+  package { 'atop':         ensure => present, }
+  package { 'htop':         ensure => present, }
+  package { 'mutt':         ensure => present, }
+  package { 'iftop':        ensure => present, }
+  package { 'iotop':        ensure => present, }
+  package { 'tcpdump':      ensure => present, }
+  package { 'mc':           ensure => present, }
+  package { 'ncdu':         ensure => present, }
+  package { 'strace':       ensure => present, }
+  package { 'telnet':       ensure => present, }
+  package { 'lsof':         ensure => present, }
+  package { 'expect':       ensure => present, }
 
   case $::osfamily {
     default: { }
     /(Debian|debian|Ubuntu|ubuntu)/: {
-      package { 'bind9utils':      ensure => latest, }
-      package { 'etckeeper':       ensure => latest, }
-      package { 'changetrack':     ensure => latest, }
-      package { 'apticron':        ensure => latest, }
-      package { 'vim':             ensure => latest, }
+      package { 'bind9utils':      ensure => present, }
+      package { 'etckeeper':       ensure => present, }
+      package { 'changetrack':     ensure => present, }
+      package { 'apticron':        ensure => present, }
+      package { 'vim':             ensure => present, }
     }
     /(RedHat|redhat|amazon)/: {
-      package { 'bind-utils':      ensure => latest, }
-      package { 'vim-enhanced':    ensure => latest, }
+      package { 'bind-utils':      ensure => present, }
+      package { 'vim-enhanced':    ensure => present, }
     }
   }
 
   case $::operatingsystem {
     default: { }
     'CentOS' : {
-      package { 'man':          ensure => latest, }
+      package { 'man':          ensure => present, }
     }
     'Fedora' : {
-      package { 'man-db':       ensure => latest, }
-      package { 'man-pages':    ensure => latest, }
+      package { 'man-db':       ensure => present, }
+      package { 'man-pages':    ensure => present, }
     }
   }
 }
