@@ -1,41 +1,50 @@
-# define: nginx::resource::location
+#
+# = Define: nginx::location
 #
 # This definition creates a new location entry within a virtual host
 #
-# Parameters:
-#   [*ensure*]      - Enables or disables the specified location (present|absent)
-#   [*vhost*]       - Defines the default vHost for this location entry to include with
-#   [*location*]    - Specifies the URI associated with this location entry
-#   [*www_root*]    - Specifies the location on disk for files to be read from. Cannot be set in conjunction with $proxy
-#   [*index_files*] - Default index files for NGINX to read when traversing a directory
-#   [*proxy*]       - Proxy server(s) for a location to connect to. Accepts a single value, can be used in conjunction
-#                     with nginx::resource::upstream
-#   [*ssl*]         - Indicates whether to setup SSL bindings for this location.
-#   [*option*]      - Reserved for future use
+# == Parameters:
 #
-# Actions:
+# [*location*]
+#   Type: string
+#   Specifies the URI associated with this location entry
 #
-# Requires:
+# [*vhost*]
+#   Type: string, default: undef
+#   Defines the default vHost for this location entry to include with
 #
-# Sample Usage:
-#  nginx::resource::location { 'test2.local-bob':
-#    location => '/bob',
-#    www_root => '/var/www/bob',
-#    vhost    => 'test2.local',
-#  }
+# [*proxy*]
+#   Type: string, default: undef
+#   Proxy server(s) for a location to connect to.
+#
+# [*frontend_ssl*]
+#   Type: boolean, default: false
+#   If frontend will be SSL terminated, then add aditional flags to location.
+#
+# [*www_root*]
+#   Type: string, default: undef
+#   Specifies the location on disk for files to be read from. Cannot be
+#   set in conjunction with $proxy
+#
 define nginx::location (
   $location,
-  $ensure   = present,
-  $vhost    = undef,
-  $template = 'nginx/vhost/location.erb',
+  $vhost        = undef,
+  $proxy        = undef,
+  $frontend_ssl = false,
+  $www_root     = undef,
+  $template     = 'nginx/vhost/location.erb',
 ) {
 
   # vhost must be defined
   if ($vhost == undef) {
-    fail('Cannot create a location reference without attaching to a virtual host')
+    fail('Cannot create a location reference without attaching to a virtual host.')
+  }
+  # proxy and www_root are not allowed to be defined
+  if ($proxy != undef and $www_root != undef ) {
+    fail('Cannot declare both $proxy and $www_root. Incompatible parameters.')
   }
 
-  concat::fragment { "nginx_location_${name}":
+  ::concat::fragment { "nginx_location_${name}":
     target  => "nginx_vhost_${vhost}",
     content => template($template),
     order   => '250',
