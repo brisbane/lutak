@@ -4,6 +4,6 @@
 #
 class admintools::mysqltuner {
   package { 'mysqltuner':
-    ensure  => latest,
+    ensure  => present,
   }
 }

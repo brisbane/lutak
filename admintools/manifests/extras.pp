@@ -4,15 +4,15 @@
 #
 class admintools::extras {
   package { 'etckeeper':
-    ensure  => latest,
+    ensure  => present,
   }
   package { 'subversion':
-    ensure  => latest,
+    ensure  => present,
   }
   package { 'git':
-    ensure  => latest,
+    ensure  => present,
   }
   package { 'git-svn':
-    ensure  => latest,
+    ensure  => present,
   }
 }
