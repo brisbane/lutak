@@ -14,8 +14,7 @@ class aptrepo::debian {
     repos             => 'main contrib non-free',
     required_packages => 'debian-keyring',
     key               => '381A7594',
-    key_server        => 'pgp.mit.edu',
-    pin               => '100',
+    key_server        => 'pks.aaiedu.hr',
     include_src       => true,
   }
 }

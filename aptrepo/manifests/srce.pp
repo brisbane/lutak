@@ -14,8 +14,7 @@ class aptrepo::srce {
     repos             => 'main mon',
     required_packages => 'srce-keyring',
     key               => '4089CBA3',
-    key_server        => 'pgp.mit.edu',
-    pin               => '100',
+    key_server        => 'pks.aaiedu.hr',
     include_src       => true,
   }
 }

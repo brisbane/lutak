@@ -14,8 +14,7 @@ class aptrepo::carnet {
     repos             => 'main non-free',
     required_packages => 'carnet-keyring',
     key               => 'EC72006A',
-    key_server        => 'pgp.mit.edu',
-    pin               => '100',
+    key_server        => 'pks.aaiedu.hr',
     include_src       => true,
   }
 }
