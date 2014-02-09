@@ -6,7 +6,9 @@
 #   include aptrepo::backports
 #
 
-class aptrepo::backports {
+class aptrepo::backports (
+  $stage = 'aptsetup',
+){
   include ::apt
   ::apt::source { 'backports':
     location          => 'http://ftp.hr.debian.org/debian/',

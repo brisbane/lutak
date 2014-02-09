@@ -6,7 +6,9 @@
 #   include aptrepo::srce
 #
 
-class aptrepo::srce {
+class aptrepo::srce (
+  $stage = 'aptsetup',
+){
   include ::apt
   ::apt::source { 'srce':
     location          => 'http://ftp.srce.hr/srce-debian/',
