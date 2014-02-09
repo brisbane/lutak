@@ -6,7 +6,9 @@
 #   include aptrepo::carnet
 #
 
-class aptrepo::carnet {
+class aptrepo::carnet (
+  $stage = 'aptsetup',
+){
   include ::apt
   ::apt::source { 'carnet':
     location          => 'http://ftp.carnet.hr/carnet-debian/',

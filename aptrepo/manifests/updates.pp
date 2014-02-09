@@ -6,7 +6,9 @@
 #   include aptrepo::updates
 #
 
-class aptrepo::updates {
+class aptrepo::updates (
+  $stage = 'aptsetup',
+){
   include ::apt
   ::apt::source { 'updates':
     location          => 'http://ftp.hr.debian.org/debian/',

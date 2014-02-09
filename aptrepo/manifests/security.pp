@@ -6,7 +6,9 @@
 #   include aptrepo::security
 #
 
-class aptrepo::security {
+class aptrepo::security (
+  $stage = 'aptsetup',
+){
   include ::apt
   ::apt::source { 'security':
     location          => 'http://security.debian.org/',

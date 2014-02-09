@@ -6,7 +6,9 @@
 #   include aptrepo::debian
 #
 
-class aptrepo::debian {
+class aptrepo::debian (
+  $stage = 'aptsetup',
+){
   include ::apt
   ::apt::source { 'debian':
     location          => 'http://ftp.hr.debian.org/debian/',
