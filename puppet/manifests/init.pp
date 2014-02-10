@@ -41,6 +41,18 @@ class puppet (
 
   # files
   file { '/etc/puppet/puppet.conf': content => template('puppet/puppet.conf.erb'), }
-  file { '/etc/puppet/auth.conf':   source  => 'puppet:///modules/puppet/auth.conf', }
-  file { '/etc/sysconfig/puppet':   content => template('puppet/sysconfigpuppet.erb'), }
+
+  case $::osfamily {
+    /(RedHat|redhat)/: {
+      file { '/etc/puppet/auth.conf':   source  => 'puppet:///modules/puppet/auth.conf', }
+      file { '/etc/sysconfig/puppet':   content => template('puppet/sysconfigpuppet.erb'), }
+    }
+    /(Debian|debian|Ubuntu|ubuntu)/: {
+      file { '/etc/default/puppet':   content => template('puppet/defaultpuppet.erb'), }
+    }
+    default: {
+      fail("Unsupported osfamily: ${::osfamily} operatingsystem: ${::operatingsystem}, module ${module_name} currently only supports osfamily RedHat and Debian")
+    }
+  }
+
 }
