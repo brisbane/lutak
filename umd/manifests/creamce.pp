@@ -25,9 +25,7 @@ class umd::creamce (
   package { 'emi-cluster':
     ensure  => $cluster_version,
   }
-  package { 'sudo':
-    ensure  => present,
-  }
+  require ::sudoers
   file { '/opt/glite/yaim/etc/users.conf':
     ensure  => file,
     owner   => root,
