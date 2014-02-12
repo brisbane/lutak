@@ -1,0 +1,11 @@
+deb <%= @mirror %> <%= @release %> main contrib non-free
+<% if @source -%>
+deb-src <%= @mirror %> <%= @release %> main contrib non-free
+<% end -%>
+
+<% if @updates -%>
+de  http://security.debian.org/ <%= @release %>/updates main contrib non-free
+<% if @source -%>
+deb-src http://security.debian.org/ <%= @release %>/updates main contrib non-free
+<% end -%>
+<% end -%>

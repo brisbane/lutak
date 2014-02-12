@@ -1,0 +1,19 @@
+# Class: yum::repo::rpmforge::testing
+#
+# This module adds RPMForge testing repo to $lsbdistrelease
+#
+class yum::repo::rpmforge::testing (
+  $stage    = 'yumsetup',
+  $priority = '53',
+  $exclude  = [],
+){
+  require yum::repo::rpmforge
+
+  file {  '/etc/yum.repos.d/rpmforge-testing.repo':
+    ensure  => file,
+    mode    => '0644',
+    owner   => root,
+    group   => root,
+    content => template("yum/${::operatingsystem}/${::operatingsystemrelease}/rpmforge-testing.erb"),
+  }
+}

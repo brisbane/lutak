@@ -1,0 +1,37 @@
+#!/bin/bash
+
+[ -z "$LOCKFILE" ] && LOCKFILE="/var/tmp/$(/bin/basename $0).lock"
+
+create_lock(){
+   set noclobber
+   set errexit
+   /bin/echo $$ > $LOCKFILE || exit 1
+   set noerrexit
+   set clobber
+   return 0
+}
+
+remove_lock(){
+  /bin/rm -f $LOCKFILE
+}
+
+lock(){
+  if [ -f $LOCKFILE ]; then
+    if [ -d "/proc/`cat $LOCKFILE`" ]; then
+      echo -n "Can't run: another process already started at: "
+      /usr/bin/stat $LOCKFILE | /bin/grep Modify | /bin/sed 's/Modify: //' | cut -d. -f1
+      exit 1
+    else
+      remove_lock
+      create_lock
+    fi
+  else
+    create_lock
+  fi
+}
+
+unlock(){
+  remove_lock
+}
+
+# vi:
