@@ -26,20 +26,20 @@ class zabbix::agent (
     owner   => $file_owner,
     group   => $file_group,
     mode    => $file_mode,
-    require => Package[$package],
+    require => Package['zabbix-agent'],
     notify  => Service[$service],
   }
 
-  package { 'zabbix-agent':
-    ensure   => $version,
-    name     => $package,
+  package { $package :
+    ensure => $version,
+    alias  => 'zabbix-agent',
   }
 
   service { 'zabbix-agent':
     ensure   => running,
     name     => $service,
     enable   => true,
-    require  => Package[$package],
+    require  => Package['zabbix-agent'],
   }
 
   file { 'zabbix_agentd.conf':
@@ -54,9 +54,11 @@ class zabbix::agent (
     purge   => $purge_conf_dir,
   }
 
-  file { '/etc/sudoers.d/zabbix_notty':
-    mode    => '0440',
-    content => "Defaults:zabbix !requiretty\n",
+  # enable zabbix plugins to run sudo
+  sudoers::requiretty { 'zabbix_notty':
+    requiretty => false,
+    user       => 'zabbix',
+    comment    => 'Allow user zabbix to run sudo without tty',
   }
 
   # compatibilty needed for zabbix agent sensors (sudoers)

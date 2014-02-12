@@ -1,3 +1,5 @@
+# Define: sudoers::allowed_command
+#
 define sudoers::allowed_command(
   $command,
   $filename         = $title,
@@ -9,6 +11,8 @@ define sudoers::allowed_command(
   $comment          = undef,
   $allowed_env_variables = []
 ) {
+  require ::sudoers
+
   if ($user == undef and $group == undef) {
     fail('must define user or group')
   }
