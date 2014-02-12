@@ -19,5 +19,6 @@ class zabbix::agent::iptables (
   }
   package { $plugin_package :
     ensure   => present,
+    require  => Package['zabbix-agent'],
   }
 }
