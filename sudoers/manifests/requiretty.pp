@@ -10,6 +10,8 @@ define sudoers::requiretty(
   $group            = undef,
   $comment          = undef,
 ) {
+  require ::sudoers
+
   if ($user == undef and $group == undef) {
     fail('must define user or group')
   }
