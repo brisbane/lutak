@@ -3,14 +3,17 @@
 #
 server {
     server_name <%= @srvname %>;
-    listen      <%= @listen %>;
+    listen      <%= @listen %><% if @ssl == true %> ssl<% end %>;
     root        <%= @docroot %>;
     index       <%= @index.join(' ') %>;
 
 <% if @ssl == true -%>
     # SSL certificates
-    ssl_certificate       <%= @ssl_cert %>;
-    ssl_certificate_key   <%= @ssl_key %>;
+    ssl_certificate        <%= @ssl_cert %>;
+    ssl_certificate_key    <%= @ssl_key %>;
+<% if @ssl_client_cert -%>
+    ssl_client_certificate <%= @ssl_client_cert %>;
+<% end -%>
 <% end -%>
 
     # logs

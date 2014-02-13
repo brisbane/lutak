@@ -33,16 +33,17 @@
 define nginx::vhost (
   $listen,
   $docroot,
-  $docroot_owner = 'root',
-  $docroot_group = 'root',
-  $index         = ['index.html', 'index.htm', 'index.php'],
-  $ssl           = false,
-  $ssl_cert      = undef,
-  $ssl_key       = undef,
-  $template      = 'nginx/vhost/header.erb',
-  $priority      = 'vhost',
-  $log_dir       = '',
-  $servername    = undef,
+  $docroot_owner   = 'root',
+  $docroot_group   = 'root',
+  $index           = ['index.html', 'index.htm', 'index.php'],
+  $ssl             = false,
+  $ssl_cert        = undef,
+  $ssl_key         = undef,
+  $ssl_client_cert = undef,
+  $template        = 'nginx/vhost/header.erb',
+  $priority        = 'vhost',
+  $log_dir         = '',
+  $servername      = undef,
 ) {
   include nginx
 

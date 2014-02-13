@@ -4,8 +4,8 @@
 #
 # Parameters:
 #
-# There are no default parameters for this class. All module parameters are managed
-# via the nginx::params class
+# There are no default parameters for this class. All module parameters are
+# managed via the nginx::params class
 #
 # Actions:
 #
@@ -25,22 +25,22 @@
 #   include nginx
 # }
 class nginx (
-  $manage_service     = $nginx::params::manage_service,
-  $conf_dir           = $nginx::params::conf_dir,
-  $log_dir            = $nginx::params::log_dir,
-  $pid_file           = $nginx::params::pid_file,
-  $daemon_user        = $nginx::params::daemon_user,
-  $multi_accept       = $nginx::params::multi_accept,
-  $worker_processes   = $nginx::params::worker_processes,
-  $worker_connections = $nginx::params::worker_connections,
-  $sendfile           = $nginx::params::sendfile,
-  $tcp_nopush         = $nginx::params::tcp_nopush,
-  $keepalive_timeout  = $nginx::params::keepalive_timeout,
-  $tcp_nodelay        = $nginx::params::tcp_nodelay,
-  $gzip               = $nginx::params::gzip,
+  $manage_service     = $::nginx::params::manage_service,
+  $conf_dir           = $::nginx::params::conf_dir,
+  $log_dir            = $::nginx::params::log_dir,
+  $pid_file           = $::nginx::params::pid_file,
+  $daemon_user        = $::nginx::params::daemon_user,
+  $multi_accept       = $::nginx::params::multi_accept,
+  $worker_processes   = $::nginx::params::worker_processes,
+  $worker_connections = $::nginx::params::worker_connections,
+  $sendfile           = $::nginx::params::sendfile,
+  $tcp_nopush         = $::nginx::params::tcp_nopush,
+  $keepalive_timeout  = $::nginx::params::keepalive_timeout,
+  $tcp_nodelay        = $::nginx::params::tcp_nodelay,
+  $gzip               = $::nginx::params::gzip,
 ) inherits nginx::params {
 
-  include nginx::config
+  include ::nginx::config
 
   File {
     ensure  => file,
@@ -62,7 +62,9 @@ class nginx (
   }
 
   # main config file
-  file { "${conf_dir}/nginx.conf": content => template('nginx/nginx.conf.erb'), }
+  file { "${conf_dir}/nginx.conf":
+    content => template('nginx/nginx.conf.erb'),
+  }
 
   # manage nginx service
   if $manage_service == true {
