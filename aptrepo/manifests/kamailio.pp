@@ -22,7 +22,7 @@ class aptrepo::kamailio (
   }
 
   include ::apt
-  ::apt::source { 'puppetlabs':
+  ::apt::source { 'kamailio':
     location          => 'http://deb.kamailio.org/kamailio32/',
     release           => $debian_release,
     repos             => 'main',
