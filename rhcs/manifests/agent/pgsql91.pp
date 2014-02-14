@@ -1,7 +1,7 @@
 # Class: rhcs::agent::pgsql91
 class rhcs::agent::pgsql91 {
   # brings Package['rgmanager'] used for dependencies
-  include rhcs
+  include ::rhcs
 
   File {
     owner   => root,
