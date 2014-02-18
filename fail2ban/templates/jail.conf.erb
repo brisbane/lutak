@@ -47,7 +47,7 @@ filter   = sshd
 action   = iptables[name=SSH, port=ssh, protocol=tcp]
            sendmail-whois[name=SSH, dest=root@localhost, sender=fail2ban@mail.com]
 logpath  = /var/log/secure
-maxretry = 3
+maxretry = <%= @ssh_iptables_maxretry %>
 
 [proftpd-iptables]
 

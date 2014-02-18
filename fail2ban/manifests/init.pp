@@ -1,8 +1,9 @@
 # Class: fail2ban
 class fail2ban (
-  $global_ignore   = $fail2ban::params::global_ignore,
-  $global_bantime  = $fail2ban::params::global_bantime,
-  $global_maxretry = $fail2ban::params::global_maxretry,
+  $global_ignore         = $fail2ban::params::global_ignore,
+  $global_bantime        = $fail2ban::params::global_bantime,
+  $global_maxretry       = $fail2ban::params::global_maxretry,
+  $ssh_iptables_maxretry = '3',
 ) inherits fail2ban::params {
 
   package{'fail2ban':
