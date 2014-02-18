@@ -12,18 +12,21 @@ class aptrepo::backports (
   case $::operatingsystemmajrelease {
     default: {
       $debian_release = 'wheezy-backports'
+      $debian_location = 'http://ftp.hr.debian.org/debian/'
     }
     /6/: {
       $debian_release = 'squeeze-backports'
+      $debian_location = 'http://backports.debian.org/debian-backports/'
     }
     /7/: {
       $debian_release = 'wheezy-backports'
+      $debian_location = 'http://ftp.hr.debian.org/debian/'
     }
   }
 
   include ::apt
   ::apt::source { 'backports':
-    location          => 'http://ftp.hr.debian.org/debian/',
+    location          => $debian_location,
     release           => $debian_release,
     repos             => 'main contrib non-free',
     required_packages => 'debian-keyring',
