@@ -9,22 +9,10 @@
 class aptrepo::debian (
   $stage = 'aptsetup',
 ){
-  case $::operatingsystemmajrelease {
-    default: {
-      $debian_release = 'wheezy'
-    }
-    /6/: {
-      $debian_release = 'squeeze'
-    }
-    /7/: {
-      $debian_release = 'wheezy'
-    }
-  }
-
   include ::apt
   ::apt::source { 'debian':
     location          => 'http://ftp.hr.debian.org/debian/',
-    release           => $debian_release,
+    release           => $::lsbdistcodename,
     repos             => 'main contrib non-free',
     required_packages => 'debian-keyring',
     key               => '381A7594',

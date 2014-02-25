@@ -9,22 +9,10 @@
 class aptrepo::kamailio (
   $stage = 'aptsetup',
 ){
-  case $::operatingsystemmajrelease {
-    default: {
-      $debian_release = 'wheezy'
-    }
-    /6/: {
-      $debian_release = 'squeeze'
-    }
-    /7/: {
-      $debian_release = 'wheezy'
-    }
-  }
-
   include ::apt
   ::apt::source { 'kamailio':
     location          => 'http://deb.kamailio.org/kamailio32/',
-    release           => $debian_release,
+    release           => $::lsbdistcodename,
     repos             => 'main',
     key               => '07D5C01D',
     key_server        => 'pks.aaiedu.hr',

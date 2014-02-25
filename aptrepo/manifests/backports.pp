@@ -9,22 +9,22 @@
 class aptrepo::backports (
   $stage = 'aptsetup',
 ){
-  case $::operatingsystemmajrelease {
+  case $::lsbdistcodename {
     default: {
-      $debian_release = 'wheezy-backports'
+      $debian_location = 'http://ftp.hr.debian.org/debian/'
     }
-    /6/: {
-      $debian_release = 'squeeze-backports'
+    /squeeze/: {
+      $debian_location = 'http://backports.debian.org/debian-backports/'
     }
-    /7/: {
-      $debian_release = 'wheezy-backports'
+    /wheezy/: {
+      $debian_location = 'http://ftp.hr.debian.org/debian/'
     }
   }
 
   include ::apt
   ::apt::source { 'backports':
-    location          => 'http://ftp.hr.debian.org/debian/',
-    release           => $debian_release,
+    location          => $debian_location,
+    release           => "${::lsbdistcodename}-backports",
     repos             => 'main contrib non-free',
     required_packages => 'debian-keyring',
     key               => '381A7594',
