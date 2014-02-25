@@ -35,7 +35,9 @@ SErvername  <%= @backup_server %>
       inclexcl           <%= @file_backup_excl %>
       schedlogname       /var/log/tsm-client/dsm-backupsched.log
       errorlogname       /var/log/tsm-client/dsm-backuperror.log
-
+<% @backup_options.sort.each do |key, value| -%>
+      <%= key %>   <%= value %>
+<% end -%>
 
 
 *******************************************
@@ -63,3 +65,6 @@ SErvername  <%= @archive_server %>
       inclexcl           <%= @file_archive_excl %>
       schedlogname       /var/log/tsm-client/dsm-archivesched.log
       errorlogname       /var/log/tsm-client/dsm-archiveerror.log
+<% @archive_options.sort.each do |key, value| -%>
+      <%= key %>   <%= value %>
+<% end -%>

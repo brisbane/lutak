@@ -122,6 +122,8 @@ class tsm (
   $dependency_class  = $::tsm::params::dependency_class,
   $my_class          = $::tsm::params::my_class,
   $noops             = false,
+  $backup_options    = $::tsm::params::backup_options,
+  $archive_options   = $::tsm::params::archive_options,
 ) inherits tsm::params {
 
   ### Input parameters validation

@@ -18,6 +18,9 @@ class tsm::params {
   $backup_server    = 'backup.example.com'
   $archive_server   = 'archive.example.com'
 
+  $backup_options   = {}
+  $archive_options  = {}
+
   $nodename         = $::fqdn
 
   # install package depending on major version
