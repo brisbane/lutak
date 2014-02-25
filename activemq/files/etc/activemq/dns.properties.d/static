@@ -1,0 +1,20 @@
+#
+# JAAS DNs
+#
+# Place static DNs in JAAS syntax here
+Anastasis.Andronidis=CN=Anastasis Andronidis, OU=auth.gr, O=HellasGrid, C=GR
+George.Fergadis=CN=George Fergadis, OU=auth.gr, O=HellasGrid, C=GR
+Paschalis.Korosoglou=CN=Paschalis Korosoglou, OU=auth.gr, O=HellasGrid, C=GR
+Pavlos.Daoglou=CN=Pavlos Daoglou, OU=auth.gr, O=HellasGrid, C=GR
+Emir.Imamagic=CN=Emir Imamagic, OU=srce, O=edu, C=HR
+Luko.Gjenero=CN=Luko Gjenero, OU=srce, O=edu, C=HR
+mq.cro-ngi.hr=CN=mq.cro-ngi.hr, OU=srce, O=edu, C=HR
+broker.afroditi.hellasgrid.gr=CN=broker.afroditi.hellasgrid.gr, OU=afroditi.hellasgrid.gr, O=HellasGrid, C=GR
+mq.afroditi.hellasgrid.gr=CN=mq.afroditi.hellasgrid.gr, OU=afroditi.hellasgrid.gr, O=HellasGrid, C=GR
+gridmsg105.cern.ch=CN=gridmsg105.cern.ch, OU=computers, DC=cern, DC=ch
+gridmsg106.cern.ch=CN=gridmsg106.cern.ch, OU=computers, DC=cern, DC=ch
+mb-monitor-dev.cern.ch=CN=mb-monitor-dev.cern.ch, OU=computers, DC=cern, DC=ch
+mb-monitor.cern.ch=CN=mb-monitor.cern.ch, OU=computers, DC=cern, DC=ch
+msg.cro-ngi.hr=CN=msg.cro-ngi.hr, OU=srce, O=edu, C=HR
+ops-monitor.cern.ch=CN=ops-monitor.cern.ch, OU=computers, DC=cern, DC=ch
+
