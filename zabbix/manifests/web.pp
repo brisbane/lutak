@@ -23,9 +23,19 @@ class zabbix::web (
   $manage_maintenance = true,
   $maintenance_mode   = false,
   $maintenance_ip     = [ '127.0.0.1' ],
+  $manage_apache      = true,
+  $manage_php         = false,
 ) inherits zabbix::params {
 
-  include ::apache
+  # depends on puppetlabs/apache
+  if ( $manage_apache ) {
+    include ::apache
+    include ::apache::mod::php
+    include ::apache::mod::rewrite
+  }
+
+  # depends on jsosic/php module
+  if ( $manage_php ) { ::php::mod { 'pgsql': ensure => present } }
 
   File {
     ensure  => file,
@@ -44,10 +54,9 @@ class zabbix::web (
     content => template('zabbix/zabbix.conf.php.erb'),
   }
 
-  file { "${::apache::params::vdir}/zabbix.conf":
-    source  => 'puppet:///modules/zabbix/zabbix.conf',
+  file { "${::apache::confd_dir}/zabbix.conf":
+    content => template('zabbix/zabbix.conf.erb'),
     require => Package['zabbix-web'],
-    notify  => Service['httpd'],
   }
 
   if $manage_maintenance {
