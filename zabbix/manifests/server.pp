@@ -79,7 +79,7 @@ class zabbix::server (
           user        => 'zabbix',
           auth_method => 'md5',
           address     => '127.0.0.1/32',
-          description => 'Allow access to zabbix database to user zabbix from localhost',
+          description => 'Allow user zabbix to access database from localhost',
         }
       }
       'mysql': {

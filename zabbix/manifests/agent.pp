@@ -14,6 +14,7 @@ class zabbix::agent (
   $purge_conf_dir          = $::zabbix::params::agent_purge_conf_dir,
   $file_zabbix_agentd_conf = $::zabbix::params::file_zabbix_agentd_conf,
   $dir_zabbix_agentd_confd = $::zabbix::params::dir_zabbix_agentd_confd,
+  $dir_zabbix_agent_libdir = $::zabbix::params::dir_zabbix_agent_libdir,
   $zabbix_agentd_logfile   = $::zabbix::params::zabbix_agentd_logfile,
   $server_name             = 'mon',
   $server_active           = 'mon',
@@ -54,8 +55,13 @@ class zabbix::agent (
     purge   => $purge_conf_dir,
   }
 
+  file { 'zabbix_agent_libdir':
+    ensure => directory,
+    path   => $dir_zabbix_agent_libdir,
+  }
+
   # enable zabbix plugins to run sudo
-  sudoers::requiretty { 'zabbix_notty':
+  ::sudoers::requiretty { 'zabbix_notty':
     requiretty => false,
     user       => 'zabbix',
     comment    => 'Allow user zabbix to run sudo without tty',
