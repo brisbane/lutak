@@ -29,9 +29,9 @@ class yum::repo::elrepo (
     }
     /^6.*/: {
       package { 'elrepo-release' :
-        ensure   => '6-5.el6.elrepo',
+        ensure   => '6-6.el6.elrepo',
         provider => 'rpm',
-        source   => 'http://elrepo.org/elrepo-release-6-5.el6.elrepo.noarch.rpm',
+        source   => 'http://elrepo.org/elrepo-release-6-6.el6.elrepo.noarch.rpm',
       }
     }
   }
