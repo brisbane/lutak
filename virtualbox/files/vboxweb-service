@@ -26,10 +26,8 @@
 ### END INIT INFO
 
 PATH=$PATH:/bin:/sbin:/usr/sbin
-DEBIAN=
-NOLSB=yes
 
-[ -f /lib/lsb/init-functions ] || NOLSB=yes
+[ -f /etc/debian_release -a -f /lib/lsb/init-functions ] || NOLSB=yes
 [ -f /etc/vbox/vbox.cfg ] && . /etc/vbox/vbox.cfg
 
 if [ -n "$INSTALL_DIR" ]; then
@@ -41,8 +39,8 @@ else
 fi
 
 # silently exit if the package was uninstalled but not purged,
-# applies to Debian packages only
-[ -z "$DEBIAN" -o -x $binary ] || exit 0
+# applies to Debian packages only (but shouldn't hurt elsewhere)
+[ ! -f /etc/debian_release -o -x $binary ] || exit 0
 
 [ -r /etc/default/virtualbox ] && . /etc/default/virtualbox
 
