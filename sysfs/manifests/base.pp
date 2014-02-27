@@ -27,11 +27,21 @@ class sysfs::base {
     purge   => true,
   }
 
-  if $::osfamily == 'RedHat' {
-    file { '/etc/init.d/sysfsutils':
-      mode   => '0755',
-      source => "puppet:///modules/sysfs/init.${::osfamily}",
-      before => Service['sysfsutils'],
+  case $::operatingsystem {
+    default: {}
+    /CentOS|RedHat/: {
+      file { '/etc/init.d/sysfsutils':
+        mode   => '0755',
+        source => 'puppet:///modules/sysfs/init.RedHat',
+        before => Service['sysfsutils'],
+      }
+    }
+    'Ubuntu': {
+      file { '/etc/init.d/sysfsutils':
+        mode   => '0755',
+        source => 'puppet:///modules/sysfs/init.Ubuntu',
+        before => Service['sysfsutils'],
+      }
     }
   }
 
