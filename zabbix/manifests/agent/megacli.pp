@@ -8,5 +8,6 @@ class zabbix::agent::megacli (
 ) inherits zabbix::agent {
   package { 'zabbix-agent_megacli':
     ensure   => present,
+    require  => Package['zabbix-agent'],
   }
 }
