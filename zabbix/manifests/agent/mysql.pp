@@ -10,6 +10,7 @@ class zabbix::agent::mysql (
 
   package { 'zabbix-agent_mysql':
     ensure   => present,
+    require  => Package['zabbix-agent'],
   }
 
   file { "${dir_zabbix_agentd_confd}/mysql.conf" :
