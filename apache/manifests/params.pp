@@ -67,6 +67,7 @@ class apache::params {
     $apache_dev            = 'httpd-devel'
     $httpd_dir             = '/etc/httpd'
     $conf_dir              = "${httpd_dir}/conf"
+    $confd_dir             = "${httpd_dir}/conf.d"
     $mod_dir               = "${httpd_dir}/mod.d"
     $vdir                  = "${httpd_dir}/conf.d"
     $conf_file             = 'httpd.conf'
