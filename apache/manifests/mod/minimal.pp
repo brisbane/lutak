@@ -1,3 +1,5 @@
+# Class: apache::mod::minimal
+# - installs minimal set of apache modules
 class apache::mod::minimal {
   apache::mod { 'alias': }
   apache::mod { 'auth_basic': }
@@ -8,6 +10,6 @@ class apache::mod::minimal {
   apache::mod { 'headers': }
   apache::mod { 'log_config': }
   apache::mod { 'mime': }
-  apache::mod { 'rewrite': }
+  include ::apache::mod::rewrite
   apache::mod { 'setenvif': }
 }
