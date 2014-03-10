@@ -35,7 +35,7 @@
 # Mandatory: no
 # Default:
 # LogFile=
-LogFile=/var/log/zabbix/zabbix_server.log
+LogFile=<%= @logfile %>
 
 ### Option: LogFileSize
 #	Maximum size of log file in MB.
@@ -66,7 +66,7 @@ LogFileSize=0
 # Mandatory: no
 # Default:
 # PidFile=/tmp/zabbix_server.pid
-PidFile=/var/run/zabbix/zabbix_server.pid
+PidFile=<%= @pidfile %>
 
 ### Option: DBHost
 #	Database host name.
@@ -117,9 +117,9 @@ DBPassword=<%= @dbpass %>
 # Mandatory: no
 # Default:
 # DBSocket=/var/lib/mysql/mysql.sock
-<% if @dbsocket then %>
+<% if @dbsocket then -%>
 DBSocket=<%= @dbsocket_path %>
-<% end %>
+<% end -%>
 
 ### Option: DBPort
 #	Database port when not using local socket. Ignored for SQLite.
@@ -449,7 +449,7 @@ ExternalScripts=<%= @external_scripts %>
 # Mandatory: no
 # Default:
 # FpingLocation=/usr/sbin/fping
-FpingLocation=/usr/bin/fping
+FpingLocation=<%= @fpinglocation %>
 
 ### Option: Fping6Location
 #	Location of fping6.
@@ -459,7 +459,7 @@ FpingLocation=/usr/bin/fping
 # Mandatory: no
 # Default:
 # Fping6Location=/usr/sbin/fping6
-Fping6Location=/usr/bin/fping6
+Fping6Location=<%= @fping6location %>
 
 ### Option: SSHKeyLocation
 #	Location of public and private keys for SSH checks and actions.
@@ -484,6 +484,7 @@ Fping6Location=/usr/bin/fping6
 # Mandatory: no
 # Default:
 # TmpDir=/tmp
+TmpDir=<%= @tmpdir %>
 
 ### Option: StartProxyPollers
 #	Number of pre-forked instances of pollers for passive proxies.
@@ -523,7 +524,7 @@ Fping6Location=/usr/bin/fping6
 
 ### Option: Include
 #	You may include individual files or all files in a directory in the configuration file.
-#	Installing Zabbix will create include directory in /usr/local/etc, unless modified during the compile time.
+#	Installing Zabbix will create include directory in /etc, unless modified during the compile time.
 #
 # Mandatory: no
 # Default:

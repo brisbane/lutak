@@ -14,6 +14,8 @@ class zabbix::server (
   $purge_conf_dir          = $::zabbix::params::server_purge_conf_dir,
   $file_zabbix_server_conf = $::zabbix::params::file_zabbix_server_conf,
   $dir_zabbix_server_confd = $::zabbix::params::dir_zabbix_server_confd,
+  $pidfile                 = $::zabbix::params::zabbix_server_pidfile,
+  $logfile                 = $::zabbix::params::zabbix_server_logfile,
   $listenip                = '0.0.0.0',
   $create_db               = false,
   $db                      = 'pgsql',
@@ -23,8 +25,11 @@ class zabbix::server (
   $dbpass                  = 'secret',
   $dbsocket                = false,
   $dbsocket_path           = '/var/lib/mysql/mysql.sock',
+  $fpinglocation           = $::zabbix::params::fpinglocation,
+  $fping6location          = $::zabbix::params::fping6location,
   $alert_scripts_path      = $::zabbix::params::alert_scripts_path,
   $external_scripts        = $::zabbix::params::external_scripts,
+  $tmpdir                  = $::zabbix::params::tmpdir,
 ) inherits zabbix::params {
 
   File {
@@ -32,8 +37,8 @@ class zabbix::server (
     owner   => $file_owner,
     group   => $file_group,
     mode    => $file_mode,
-    require => Package[$package],
-    notify  => Service[$service],
+    require => Package['zabbix-server'],
+    notify  => Service['zabbix-server'],
   }
 
   package { 'zabbix-server':
@@ -52,8 +57,6 @@ class zabbix::server (
     path    => $file_zabbix_server_conf,
     mode    => '0640',
     content => template('zabbix/zabbix_server.conf.erb'),
-    require => Package['zabbix-server'],
-    notify  => Service['zabbix-server'],
   }
 
   file { '/etc/zabbix/zabbix_server.d':
