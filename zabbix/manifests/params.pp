@@ -29,8 +29,13 @@ class zabbix::params {
   $server_file_mode      = '0644'
   $server_purge_conf_dir = false
 
+  # module specific settings (java gateway)
+  $java_gateway_file_owner     = 'root'
+  $java_gateway_file_group     = 'root'
+  $java_gateway_file_mode      = '0644'
+
   # module dependencies
-  $dependency_class = 'tsm::dependency'
+  $dependency_class = 'zabbix::dependency'
   $my_class         = undef
 
   # install package depending on major version
@@ -56,6 +61,11 @@ class zabbix::params {
       $proxy_version            = 'present'
       $proxy_service            = 'zabbix-proxy'
       $proxy_status             = 'enabled'
+      $java_gateway_package     = 'zabbix-java-gateway'
+      $java_gateway_version     = 'present'
+      $java_gateway_service     = 'zabbix-java-gateway'
+      $java_gateway_status      = 'enabled'
+      $file_zabbix_javagw_conf  = '/etc/zabbix/zabbix_java_gateway.conf'
       $web_package              = 'zabbix-web'
       $web_version              = 'present'
       $web_file_owner           = 'root'
@@ -84,6 +94,11 @@ class zabbix::params {
       $proxy_version            = 'present'
       $proxy_service            = 'zabbix-proxy'
       $proxy_status             = 'enabled'
+      $java_gateway_package     = 'zabbix-java-gateway'
+      $java_gateway_version     = 'present'
+      $java_gateway_service     = 'zabbix-java-gateway'
+      $java_gateway_status      = 'enabled'
+      $file_zabbix_javagw_conf  = '/etc/zabbix/zabbix_java_gateway.conf'
       $web_package              = 'zabbix-web'
       $web_version              = 'present'
       $web_file_owner           = 'root'
@@ -112,6 +127,11 @@ class zabbix::params {
       $proxy_version            = 'present'
       $proxy_service            = 'zabbix-proxy'
       $proxy_status             = 'enabled'
+      $java_gateway_package     = 'zabbix-java-gateway'
+      $java_gateway_version     = 'present'
+      $java_gateway_service     = 'zabbix-java-gateway'
+      $java_gateway_status      = 'enabled'
+      $file_zabbix_javagw_conf  = '/etc/zabbix/zabbix_java_gateway.conf'
       $web_package              = 'zabbix-frontend-php'
       $web_version              = 'present'
       $web_file_owner           = 'root'
