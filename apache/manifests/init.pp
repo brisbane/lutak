@@ -36,6 +36,7 @@ class apache (
   $maxopenfiles         = $apache::params::maxopenfiles,
   $listen               = $apache::params::listen,
   $purge_vdir           = true,
+  $confd_dir            = $apache::params::confd_dir,
 ) inherits apache::params {
 
   package { 'httpd':
