@@ -28,6 +28,7 @@ class zabbix::agent::lld (
     ensure  => file,
     owner   => root,
     group   => root,
+    mode    => '0755',
     source  => 'puppet:///modules/zabbix/agent/lld/lld-blockdev',
     notify  => Service['zabbix-agent'],
     require => ::Sudoers::Allowed_command['zabbix_sudo_multipath'],
