@@ -4,8 +4,11 @@
 #
 class cuda::service {
   require yum::repo::elrepo
-  include cuda
 
+  # NVIDIA Driver from elrepo
+  package { 'nvidia-x11-drv':
+    ensure => present,
+  }
   file { '/etc/init.d/nvidia':
     owner   => 'root',
     group   => 'root',

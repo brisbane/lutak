@@ -17,8 +17,12 @@ class activemq (
   $jaas_jetty_password    = $::activemq::params::jaas_jetty_password,
   $jaas_monitor_password  = $::activemq::params::jaas_monitor_password,
   $jaas_system_password   = $::activemq::params::jaas_system_password,
+  $jaas_apel_password     = $::activemq::params::jaas_apel_password,
   $additional_storage     = $::activemq::params::additional_storage,
   $brokers_in_my_network  = $::activemq::params::brokers_in_my_network,
+  $jmx_min_memory         = $::activemq::params::jmx_min_memory,
+  $jmx_max_memory         = $::activemq::params::jmx_max_memory,
+
 
 ) inherits activemq::params {
 
@@ -105,6 +109,13 @@ class activemq (
     group   => root,
     mode    => '0644',
     require => File['/etc/activemq/users.properties.d'],
+  }
+  file { '/etc/security/limits.d/activemq.conf':
+    ensure  => file,
+    source  => 'puppet:///modules/activemq/etc/security/limits.d/activemq.conf',
+    owner   => root,
+    group   => root,
+    mode    => '0644',
   }
   # Storege device
   if $additional_storage == None {
@@ -281,9 +292,9 @@ class activemq (
   }
   file { '/etc/activemq/jmx.password':
     ensure  => present,
-    owner   => root,
+    owner   => activemq,
     group   => root,
-    mode    => '0644',
+    mode    => '0400',
     content => template('activemq/etc/activemq/jmx.password.erb'),
     require => Package['activemq'],
     notify  => Service['activemq'],

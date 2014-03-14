@@ -21,8 +21,12 @@ class activemq::params {
   $jaas_jetty_password    = 'testpw'
   $jaas_monitor_password  = 'testpw'
   $jaas_system_password   = 'testpw'
+  $jaas_apel_password     = 'testpw'
 
   $additional_storage     = None
 
   $brokers_in_my_network  = []
+
+  $jmx_min_memory         = '512m'
+  $jmx_max_memory         = '2g'
 }
