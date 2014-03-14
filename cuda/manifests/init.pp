@@ -3,16 +3,31 @@
 # Module for installing NVIDIA CUDA
 #
 class cuda {
-  require yum::repo::elrepo
-
-  # NVIDIA Driver from elrepo
-  package { 'nvidia-x11-drv':
-    ensure => present,
-  }
+  require yum::repo::cuda
 
   # CUDA toolkit
-  package { 'cudatoolkit':
+  package { 'cuda-extra-libs-5-5':
     ensure  => present,
-    require => Package['nvidia-x11-drv'],
+  }
+  package { 'cuda-core-5-5':
+    ensure  => present,
+  }
+  file { '/etc/ld.so.conf.d/cuda-x86_64.conf':
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    source  => 'puppet:///modules/cuda/cuda-x86_64.conf',
+  }
+  file { '/etc/profile.d/cuda.sh':
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    source  => 'puppet:///modules/cuda/cuda.sh',
+  }
+  file { '/etc/profile.d/cuda.csh':
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    source  => 'puppet:///modules/cuda/cuda.csh',
   }
 }
