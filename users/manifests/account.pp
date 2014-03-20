@@ -7,7 +7,7 @@ define users::account (
   $ensure   = present,
   $comment  = '',
   $uid      = '',
-  $groups   = [],
+  $groups   = '',
   $shell    = '/bin/bash',
   $password = '',
   $sshkeys  = [],
@@ -29,15 +29,31 @@ define users::account (
     }
   }
 
+  # parse groups, in case we use multiple OS-es
+  if is_array( $groups ) {
+    $parsed_groups = $groups
+  } elsif is_hash ( $groups ) {
+    $parsed_groups = $groups[$::osfamily]
+  } else {
+    $parsed_groups = undef
+  }
+
+  # parse shells, in case we use multiple OS-es
+  if is_string( $shell ) {
+    $parsed_shell = $shell
+  } elsif is_hash ( $shell ) {
+    $parsed_shell = $shell[$::osfamily]
+  }
+
   # Default user settings
   user { $username:
     ensure     => $ensure,
     uid        => $uid,
     gid        => $uid,
-    groups     => $groups,
+    groups     => $parsed_groups,
     comment    => "${comment} ",
     home       => "/home/${username}",
-    shell      => $shell,
+    shell      => $parsed_shell,
     allowdupe  => false,
     managehome => true,
     require    => Group[$username],
