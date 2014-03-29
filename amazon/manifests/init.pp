@@ -1,0 +1,3 @@
+# Class: amazon
+class amazon {
+}

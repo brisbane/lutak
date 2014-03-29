@@ -1,0 +1,20 @@
+#
+# Configuration file for xvp, managed by PUPPET
+#
+POOL "<%= @pool %>"
+DOMAIN "<%= @domain %>"
+MANAGER "<%= @manager_user %>" <%= @manager_password %>
+
+#
+# Hosts
+#
+<% @hosts.each do |host| -%>
+HOST "<%= host %>"
+<% end -%>
+
+#
+# Virtual Machines
+#
+<% @vms.each do |vm| -%>
+VM <%= vm %>
+<% end -%>

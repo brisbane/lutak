@@ -1,0 +1,7 @@
+#
+# JAAS groups
+#
+admins=Anastasis.Andronidis,George.Fergadis,Paschalis.Korosoglou,Pavlos.Daoglou,Emir.Imamagic,Luko.Gjenero,system
+brokers=mq.afroditi.hellasgrid.gr,mq.cro-ngi.hr,broker.afroditi.hellasgrid.gr,gridmsg105.cern.ch,gridmsg106.cern.ch,msg.cro-ngi.hr
+guests=guest
+monitors=mb-monitor-dev.cern.ch,mb-monitor.cern.ch,ops-monitor.cern.ch

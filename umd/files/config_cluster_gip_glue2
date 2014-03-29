@@ -1,0 +1,626 @@
+##############################################################################
+# Copyright (c) Members of the EGEE Collaboration. 2004.
+# See http://www.eu-egee.org/partners/ for details on the copyright
+# holders.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+##############################################################################
+#
+# NAME :        config_cluster_gip_glue2
+#
+# DESCRIPTION : This function configures the generic information provider (GIP)
+#               for glite-CLUSTER for glue2
+#
+# AUTHORS :     massimo.sgaravatto@pd.infn.it
+#
+# YAIM MODULE:  glite.yaim.cluster
+#
+##############################################################################
+function config_cluster_gip_glue2_check () {
+
+ ret=0
+
+
+for CLUSTER in ${CLUSTERS}; do
+  newSUBCLUSTERS=""
+  for SUBCLUSTER in `eval echo "\\$CLUSTER_${CLUSTER}_SUBCLUSTERS"`; do
+    SUBCLUSTER=`echo ${SUBCLUSTER} | sed -e 's/-/_/g' -e 's/\./_/g' | tr '[:lower:]' '[:upper:]'`
+    newSUBCLUSTERS="${newSUBCLUSTERS} $SUBCLUSTER"
+    UniqueID=`eval echo "\\$SUBCLUSTER_${SUBCLUSTER}_SUBCLUSTER_UniqueID" | tr '[:upper:]' '[:lower:]'`
+    if [ "x`echo ${UniqueID} | sed -e 's/[a-z0-9._-]//g'`" != "x" ]; then
+      yaimlog ERROR "The UniqueID provided for subcluster $SUBCLUSTER contains invalid character(s)"
+      let "ret |= 1"
+    fi
+    eval "SUBCLUSTER_${SUBCLUSTER}_SUBCLUSTER_UniqueID=\"${UniqueID}\""
+ done
+ eval "CLUSTER_${CLUSTER}_SUBCLUSTERS=\"${newSUBCLUSTERS}\""
+done
+
+ requires $1 SITE_NAME COMPUTING_SERVICE_ID USE_CEMON \
+        CLUSTERS CLUSTER__SUBCLUSTERS CE_BATCH_SYS BATCH_VERSION SUBCLUSTER__HOST_ArchitecturePlatformType \
+        SUBCLUSTER__SUBCLUSTER_PhysicalCPUs SUBCLUSTER__SUBCLUSTER_LogicalCPUs SUBCLUSTER__HOST_ArchitectureSMPSize \
+        SUBCLUSTER__HOST_ProcessorVendor SUBCLUSTER__HOST_ProcessorModel SUBCLUSTER__HOST_ProcessorClockSpeed \
+        SUBCLUSTER__HOST_MainMemoryRAMSize SUBCLUSTER__HOST_MainMemoryVirtualSize CE_OS_FAMILY SUBCLUSTER__HOST_OperatingSystemName \
+	SUBCLUSTER__HOST_OperatingSystemRelease SUBCLUSTER__HOST_NetworkAdapterInboundIP \
+        SUBCLUSTER__HOST_NetworkAdapterOutboundIP SUBCLUSTER__HOST_BenchmarkSF00 SUBCLUSTER__HOST_BenchmarkSI00 \
+        SUBCLUSTER__HOST_ProcessorOtherDescription QUEUES
+
+ let "ret |= $?"
+
+ for i in ${SUBCLUSTER_VAR}; do
+  requires $1 SUBCLUSTER__SUBCLUSTER_$i
+  let "ret |= $?"
+done
+ 
+return $ret
+}
+
+function config_cluster_gip_glue2_setenv () {
+
+  yaimlog DEBUG "This function currently doesn't set any environment variables."
+
+}
+
+function config_cluster_gip_glue2 () {
+
+
+GLITE_CLUSTER_LOCATION_LIBEXEC=/usr/libexec
+GLITE_CLUSTER_LOCATION_ETC=/etc
+GLITE_CLUSTER_LOCATION_GIP=/var/lib/bdii/gip
+
+
+
+cat << EOF > ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2-shares.conf
+# Information about shares
+# For each one define the queue name, the ACBRs, the owners, the connected endpoints
+# and execution environments
+
+EOF
+
+
+
+# ServiceId is yaim variable COMPUTING_SERVICE_ID (mandatory in cluster mode)
+CreamServiceId=${COMPUTING_SERVICE_ID}
+
+# Check if the CE is using ARGUS (to be published among the otherinfo of
+# the endpoint objectclass
+if [ "x$USE_ARGUS" = "xyes" ]; then
+  UseArgus="yes"
+else
+  UseArgus="no"
+fi
+
+
+. /etc/glite-ce-cream/service.properties
+if [ x = x${interface_version} ]; then
+    yaimlog ERROR "serviceInterfaceVersion not found !"
+    return 1
+fi
+
+if [ x = x${implementation_version} ]; then
+    yaimlog ERROR "serviceVersion not found !"
+    return 1
+fi
+
+# Calculate shares
+# One share is a VOView
+# This code is inherited from config_cream_gip (the part used to calculate
+# the VOviews)
+  share_list=""
+
+
+  # Todo: get list of queues using the variables CE_HOST_<host-name>_QUEUES
+  # instead of relying on QUEUES
+  # for (1) - BEGIN
+  for QUEUE in $QUEUES; do
+
+# Converting the dots and dashes to underscore to get the proper variable name
+    dnssafevar=`echo $QUEUE | sed -e 's/[\.-]/_/g' |  tr '[:lower:]' '[:upper:]'`
+    requires $1 ${dnssafevar}_GROUP_ENABLE
+    qenablevar=${dnssafevar}_GROUP_ENABLE
+
+    if [ "${!qenablevar}" ] ; then
+
+      # for (2) - BEGIN
+      for vomsgroup in ${!qenablevar}; do
+        convert_fqan "${vomsgroup}"
+
+	share_acbr_list=""
+# Keep the possibility to turn off the whole stuff
+        if [ "x${FQANVOVIEWS}" = "xyes" ] || ([ ! `echo ${vomsgroup} | grep "/"` ] && [ "x${FQANVOVIEWS}" = "xno" ] ) ; then
+          myview=`echo ${newfqan} | sed -e 's/=/_/g'`
+          myaccessrule="VOMS:${newfqan}"
+          VO="${newfqanvo}"
+
+          # To make VO determination `GEAR - safe `
+          if [ ! `echo $vomsgroup | grep "/"` ]; then
+	    mygroupsdotconfvo=`cat $GROUPS_CONF | grep $vomsgroup | head -1 | cut -d ":" -f 5`
+             if [ ${mygroupsdotconfvo} ]; then
+               VO=${mygroupsdotconfvo}
+             else
+               VO="${newfqanvo}"
+             fi
+            myaccessrule="VO:${VO}"
+         fi
+
+           # Add ACBR for this share
+           share_acbr_list="${share_acbr_list} $myaccessrule ,"
+
+           # Share name is queue name + name of voview. Replace / with _
+           share=`echo ${QUEUE}_${myview} | sed -e 's/\//_/g'`
+
+           share_list="${share_list} ${share} , "
+
+# Here we add the DENY strings only for the generic VOview, i.e which does not contain "/"
+            allvoview="";
+            # Collecting all VoView defs
+            for OQUEUE in ${QUEUES}; do
+              dsv=`echo $OQUEUE | sed -e 's/[\.-]/_/g' |  tr '[:lower:]' '[:upper:]'`
+              oqenvar=${dsv}_GROUP_ENABLE
+              allvoview="${allvoview} ${!oqenvar}"
+            done
+            # Sort and drop entries whic appears twice
+            allvoview=`for kk in $allvoview; do echo $kk; done  | sort | uniq`;
+
+
+# Add the DENY stuff only if it is the generic VOview, i.e the VO itself -> no '/' in it's name
+
+            if [ ! `echo ${vomsgroup} | grep "/"` ]; then
+              convert_fqan ${vomsgroup}
+              vomsgroupvo="${newfqanvo}"
+
+              for myview in ${allvoview}; do
+                convert_fqan ${myview}
+# We don't deny ourselves...
+                if [ "x${myview}" != "x${vomsgroup}" ]; then
+
+ # .. and we put DENY only if it is in the same VO, otherwise it doesn't match, so DENY is not necessary
+                  if [ "x${vomsgroupvo}" = "x${newfqanvo}" ] && [ "x${FQANVOVIEWS}" = "xyes" ]; then
+                    if [  `echo ${myview} | grep "/"` ] ; then
+                      echo "finto"
+                       share_acbr_list="${share_acbr_list} DENY:${newfqan} ,"
+                    fi
+                  fi
+                fi
+
+              done
+            fi
+# This is the end of the FQANVOVIEWS if
+         fi # if (2) - END
+
+
+ share_acbr_list=`echo $share_acbr_list | sed -e "s/.,$//g"`
+ share_acbr_list="( $share_acbr_list )"
+
+
+QUEUE_name=`echo ${QUEUE} | sed -e 's/[\.-]/_/g' |  tr '[:lower:]' '[:upper:]'`
+
+# Find clusterid associated to this queue                               
+requires $1 QUEUE_${QUEUE_name}_CLUSTER_UniqueID                                     
+clusterid=`eval echo "\\$QUEUE_${QUEUE_name}_CLUSTER_UniqueID"`
+
+# Find cluster which has this clusterid                                                                      
+cluster_of_queue=""
+for CLUSTER in ${CLUSTERS}; do
+ CLUSTER=`echo ${CLUSTER} | sed -e 's/-/_/g' -e 's/\./_/g' | tr '[:lower:]' '[:upper:]'`
+ requires $1 CLUSTER_${CLUSTER}_CLUSTER_UniqueID
+ClusterUniqueID=`eval echo "\\$CLUSTER_${CLUSTER}_CLUSTER_UniqueID" | tr '[:upper:]' '[:lower:]'`
+if [ x${clusterid} = x${ClusterUniqueID} ]; then
+  cluster_of_queue=$CLUSTER
+fi
+done
+
+
+if [ x$cluster_of_queue = x ]; then
+   yaimlog ERROR "Not found a cluster associated to queue $QUEUE"
+   exit ${YEX_CONFIG}
+fi
+
+
+ee_list=""
+# Find subclusters of this cluster               
+requires $1 CLUSTER_${cluster_of_queue}_SUBCLUSTERS                                                            
+subclusters=`eval echo "\\$CLUSTER_${cluster_of_queue}_SUBCLUSTERS"`
+for SUBCLUSTER in ${subclusters}; do
+   SUBCLUSTER=`echo ${SUBCLUSTER} | sed -e 's/-/_/g' -e 's/\./_/g' | tr '[:lower:]' '[:upper:]'`
+   requires $1 SUBCLUSTER_${SUBCLUSTER}_SUBCLUSTER_UniqueID
+   SubClusterUniqueID=`eval echo "\\$SUBCLUSTER_${SUBCLUSTER}_SUBCLUSTER_UniqueID" | tr '[:upper:]' '[:lower:]'`
+   ee_list="${ee_list} $SubClusterUniqueID ,"
+done
+ee_list=`echo $ee_list | sed -e "s/.,$//g"`
+
+
+
+# Find endpoints associated to this share      
+ce_list=""
+ceid_list=""
+
+requires $1 CLUSTER_${cluster_of_queue}_CE_HOSTS
+ces=`eval echo "\\$CLUSTER_${cluster_of_queue}_CE_HOSTS"`
+for CE in ${ces}; do
+   ce_list="${ce_list} ${CE}_org.glite.ce.CREAM ,"
+
+   # Transform . and - into _ for the variable name.                                                         
+   CE_name=`echo $CE | sed -e 's/-/_/g' -e 's/\./_/g' | tr '[:upper:]' '[:lower:]'`
+   requires $1 CE_HOST_${CE_name}_CE_InfoJobManager
+   BATCH_SYS=`eval echo "\\$CE_HOST_${CE_name}_CE_InfoJobManager" | tr '[:upper:]' '[:lower:]'`
+   if [ $BATCH_SYS = pbs ] || [ $BATCH_SYS = torque ] ; then
+     my_batch_sys="pbs"
+   else
+    my_batch_sys=${BATCH_SYS}
+   fi
+   ceid=${CE}:8443/cream-${my_batch_sys}-${QUEUE}
+   ceid_list="${ceid_list} ${ceid} ,"
+
+
+done
+ce_list=`echo $ce_list | sed -e "s/.,$//g"`
+ceid_list=`echo $ceid_list | sed -e "s/.,$//g"`
+
+
+
+
+# Add information about this share to the share conf file
+  cat << EOF >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2-shares.conf
+SHARE_${share}_QUEUENAME=${QUEUE}
+SHARE_${share}_OWNER=${VO}
+SHARE_${share}_ENDPOINTS=(${ce_list})
+SHARE_${share}_EXECUTIONENVIRONMENTS=(${ee_list})
+SHARE_${share}_ACBRS=${share_acbr_list}
+SHARE_${share}_CEIDS=(${ceid_list})  
+
+EOF
+
+
+# End of qenablevar loop
+       done # for (2) - END
+# End of qenablevar if
+    fi  # if (1) - END
+  done  # for () - END
+
+ share_list=`echo $share_list | sed -e "s/.,$//g"`
+ share_list="( $share_list )"
+
+
+
+
+# Calculate the list of subclusters (i.e. ExecutionEnvironments)
+
+Subcluster_list=""
+SubclusterId_list=""
+
+
+for CLUSTER in ${CLUSTERS}; do
+  for SUBCLUSTER in `eval echo "\\$CLUSTER_${CLUSTER}_SUBCLUSTERS"`; do
+  SUBCLUSTER=`echo ${SUBCLUSTER} | sed -e 's/-/_/g' -e 's/\./_/g' | tr '[:lower:]' '[:upper:]'`
+  Subcluster_list="${SUBCLUSTER} ${Subcluster_list}"
+  done # subcluster
+done #cluster
+
+# Remove duplicated items from list
+  Subcluster_list=`for kk in $Subcluster_list; do echo $kk; done  | sort | uniq`
+
+
+
+   Subcluster_list_final=""
+   for jj in $Subcluster_list; do
+        SubClusterUniqueID=`eval echo "\\$SUBCLUSTER_${jj}_SUBCLUSTER_UniqueID" | tr '[:upper:]' '[:lower:]'`
+        Subcluster_list_final="$Subcluster_list_final $SubClusterUniqueID , "
+        
+   done
+
+
+# Remove last ,
+ExecutionEnvironmentList=`echo $Subcluster_list_final | sed -e "s/,$//g"`;
+
+
+
+# Calculate number of endpointtype: 3 is cemon is deployed, 2 otherwise
+if [ ${USE_CEMON} = true ]; then
+  NrEndPointType=3
+else
+  NrEndPointType=2
+fi
+
+# Back-up and create configuration file
+  backup_cluster_file ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+
+
+
+yaimlog DEBUG "Creating glue2 configuration file ..."
+
+cat << EOF > ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+# Site Id
+SiteId = ${SITE_NAME}
+
+# Computing Service Id
+# Provided by yaim variable COMPUTING_SERVICE_ID (required in cluster mode)
+ComputingServiceId = ${CreamServiceId}
+#
+#
+# NumberOfEndPointType
+# 2 (CREAM-CE + RTEpublisher) if CEMon is deployed
+# 3 otherwise
+NumberOfEndPointType = ${NrEndPointType}
+#
+#
+# ImplementationVersion is the version of the CREAM service
+ImplementationVersion=${implementation_version}
+#
+#
+# InterfaceVersion is the version of the Service interface
+InterfaceVersion=${interface_version}
+#
+#
+# HealthStateHelper should be the full pathname of the /glite-info-service-test plus CREAM as argument
+HealthStateHelper = ${GLITE_CREAM_LOCATION_BIN}/glite-info-service-test CREAM
+#
+#
+# ServingState of the Computing Element. It should be usually set to production
+ServingState = ${CREAM_CE_STATE}
+#
+#
+# Argus is yes if this CREAM CE is using Argus as authorization mechanism
+Argus = ${UseArgus}
+#
+#
+# Shares. The list of shares.
+# Format: Shares = (share1, share2, ..., sharen)
+Shares = ${share_list} 
+#
+# ExecutionEnvironments
+# The list of the ids of the Execution Environments
+# Format: ExecutionEnvironments = (EE1, EE2, ..., EEn)
+ExecutionEnvironments = ( ${ExecutionEnvironmentList} )
+#
+# CE_BATH_SYS is the batch system used by the CE. E.g. torque, lsf, etc
+# It should be filled with the content of yaim variable CE_BATCH_SYS
+CE_BATCH_SYS = ${CE_BATCH_SYS}
+#
+#
+# BATCH_VERSION is the Version of the batch system
+# It should be filled with the content of yaim variable BATCH_VERSION
+BATCH_VERSION = ${BATCH_VERSION}
+#
+#
+# ArchitecturePlatformType is the Platform Type of the WNs of the
+# specified EE
+# It should be filled with the content of yaim variable SUBCLUSTER_xxx_HOST_ArchitecturePlatformType
+#
+# PhysicalCPUs is the total number of real CPUs/physical chips, including
+# the nodes that are temporary down or offline
+# It should be filled with the content of yaim variable SUBCLUSTER_xxx_SUBCLUSTER_PhysicalCPUs
+#
+# LogicalCPUs is the total number of cores/hyperthreaded CPUs, including the
+# nodes that are temporary down or offline
+# It should be filled with the content of yaim variable SUBCLUSTER_xxx_SUBCLUSTER_LogicalCPUs
+#
+# SmpSize is the number of Logical CPUs (cores) of the WN
+# It should be filled with the content of yaim variable SUBCLUSTER_xxx_HOST_ArchitectureSMPSize
+#
+# ProcessorVendor is the name of the processor vendor for the Worker Nodes
+# It should be filled with the content of yaim variable SUBCLUSTER_xxx_HOST_ProcessorVendor
+#
+# ProcessorModel is the name of the processor model as defined by the vendor
+# for the Worker Nodes
+# It should be filled with the content of yaim variable SUBCLUSTER_xxx_HOST_ProcessorModel
+#
+# ProcessorClockSpeed is the processor clock speed expressed in MHz for the
+# Worker Nodes
+# It should be filled with the content of yaim variable SUBCLUSTER_xxx_HOST_ProcessorClockSpeed
+#
+# MainMemoryRAMSize is the total physical memory of a WN expressed in MegaBytes
+# It should be filled with the content of yaim variable SUBCLUSTER_xxx_HOST_MainMemoryRAMSize
+#
+# MainMemoryVirtualSize is the total virtual memory of a WN expressed in
+# MegaBytes.
+# It should be filled with the content of yaim variable SUBCLUSTER_xxx_HOST_MainMemoryVirtualSize
+#
+# OperatingSystemFamily should be filled with the OS family (e.g. linux)
+#
+# OperatingSystemName is the name of the operating system used on the Worker
+# Nodes
+# It should be filled with the content of yaim variable SUBCLUSTER_xxx_HOST_OperatingSystemName
+#
+# OperatingSystemRelease is the release of the operating system used on the
+# Worker Nodes
+# It should be filled with the content of yaim variable SUBCLUSTER_xxx_HOST_OperatingSystemRelease
+#
+# NetworkAdapterInboundIP must be set to either FALSE or TRUE to express the
+# permission for inbound connectivity for the WNs
+# It should be filled with the content of yaim variable SUBCLUSTER_xxx_HOST_NetworkAdapterInboundIP
+#
+# NetworkAdapterOutboundIP must be set to either FALSE or TRUE to express
+# the permission for outbound connectivity for the WNs
+# It should be filled with the content of yaim variable SUBCLUSTER_xxx_HOST_NetworkAdapterOutboundIP
+#
+#
+# Benchmarks is the list of benchmarks
+# Format: Benchmarks = (Benchmark1, Benchmark2, .., Benchmarkn)
+# Format of Benchmarki: (Type Value)
+#
+#
+# Cores is the number of cores per CPU of the Worker Nodes
+#
+EOF
+
+for EE in ${Subcluster_list}; do
+      SubClusterUniqueID=`eval echo "\\$SUBCLUSTER_${EE}_SUBCLUSTER_UniqueID" | tr '[:upper:]' '[:lower:]'`
+
+     yaimlog DEBUG "Filling conf file with attributes for Subcluster ${SubClusterUniqueID} ..." 
+     echo "# Subcluster ${SubClusterUniqueID=}" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+     echo "ExecutionEnvironment_${SubClusterUniqueID}_ArchitecturePlatformType = `eval echo "\\${SUBCLUSTER_${EE}_HOST_ArchitecturePlatformType}"`" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+     echo "ExecutionEnvironment_${SubClusterUniqueID}_PhysicalCPUs = `eval echo "\\${SUBCLUSTER_${EE}_SUBCLUSTER_PhysicalCPUs}"`" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+     echo "ExecutionEnvironment_${SubClusterUniqueID}_LogicalCPUs = `eval echo "\\${SUBCLUSTER_${EE}_SUBCLUSTER_LogicalCPUs}"`" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+     echo "ExecutionEnvironment_${SubClusterUniqueID}_SmpSize = `eval echo "\\${SUBCLUSTER_${EE}_HOST_ArchitectureSMPSize}"`" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+     echo "ExecutionEnvironment_${SubClusterUniqueID}_ProcessorVendor = `eval echo "\\${SUBCLUSTER_${EE}_HOST_ProcessorVendor}"`" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+     echo "ExecutionEnvironment_${SubClusterUniqueID}_ProcessorModel = `eval echo "\\${SUBCLUSTER_${EE}_HOST_ProcessorModel}"`" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+     echo "ExecutionEnvironment_${SubClusterUniqueID}_ProcessorClockSpeed = `eval echo "\\${SUBCLUSTER_${EE}_HOST_ProcessorClockSpeed}"`" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+     echo "ExecutionEnvironment_${SubClusterUniqueID}_MainMemoryRAMSize = `eval echo "\\${SUBCLUSTER_${EE}_HOST_MainMemoryRAMSize}"`" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+     echo "ExecutionEnvironment_${SubClusterUniqueID}_MainMemoryVirtualSize = `eval echo "\\${SUBCLUSTER_${EE}_HOST_MainMemoryVirtualSize}"`" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+     echo "ExecutionEnvironment_${SubClusterUniqueID}_OperatingSystemFamily = ${CE_OS_FAMILY}" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+     echo "ExecutionEnvironment_${SubClusterUniqueID}_OperatingSystemName = `eval echo "\\${SUBCLUSTER_${EE}_HOST_OperatingSystemName}"`" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+     echo "ExecutionEnvironment_${SubClusterUniqueID}_OperatingSystemRelease = `eval echo "\\${SUBCLUSTER_${EE}_HOST_OperatingSystemRelease}"`" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+     echo "ExecutionEnvironment_${SubClusterUniqueID}_NetworkAdapterInboundIP = `eval echo "\\${SUBCLUSTER_${EE}_HOST_NetworkAdapterInboundIP}"`" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+     echo "ExecutionEnvironment_${SubClusterUniqueID}_NetworkAdapterOutboundIP = `eval echo "\\${SUBCLUSTER_${EE}_HOST_NetworkAdapterOutboundIP}"`" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+
+     # Calculate Benchmark
+     benchmark_info=""
+     sf00=`eval echo "\\$SUBCLUSTER_${EE}_HOST_BenchmarkSF00"`
+     if [ x = x${sf00} ]; then
+       spec_fp=""
+     else
+       spec_fp="(specfp2000 ${sf00})"
+       benchmark_info="${spec_fp},"
+     fi
+     si00=`eval echo "\\$SUBCLUSTER_${EE}_HOST_BenchmarkSI00"`
+     if [ x = x${si00} ]; then
+       spec_int=""
+     else
+       spec_int="(specint2000 ${si00})"
+       benchmark_info="${benchmark_info} ${spec_int},"
+     fi
+
+     otherdesc=`eval echo "\\$SUBCLUSTER_${EE}_HOST_ProcessorOtherDescription"`
+     if [ "`echo $otherdesc | grep Benchmark`" > /dev/null ]; then
+       benchmark=`echo $otherdesc | sed -e 's/.*Benchmark=//' | sed -e 's/-.*//'`
+       hep_spec="(hep-spec06 $benchmark)"
+       benchmark_info="${benchmark_info} ${hep_spec}"
+     else
+       hep_spec=""
+     fi
+
+     if [ ! "X" = "X${benchmark_info}" ]; then
+         benchmark_info=`echo ${benchmark_info} | sed -e 's/,$//g'`
+         benchmark_info="(${benchmark_info})"
+     fi
+     echo "ExecutionEnvironment_${SubClusterUniqueID}_Benchmarks = ${benchmark_info}" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+
+     # Evaluate Cores number
+     if [ "`echo $otherdesc | grep Cores`" > /dev/null ]; then
+        cores=`echo $otherdesc | sed -e 's/.*Cores=//g' | sed 's/,.*//g'`
+        echo "ExecutionEnvironment_${SubClusterUniqueID}_Cores = ${cores}" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+     else
+       yaimlog ERROR "$SUBCLUSTER_${SubClusterUniqueID}_HOST_ProcessorOtherDescription not properly set"
+       exit ${YEX_CONFIG}
+     fi
+     
+done
+
+# Evaluate closeSE info
+echo "SE_LIST=${SE_LIST}"
+close_se_list=""
+if [ ! "X" = "X${SE_LIST}" ]; then
+
+  if [ $SE_MOUNT_INFO_LIST = "none" ]; then
+
+    for se in ${SE_LIST}; do
+      close_se_list="${close_se_list} (${se} none none),"
+    done
+
+  else if [ ! "x" = "x${SE_MOUNT_INFO_LIST}" ]; then
+
+    for se_info in ${SE_MOUNT_INFO_LIST}; do
+      se_i=`echo ${se_info} | sed -e 's/:.*//g'`
+      export_dir_i=`echo ${se_info} | sed -e 's/.*://g' |sed -e 's/,.*//g'`
+      mount_dir_i=`echo ${se_info} | sed -e 's/.*,//g'`
+      close_se_list="${close_se_list} (${se_i} ${export_dir_i} ${mount_dir_i}),"
+    done
+  fi
+  fi
+
+  close_se_list=`echo $close_se_list | sed -e "s/,$//g"`
+  close_se_list="(${close_se_list})"
+
+fi
+
+cat << EOF >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+#
+#
+# CloseSEs is the list of the storage services close to this cluster
+# Format: CloseSEs = (closeSE1, closeSE2, ..., closeSEn)
+# Format of closeSEi: (StorageServiceid LocalPath RemotePath)
+CloseSEs = ${close_se_list}
+
+EOF
+
+# Working area attributes (which are optional)
+
+if [ "x${WORKING_AREA_SHARED}" != "x" ]; then
+echo "WorkingAreaShared = ${WORKING_AREA_SHARED}" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+fi
+
+
+if [ "x${WORKING_AREA_GUARANTEED}" != "x" ]; then
+echo "WorkingAreaGuaranteed = ${WORKING_AREA_GUARANTEED}" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+fi
+
+if [ "x${WORKING_AREA_TOTAL}" != "x" ]; then
+echo "WorkingAreaTotal = ${WORKING_AREA_TOTAL}" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+fi
+
+if [ "x${WORKING_AREA_FREE}" != "x" ]; then
+echo "WorkingAreaFree = ${WORKING_AREA_FREE}" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+fi
+
+if [ "x${WORKING_AREA_LIFETIME}" != "x" ]; then
+echo "WorkingAreaLifeTime = ${WORKING_AREA_LIFETIME}" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+fi
+
+if [ "x${WORKING_AREA_MULTISLOT_TOTAL}" != "x" ]; then
+echo "WorkingAreaMultiSlotTotal = ${WORKING_AREA_MULTISLOT_TOTAL}" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+fi
+
+if [ "x${WORKING_AREA_MULTISLOT_FREE}" != "x" ]; then
+echo "WorkingAreaMultiSlotFree = ${WORKING_AREA_MULTISLOT_FREE}" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+fi
+
+if [ "x${WORKING_AREA_MULTISLOT_LIFETIME}" != "x" ]; then
+echo "WorkingAreaMultiSlotLifeTime = ${WORKING_AREA_MULTISLOT_LIFETIME}" >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+fi
+
+
+# Merge share conf file with the generic glue2 one
+cat ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2-shares.conf >> ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf
+rm ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2-shares.conf
+
+
+yaimlog DEBUG "Enable publication of ComputingService"
+${GLITE_CLUSTER_LOCATION_LIBEXEC}/glite-ce-glue2-computingservice-static \
+ ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf > ${GLITE_CLUSTER_LOCATION_GIP}/ldif/ComputingService.ldif
+
+yaimlog DEBUG "Enable publication of ComputingManager"
+${GLITE_CLUSTER_LOCATION_LIBEXEC}/glite-ce-glue2-manager-static \
+ ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf > ${GLITE_CLUSTER_LOCATION_GIP}/ldif/ComputingManager.ldif
+
+yaimlog DEBUG "Enable publication of ComputingShare"
+${GLITE_CLUSTER_LOCATION_LIBEXEC}/glite-ce-glue2-share-static \
+${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf > ${GLITE_CLUSTER_LOCATION_GIP}/ldif/ComputingShare.ldif
+
+yaimlog DEBUG "Enable publication of ExecutionEnvironment"
+${GLITE_CLUSTER_LOCATION_LIBEXEC}/glite-ce-glue2-executionenvironment-static \
+ ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf > ${GLITE_CLUSTER_LOCATION_GIP}/ldif/ExecutionEnvironment.ldif
+
+yaimlog DEBUG "Enable publication of Benchmark"
+${GLITE_CLUSTER_LOCATION_LIBEXEC}/glite-ce-glue2-benchmark-static \
+ ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf > ${GLITE_CLUSTER_LOCATION_GIP}/ldif/Benchmark.ldif
+
+yaimlog DEBUG "Enable publication of ToStorageService"
+${GLITE_CLUSTER_LOCATION_LIBEXEC}/glite-ce-glue2-tostorageservice-static \
+ ${GLITE_CLUSTER_LOCATION_ETC}/glite-ce-glue2/glite-ce-glue2.conf > ${GLITE_CLUSTER_LOCATION_GIP}/ldif/ToStorageService.ldif
+
+
+# Exit with success
+return 0
+
+}

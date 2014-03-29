@@ -1,0 +1,125 @@
+##############################################################################
+# Copyright (c) Members of the EGEE Collaboration. 2004.
+# See http://www.eu-egee.org/partners/ for details on the copyright
+# holders.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+##############################################################################
+#
+# NAME :        config_cluster_gip_scheduler_plugin
+#
+# DESCRIPTION : This function configures the LRMS info providers.
+#
+# NOTES :       - Batch system specific configuration for the dynamic scheduler config file 
+#                 can be found in TORQUE_UTILS, CONDOR_UTILS and LSF_UTILS
+#
+# YAIM MODULE:  glite-cluster
+#
+##############################################################################
+
+function config_cluster_gip_scheduler_plugin_check () {
+                                                                                                                             
+        requires $1 CE_BATCH_SYS GROUPS_CONF VOS
+}
+                                                                                                                             
+function config_cluster_gip_scheduler_plugin_setenv () {
+                                                                                                                             
+        yaimlog DEBUG "This function currently doesn't set any environment variables."
+}
+
+function config_cluster_gip_scheduler_plugin () {
+
+GLITE_CLUSTER_LOCATION_GIP=/var/lib/bdii/gip
+GLITE_CLUSTER_LOCATION_ETC=/etc
+GLITE_CLUSTER_LOCATION_LIBEXEC=/usr/libexec
+
+
+	### Auxiliary script parameters	
+	LDIF_FILE="static-file-CE.ldif"
+	INFOD_SCHED_WRAP="${GLITE_CLUSTER_LOCATION_GIP}/plugin/glite-info-dynamic-scheduler-wrapper"
+        sched_conf="${GLITE_CLUSTER_LOCATION_ETC}/lrms/scheduler.conf"
+
+	### Beginning of ERT configuration
+####@ Writes the wrapper for the information provider (${GLITE_CLUSTER_LOCATION_GIP}/plugin/glite-info-dynamic-scheduler-wrapper)
+	cat << EOF > ${INFOD_SCHED_WRAP}
+#!/bin/sh -l
+${GLITE_CLUSTER_LOCATION_LIBEXEC}/lcg-info-dynamic-scheduler -c ${sched_conf}
+EOF
+	chmod +x ${INFOD_SCHED_WRAP}
+
+
+####@ Writes the [Main] section of the scheduler.conf file.
+
+	cat <<EOF > ${sched_conf}
+[Main]
+static_ldif_file: ${GLITE_CLUSTER_LOCATION_GIP}/ldif/$LDIF_FILE
+static_glue2_ldif_file_computingshare: ${GLITE_CLUSTER_LOCATION_GIP}/ldif/ComputingShare.ldif
+outputformat: both
+
+vomap :
+EOF
+
+	{
+	while IFS=: read myfqan mygroup mygroupid mytag myvo; do
+
+	    #   strip off the " marks
+    	    myfqan=`echo ${myfqan} | sed -e 's/\"//g'`
+
+	    #   determine vo from VOMS FQAN if not defined
+            convert_fqan "${myfqan}"
+
+    	    if [ ! "${myvo}" ]; then
+       	    	suppvo="${newfqanvo}"
+    	    else
+       	    	suppvo="${myvo}"
+    	    fi
+
+	    #   Is the VO supported ?
+    	    if [ `echo $VOS | grep -i -w "${suppvo}" | cut -f 1 -d " "` ]; then
+                
+		#   If yes and mygroup is also defined ....
+        	if [ "${mygroup}" ] && [ "${myfqan}" ]; then
+                    if [ "x${FQANVOVIEWS}" = "xyes" ]; then
+              	      echo "  $mygroup:$newfqan" >> ${sched_conf}
+                    else
+                      echo "  $mygroup:$suppvo" >> ${sched_conf}
+                    fi
+                #   If yes and group is not defined but tag is defined then we can figure out the group
+       		elif [ "${mytag}" ] && [ "${myfqan}" ]; then
+            	    mygroup=`users_getvogroup ${myfqan}`
+            	    if [ "${mygroup}" ]; then
+                        if [ "x${FQANVOVIEWS}" = "xyes" ]; then
+        		   echo "  ${mygroup}:${newfqan}" >> ${sched_conf}
+                        else
+        		   echo "  ${mygroup}:${suppvo}" >> ${sched_conf}
+                        fi
+            	    fi
+                #  Otherwise we just map to the standars VO unix group
+        	else
+                    mygroup=`users_getvogroup ${suppvo}`
+            	    if [ "x${mygroup}" != "x${suppvo}" ]; then
+                        if [ "x${FQANVOVIEWS}" = "xyes" ]; then                            
+       			   echo "  ${mygroup}:${newfqan}" >> ${sched_conf}
+                        else
+       			   echo "  ${mygroup}:${suppvo}" >> ${sched_conf}
+                        fi
+            	    fi
+        	fi
+    	    fi
+	done
+	} < ${GROUPS_CONF}
+
+
+	### Exit with success
+        return 0
+}
