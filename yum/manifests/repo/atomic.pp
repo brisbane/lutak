@@ -24,14 +24,14 @@ class yum::repo::atomic (
       package { 'atomic-release' :
         ensure   => '1.0-18.el5.art',
         provider => 'rpm',
-        source   => 'http://www6.atomicorp.com/channels/atomic/centos/5/x86_64/RPMS/atomic-release-1.0-18.el5.art.noarch.rpm',
+        source   => 'http://www3.atomicorp.com/channels/atomic/centos/5/x86_64/RPMS/atomic-release-1.0-18.el5.art.noarch.rpm',
       }
     }
     /^6.*/: {
       package { 'atomic-release' :
         ensure   => '1.0-18.el6.art',
         provider => 'rpm',
-        source   => 'http://www6.atomicorp.com/channels/atomic/centos/6/x86_64/RPMS/atomic-release-1.0-18.el6.art.noarch.rpm',
+        source   => 'http://www3.atomicorp.com/channels/atomic/centos/6/x86_64/RPMS/atomic-release-1.0-18.el6.art.noarch.rpm',
       }
     }
     /^18.*/: {
