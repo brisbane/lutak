@@ -15,6 +15,7 @@ class tomcat (
   $file_group              = $::tomcat::params::file_group,
   $file_sysconfig_path     = $::tomcat::params::file_sysconfig_path,
   $file_sysconfig_template = $::tomcat::params::file_sysconfig_template,
+  $java_opts               = $::tomcat::params::java_opt,
   $dependency_class        = $::tomcat::params::dependency_class,
   $my_class                = $::tomcat::params::my_class,
   $noops                   = false,
