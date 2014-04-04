@@ -15,6 +15,8 @@ class tomcat::params {
   $file_owner       = 'root'
   $file_group       = 'root'
 
+  $java_opts        = ''
+
   $dependency_class = 'tomcat::dependency'
   $my_class         = undef
 
