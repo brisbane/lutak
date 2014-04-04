@@ -1,5 +1,36 @@
-# Class: tomcat::params
+#
+# = Class: tomcat::params
+#
+# This module contains defaults for tomcat modules
+#
 class tomcat::params {
-  $major          = '6'
-  $package_ensure = 'present'
+
+  $ensure           = 'present'
+  $version          = undef
+  $service_enable   = true
+  $service_ensure   = 'running'
+  $autorestart      = true
+
+  $file_mode        = '0644'
+  $file_owner       = 'root'
+  $file_group       = 'root'
+
+  $dependency_class = 'tomcat::dependency'
+  $my_class         = undef
+
+  # install package depending on major version
+  if $::osfamily == 'redhat' or $::operatingsystem == 'amazon' {
+    $package                 = 'tomcat6'
+    $service                 = 'tomcat6'
+    $file_sysconfig_path     = '/etc/sysconfig/tomcat6'
+    $file_sysconfig_template = 'tomcat/sysconfig.tomcat6.erb'
+  } elsif $::osfamily == 'debian' {
+    $package                 = 'tomcat6'
+    $service                 = 'tomcat6'
+    $file_sysconfig_path     = '/etc/default/tomcat6'
+    $file_sysconfig_template = 'tomcat/sysconfig.tomcat6.erb'
+  } else {
+    fail("Class['apache::params']: Unsupported operatingsystem: ${::operatingsystem}")
+  }
 }
+# vi:syntax=puppet:filetype=puppet:ts=4:et:nowrap:
