@@ -63,7 +63,7 @@ class tomcat (
     owner   => $file_owner,
     group   => $file_group,
     mode    => $file_mode,
-#    notify  => Service['tomcat'],
+    notify  => Service['tomcat'],
     noop    => $noops,
   }
 
