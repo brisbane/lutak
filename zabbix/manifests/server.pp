@@ -30,6 +30,7 @@ class zabbix::server (
   $alert_scripts_path      = $::zabbix::params::alert_scripts_path,
   $external_scripts        = $::zabbix::params::external_scripts,
   $tmpdir                  = $::zabbix::params::tmpdir,
+  $autoload_configs        = false,
 ) inherits zabbix::params {
 
   File {
@@ -98,5 +99,10 @@ class zabbix::server (
     }
   }
 
+  # autoload configs from zabbix::server::configs from hiera
+  if ( $autoload_configs == true ) {
+    $zabbix_config_rules = hiera_hash('zabbix::server::configs', {})
+    create_resources(::Zabbix::Server::Config, $zabbix_config_rules)
+  }
 
 }
