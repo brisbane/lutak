@@ -13,7 +13,8 @@ define ucarp::vip (
 ) {
 
   ### Input parameters validation
-  if ! ( is_integer($name) and is_ip_address($address) ) { fail('Wrong IP address or numeric name.') }
+  validate_re($name, '^[0-2][0-9][0-9]$', 'Provided name is not in 001-255 range.')
+  if ! is_ip_address($address) { fail('Provided IP address is not valid.') }
 
   # turn ucarp on
   include ::ucarp
