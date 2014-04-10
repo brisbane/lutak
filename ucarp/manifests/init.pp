@@ -28,7 +28,6 @@ class ucarp (
   validate_string($version)
   validate_string($service)
   validate_re($service_ensure, ['running','stopped','undef'], 'Valid values are: running, stopped')
-  validate_bool($service_enable, 'Valid values are: true, false')
 
   ### Internal variables (that map class parameters)
   if $ensure == 'present' {

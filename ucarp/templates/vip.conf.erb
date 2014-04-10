@@ -12,12 +12,12 @@ VIP_ADDRESS="<%= @address %>"
 PASSWORD="<%= @password %>"
 <% end -%>
 <% if @bind_interface != '' -%>
-BIND_INTERFACE="eth0"
+BIND_INTERFACE="<%= @bind_interface %>"
 <% end -%>
 <% if @source_address != '' -%>
-SOURCE_ADDRESS=""
+SOURCE_ADDRESS="<%= @source_address %>"
 <% end -%>
 <% if @options != '' -%>
 # If you have extra options to add, see "ucarp --help" output
-OPTIONS="--shutdown --preempt"
+OPTIONS="<%= @options %>"
 <% end -%>
