@@ -9,6 +9,7 @@ mirrorlist = http://updates.atomicorp.com/channels/mirrorlist/atomic-testing/cen
 enabled = 1
 protect = 0
 gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY.art.txt
+	file:///etc/pki/rpm-gpg/RPM-GPG-KEY.atomicorp.txt
 gpgcheck = 1
 priority = <%= @priority %>
 <% if @exclude.to_s != '' -%>
