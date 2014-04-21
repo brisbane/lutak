@@ -1,17 +1,37 @@
-# Class: webmin
+#
+# = Class: webmin
 #
 # This module manages Webmin
 #
 class webmin (
+  $ensure        = 'present',
+  $package       = 'webmin',
+  $version       = '1.680-1',
   $libwrap       = '0',
   $alwaysresolve = '1',
   $allow         = [ '0.0.0.0/0' ],
 ) {
-  require yum::repo::webmin
-  require perl::mod::net::ssleay
-  require perl::mod::authen::pam
+  include ::yum::repo::webmin
+  include ::perl::mod::net::ssleay
+  include ::perl::mod::authen::pam
 
-  package { 'webmin': ensure => present, }
+  ### Internal variables (that map class parameters)
+  if $ensure == 'present' {
+    $package_ensure = $version ? {
+      ''      => 'present',
+      default => $version,
+    }
+    $file_ensure = present
+  } else {
+    $package_ensure = absent
+    $file_ensure    = absent
+  }
+
+  ### Module code
+  package { 'webmin' :
+    ensure => $package_ensure,
+    name   => $package,
+  }
 
   file { '/etc/webmin/miniserv.conf':
     ensure  => file,
