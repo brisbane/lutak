@@ -9,20 +9,6 @@ class yum::repo::base (
   $priority = '1',
   $exclude  = [],
 ){
-  # base package
-  package {'yum': ensure => present }
-
-  # directory for repositories
-  file {'/etc/yum.repos.d':
-    ensure  => directory,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    recurse => true,
-    purge   => true,
-    force   => true,
-    require => Package['yum'],
-  }
 
   case $::operatingsystem {
     # Amazon AMI Linux (RedHat derivative)

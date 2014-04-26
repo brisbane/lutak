@@ -3,8 +3,9 @@
 # This module manages yum packages
 #
 class yum::conf (
-  $stage     = 'yumconf',
-  $yum_proxy = 'UNDEF',
+  $stage         = 'yumconf',
+  $yum_proxy     = 'UNDEF',
+  $purge_repos_d = true,
 ) {
   case $::operatingsystemrelease {
     default: {}
@@ -19,4 +20,20 @@ class yum::conf (
       }
     }
   }
+
+  # base package
+  package {'yum': ensure => present }
+
+  # directory for repositories
+  file { '/etc/yum.repos.d':
+    ensure  => directory,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    recurse => true,
+    purge   => $purge_repos_d,
+    force   => true,
+    require => Package['yum'],
+  }
+
 }
