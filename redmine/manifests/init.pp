@@ -2,14 +2,6 @@
 #  require ::ruby::gem::rails
 #  require ::yum::repo::passenger
 #
-#  file { '/etc/redmine/database.yml':
-#    ensure  => present,
-#    owner   => root,
-#    group   => apache,
-#    mode    => '0640',
-#    content => template('redmine/database.yml.erb'),
-#    require => Package['redmine'],
-#  }
 #
 #  file { '/var/www/redmine/public':
 #    ensure  => link,
@@ -137,12 +129,22 @@ class redmine (
   $db_pass           = '',
   $db_enc            = 'utf8',
   $db_schema         = 'public',
+  $secret_token      = undef,
+  $email_delivery    = ':smtp',
+  $email_username    = undef,
+  $email_password    = undef,
+  $email_server      = undef,
+  $email_server_port = undef,
+  $email_domain      = undef,
+  $email_auth        = undef,
+  $email_template    = 'redmine/email.yaml.erb',
 ) inherits redmine::params {
 
   ### Input parameters validation
   validate_re($ensure, ['present','absent'], 'Valid values are: present, absent')
   validate_string($package)
   validate_string($version)
+  validate_re($secret_token, '^[[:alnum:]]+$', 'Please define secret_token as alphanumerics.')
 
   ### Internal variables (that map class parameters)
   if $ensure == 'present' {
@@ -192,9 +194,26 @@ class redmine (
     noop    => $noops,
   }
 
-  #file { $file_apcupsd_conf :
-  #  content => template('apcupsd/apcupsd.conf.erb'),
-  #}
+  file { '/etc/redmine/database.yml':
+    group   => apache,
+    mode    => '0640',
+    content => template('redmine/database.yml.erb'),
+    require => Package['redmine'],
+  }
+
+  file { '/etc/redmine/initializers/secret_token.rb':
+    group   => apache,
+    mode    => '0640',
+    content => template('redmine/secret_token.erb'),
+    require => Package['redmine'],
+  }
+
+  file { '/etc/redmine/configuration.yml':
+    group   => apache,
+    mode    => '0640',
+    content => template('redmine/configuration.yml.erb'),
+    require => Package['redmine'],
+  }
 
 }
 # vi:syntax=puppet:filetype=puppet:ts=4:et:nowrap:
