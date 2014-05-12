@@ -87,7 +87,7 @@ class postfix (
   $file_owner      = $::postfix::params::file_owner,
   $file_group      = $::postfix::params::file_group,
   $file_maincf     = $::postfix::params::file_maincf,
-  $template_maincf = 'postfix/main.cf.erb',
+  $template_maincf = $::postfix::params::template_maincf,
   $interfaces      = [ 'localhost' ],
   $mydestination   = [ '$myhostname', 'localhost.$mydomain', 'localhost' ],
   $smtpd_banner    = '$myhostname ESMTP $mail_name',
@@ -163,7 +163,8 @@ vated and unmanaged')
     noop    => $noops,
   }
 
-  file { $file_maincf :
+  file { 'postfix_main.cf':
+    path    => $file_maincf,
     content => template($template_maincf),
     notify  => Service[$service],
   }
