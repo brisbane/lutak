@@ -18,7 +18,7 @@ class ucarp (
   $ucarp_confd_purge = $::ucarp::params::ucarp_confd_purge,
   $dependency_class  = $::ucarp::params::dependency_class,
   $my_class          = $::ucarp::params::my_class,
-  $noops             = false,
+  $noops             = undef,
   $autoload_configs  = false,
 ) inherits ucarp::params {
 

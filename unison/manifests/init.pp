@@ -24,7 +24,7 @@
 #   * latest  - latest available
 #
 # [*noops*]
-#   Type: boolean, default: false
+#   Type: boolean, default: undef
 #   Set noop metaparameter to true for all resources managed by the module.
 #   If true no real change is done by the module on the system.
 #
@@ -32,7 +32,7 @@ class unison (
   $ensure  = present,
   $package = 'unison227',
   $version = '',
-  $noops   = false,
+  $noops   = undef,
 ) {
 
   ### Internal variables (that map class parameters)

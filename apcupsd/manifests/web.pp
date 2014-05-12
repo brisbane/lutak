@@ -36,7 +36,7 @@
 #   Path to hosts.conf.
 #
 # [*noops*]
-#   Type: boolean, default: false
+#   Type: boolean, default: undef
 #   Set noop metaparameter to true for all the resources managed by the module.
 #   If true no real change is done is done by the module on the system.
 #
@@ -54,7 +54,7 @@ class apcupsd::web (
   $file_hosts_conf   = $::apcupsd::params::file_hosts_conf,
   $dependency_class  = $::apcupsd::params::dependency_class,
   $my_class          = $::apcupsd::params::my_class,
-  $noops             = false,
+  $noops             = undef,
   $hosts             = [],
 ) inherits apcupsd::params {
 

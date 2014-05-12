@@ -44,7 +44,7 @@
 #   Name of a custom class to autoload to manage module's customizations
 #
 # [*noops*]
-#   Type: boolean, default: false
+#   Type: boolean, default: undef
 #   Set noop metaparameter to true for all the resources managed by the module.
 #   If true no real change is done is done by the module on the system.
 #
@@ -63,7 +63,7 @@ class kerberos (
   $file_krb5_conf    = $::kerberos::params::file_krb5_conf,
   $dependency_class  = $::kerberos::params::dependency_class,
   $my_class          = $::kerberos::params::my_class,
-  $noops             = false,
+  $noops             = undef,
   $default_realm     = 'EXAMPLE.COM',
 ) inherits kerberos::params {
 
