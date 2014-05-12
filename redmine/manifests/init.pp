@@ -80,7 +80,7 @@
 #   Name of a custom class to autoload to manage module's customizations
 #
 # [*noops*]
-#   Type: boolean, default: false
+#   Type: boolean, default: undef
 #   Set noop metaparameter to true for all the resources managed by the module.
 #   If true no real change is done is done by the module on the system.
 #
@@ -121,7 +121,7 @@ class redmine (
   $file_group        = $::redmine::params::file_group,
   $dependency_class  = $::redmine::params::dependency_class,
   $my_class          = $::redmine::params::my_class,
-  $noops             = false,
+  $noops             = undef,
   $db_adapter        = 'postgresql',
   $db_name           = 'redmine',
   $db_host           = 'localhost',

@@ -18,7 +18,7 @@ class tomcat (
   $java_opts               = $::tomcat::params::java_opt,
   $dependency_class        = $::tomcat::params::dependency_class,
   $my_class                = $::tomcat::params::my_class,
-  $noops                   = false,
+  $noops                   = undef,
 ) inherits tomcat::params {
 
   ### Input parameters validation
@@ -26,7 +26,6 @@ class tomcat (
   validate_string($package)
   validate_string($version)
   validate_string($service)
-  validate_re($service_ensure,  ['stopped','false','running','true'], 'Valid values are stopped (also called false), running (also called true).' )
 
   ### Internal variables (that map class parameters)
   if $ensure == 'present' {

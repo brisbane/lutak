@@ -45,7 +45,7 @@
 #   Name of a custom class to autoload to manage module's customizations
 #
 # [*noops*]
-#   Type: boolean, default: false
+#   Type: boolean, default: undef
 #   Set noop metaparameter to true for all the resources managed by the module.
 #   If true no real change is done is done by the module on the system.
 #
@@ -60,7 +60,7 @@ class nfsen (
   $file_group        = $::nfsen::params::file_group,
   $dependency_class  = $::nfsen::params::dependency_class,
   $my_class          = $::nfsen::params::my_class,
-  $noops             = false,
+  $noops             = undef,
 ) inherits nfsen::params {
 
   ### Input parameters validation

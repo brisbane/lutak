@@ -56,7 +56,7 @@
 #   Name of a custom class to autoload to manage module's customizations
 #
 # [*noops*]
-#   Type: boolean, default: false
+#   Type: boolean, default: undef
 #   Set noop metaparameter to true for all the resources managed by the module.
 #   If true no real change is done is done by the module on the system.
 #
@@ -100,7 +100,7 @@ class apcupsd (
   $file_apcupsd_conf = $::apcupsd::params::file_apcupsd_conf,
   $dependency_class  = $::apcupsd::params::dependency_class,
   $my_class          = $::apcupsd::params::my_class,
-  $noops             = false,
+  $noops             = undef,
   $upscable          = 'usb',
   $upstype           = 'usb',
   $device            = '',

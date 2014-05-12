@@ -94,7 +94,7 @@
 #   Name of a custom class to autoload to manage module's customizations
 #
 # [*noops*]
-#   Type: boolean, default: false
+#   Type: boolean, default: undef
 #   Set noop metaparameter to true for all the resources managed by the module.
 #   If true no real change is done is done by the module on the system.
 #
@@ -121,9 +121,9 @@ class tsm (
   $file_dsm_sys      = $::tsm::params::file_dsm_sys,
   $dependency_class  = $::tsm::params::dependency_class,
   $my_class          = $::tsm::params::my_class,
-  $noops             = false,
   $backup_options    = $::tsm::params::backup_options,
   $archive_options   = $::tsm::params::archive_options,
+  $noops             = undef,
 ) inherits tsm::params {
 
   ### Input parameters validation
