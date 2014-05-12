@@ -73,7 +73,7 @@
 #   Name of a custom class to autoload to manage module's customizations
 #
 # [*noops*]
-#   Type: boolean, default: false
+#   Type: boolean, default: undef
 #   Set noop metaparameter to true for all the resources managed by the module.
 #   If true no real change is done is done by the module on the system.
 #
@@ -93,7 +93,7 @@ class postfix (
   $smtpd_banner    = '$myhostname ESMTP $mail_name',
   $relayhost       = 'UNSET',
   $my_class        = undef,
-  $noops           = false,
+  $noops           = undef,
   ) inherits postfix::params {
 
   ### Input parameters validation

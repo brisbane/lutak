@@ -19,11 +19,16 @@ class postfix::params {
   case $::osfamily {
     default: {}
     /(RedHat|redhat|amazon)/: {
-      $package     = 'postfix'
-      $service     = 'postfix'
-      $file_maincf = '/etc/postfix/main.cf'
+      $package         = 'postfix'
+      $service         = 'postfix'
+      $file_maincf     = '/etc/postfix/main.cf'
+      $template_maincf = 'postfix/rhel_main.cf.erb'
     }
-    /(debian|ubuntu)/: {
+    /(Debian|debian)/: {
+      $package         = 'postfix'
+      $service         = 'postfix'
+      $file_maincf     = '/etc/postfix/main.cf'
+      $template_maincf = 'postfix/debian_main.cf.erb'
     }
   }
 
