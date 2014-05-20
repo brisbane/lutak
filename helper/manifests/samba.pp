@@ -3,6 +3,7 @@
 #
 # This class wraps create_resources around hiera hashes for Samba Shares
 class helper::samba {
+  include ::samba
   include ::samba::server
   include ::samba::server::restart
 
