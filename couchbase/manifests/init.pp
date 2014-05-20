@@ -7,11 +7,12 @@ class couchbase (
   $package_vendor = 'community',
   $version        = '2.0.0',
   $release        = '1976',
+  $package_source = 'http://packages.couchbase.com/releases/2.0.0/couchbase-server-community-_x86_64_2.0.0.rpm',
   $server_user    = 'secret',
   $server_pass    = 'secret',
   $cluster_ip     = '',
 ) {
-  require admintools::openssl098e
+  require ::admintools::openssl098e
 
   Couchbucket {
     admin_user     => $server_user,
@@ -19,22 +20,10 @@ class couchbase (
   }
 
   # get correct package
-  case $::architecture {
-    default: {}
-    /^i386/: {
-      package { $package_name :
-        ensure   => "${version}-${release}",
-        provider => 'rpm',
-        source   => "http://packages.couchbase.com/releases/${version}/${package_name}-${package_vendor}_x86_${version}.rpm",
-      }
-    }
-    /^x86_64/: {
-      package { $package_name :
-        ensure   => "${version}-${release}",
-        provider => 'rpm',
-        source   => "http://packages.couchbase.com/releases/${version}/${package_name}-${package_vendor}_x86_64_${version}.rpm",
-      }
-    }
+  package { $package_name :
+    ensure   => "${version}-${release}",
+    provider => 'rpm',
+    source   => $package_source,
   }
 
   # stat service
