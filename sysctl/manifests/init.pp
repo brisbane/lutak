@@ -15,7 +15,12 @@
 #    comment => 'Some comment',
 #  }
 #
-define sysctl ( $value = undef, $comment = undef, $ensure = undef ) {
+define sysctl (
+  $ensure  = undef,
+  $key     = $title,
+  $value   = undef,
+  $comment = undef,
+) {
   # Parent purged directory
   require sysctl::base
 
@@ -25,19 +30,19 @@ define sysctl ( $value = undef, $comment = undef, $ensure = undef ) {
     owner   => root,
     group   => root,
     mode    => '0644',
-    content => "# ${comment}\n${title} = ${value}\n",
+    content => "# ${comment}\n${key} = ${value}\n",
   }
 
   if $ensure != 'absent' {
     # The immediate change + re-check on each run "just in case"
     exec { "sysctl-${title}":
-      command => "/sbin/sysctl -w ${title}=\"${value}\"",
-      unless  => "/sbin/sysctl -n ${title} | /bin/grep -q -e '^${value}\$'",
+      command => "/sbin/sysctl -w ${key}=\"${value}\"",
+      unless  => "/sbin/sysctl -n ${key} | /bin/grep -q -e '^${value}\$'",
     }
     # For the few original values from the main file
     exec { "update-sysctl.conf-${title}":
-      command => "sed -i -e 's/${title} =.*/${title} = ${value}/' /etc/sysctl.conf",
-      unless  => "/bin/bash -c \"! egrep '^${title} =' /etc/sysctl.conf || egrep '^${title} = ${value}\$' /etc/sysctl.conf\"",
+      command => "sed -i -e 's/${key} =.*/${key} = ${value}/' /etc/sysctl.conf",
+      unless  => "/bin/bash -c \"! egrep '^${key} =' /etc/sysctl.conf || egrep '^${key} = ${value}\$' /etc/sysctl.conf\"",
       path    => [ '/usr/sbin', '/sbin', '/usr/bin', '/bin' ],
     }
   }
