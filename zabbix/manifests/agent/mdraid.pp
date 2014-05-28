@@ -31,7 +31,8 @@ class zabbix::agent::mdraid (
     ensure  => file,
     owner   => root,
     group   => root,
-    source  => 'zabbix/agent/check_mdraid',
+    mode    => '0755',
+    source  => 'puppet:///modules/zabbix/agent/check_mdraid',
     require => ::Sudoers::Allowed_command['zabbix_sudo_mdadm'],
   }
 
