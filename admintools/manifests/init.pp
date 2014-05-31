@@ -11,7 +11,8 @@ class admintools {
 
   # admin tools
   package { 'nmap':         ensure => present, }
-  package { 'screen':       ensure => present, }
+  include ::tools::screen
+  include ::tools::tmux
   package { 'zsh':          ensure => present, }
   package { 'atop':         ensure => present, }
   package { 'htop':         ensure => present, }
