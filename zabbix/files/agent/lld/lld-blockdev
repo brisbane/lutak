@@ -46,16 +46,15 @@ done
 echo "{"
 echo "\"data\":["
 
-for blockdev in $sds $xvs $mds; do
-    [ "xx$SKIP_MPATH" == "xxtrue" -a -x $MULTIPATH ] && sudo $MULTIPATH -ll 2>/dev/null | grep -q "${blockdev:5} "
-    DISK_IN_MPATH=$?
-    [ $DISK_IN_MPATH -ne 0 ] && echo "    {\"{#BLOCKDEVNAME}\":\"$blockdev\",\"{#BLOCKDEVNAMESHORT}\":\"${blockdev:5}\"},"
+for blockdev in $sds $xvs $mds $dms; do
+    if [ ! -z $LAST_DEV ]; then
+        [ "xx$SKIP_MPATH" == "xxtrue" -a -x $MULTIPATH ] && sudo $MULTIPATH -ll 2>/dev/null | grep -q "${LAST_DEV:5} "
+        DISK_IN_MPATH=$?
+        [ $DISK_IN_MPATH -ne 0 ] && echo "    {\"{#BLOCKDEVNAME}\":\"$LAST_DEV\",\"{#BLOCKDEVNAMESHORT}\":\"${LAST_DEV:5}\"},"
+    fi
+    LAST_DEV=$blockdev
 done
-
-# dm-Xs are always in multipath output :)
-for blockdev in $dms; do
-    echo "    {\"{#BLOCKDEVNAME}\":\"$blockdev\",\"{#BLOCKDEVNAMESHORT}\":\"${blockdev:5}\"},"
-done
+[ "xx$blockdev" != "xx" ] && echo "    {\"{#BLOCKDEVNAME}\":\"$blockdev\",\"{#BLOCKDEVNAMESHORT}\":\"${blockdev:5}\"}"
 
 echo "]"
 echo "}"
