@@ -85,7 +85,7 @@ class zabbix::params {
       $agent_status             = 'enabled'
       $file_zabbix_agentd_conf  = '/etc/zabbix/zabbix_agentd.conf'
       $dir_zabbix_agentd_confd  = '/etc/zabbix/zabbix_agentd.d'
-      $dir_zabbix_agent_libdir  = '/usr/libexec/zabbix-agentd'
+      $dir_zabbix_agent_libdir  = '/usr/libexec/zabbix-agent'
       $zabbix_agentd_logfile    = '/var/log/zabbix/zabbix_agentd.log'
       $server_package           = 'zabbix-server'
       $server_version           = 'present'

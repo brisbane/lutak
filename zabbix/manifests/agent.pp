@@ -20,6 +20,7 @@ class zabbix::agent (
   $server_active           = 'mon',
   $client_name             = $::fqdn,
   $timeout                 = '30',
+  $autoload_configs        = false,
 ) inherits zabbix::params {
 
   File {
@@ -76,5 +77,10 @@ class zabbix::agent (
     require => Package['zabbix-agent'],
   }
 
+  # autoload configs from zabbix::agent::configs from hiera
+  if ( $autoload_configs == true ) {
+    $zabbix_agent_config_rules = hiera_hash('zabbix::agent::configs', {})
+    create_resources(::Zabbix::Agent::Config, $zabbix_agent_config_rules)
+  }
 
 }
