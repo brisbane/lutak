@@ -5,6 +5,7 @@
 
 class admintools {
   include ::ssh
+  include ::tools::vim
 
   package { 'wget':         ensure => present, }
   package { 'rsync':        ensure => present, }
@@ -34,11 +35,9 @@ class admintools {
       package { 'etckeeper':       ensure => present, }
       package { 'changetrack':     ensure => present, }
       package { 'apticron':        ensure => present, }
-      package { 'vim':             ensure => present, }
     }
     /(RedHat|redhat|amazon)/: {
       package { 'bind-utils':      ensure => present, }
-      package { 'vim-enhanced':    ensure => present, }
     }
   }
 
