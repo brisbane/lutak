@@ -5,6 +5,14 @@
 class helper::rabbitmq {
   include ::rabbitmq
 
+  # vhosts
+  $rabbitmq_vhosts = hiera_array('rabbitmq::vhosts', [])
+  rabbitmq_vhost { $rabbitmq_vhosts : }
+
+  # exchanges
+  $rabbitmq_exchanges = hiera_hash('rabbitmq::exchanges', {})
+  create_resources(rabbitmq_exchange, $rabbitmq_exchanges)
+
   # create rabbitmq users
   $rabbitmq_users = hiera_hash('rabbitmq::users', {})
   create_resources(rabbitmq_user, $rabbitmq_users)
@@ -15,6 +23,6 @@ class helper::rabbitmq {
 
   # enable plugins
   $rabbitmq_plugins = hiera_array('rabbitmq::plugins', [])
-  rabbitmq_plugin{ $rabbitmq_plugins : }
+  rabbitmq_plugin { $rabbitmq_plugins : }
 
 }
