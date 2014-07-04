@@ -18,4 +18,5 @@ class ossim::params {
   $timezone        = $::timezone
   $include_snort   = false
   $include_ossec   = false
+  $verbose         = 'info'
 }
