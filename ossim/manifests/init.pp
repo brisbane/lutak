@@ -17,6 +17,7 @@ class ossim (
   $timezone         = $ossim::params::timezone,
   $include_snort    = $ossim::params::include_snort,
   $include_ossec    = $ossim::params::include_ossec,
+  $verbose          = $ossim::params::verbose,
 ) inherits ossim::params {
   include geoip
   if $include_snort == true {
