@@ -1,0 +1,37 @@
+# For more information on configuration, see:
+#   * Official English Documentation: http://nginx.org/en/docs/
+user              <%= @daemon_user %>;
+worker_processes  <%= @worker_processes%>;
+
+error_log  <%= @log_dir %>/error.log;
+pid        <%= @pid_file %>;
+
+events {
+    worker_connections <%= @worker_connections %>;
+    <% if @multi_accept == 'on' -%>
+    multi_accept on;
+    <% end -%>
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+   log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                     '$status $body_bytes_sent "$http_referer" '
+                     '"$http_user_agent" "$http_x_forwarded_for"';
+    access_log  <%= @log_dir %>/access.log main;
+
+    sendfile    <%= @sendfile %>;
+    tcp_nopush  <%= @tcp_nopush %>;
+
+    keepalive_timeout  <%= @keepalive_timeout%>;
+    tcp_nodelay        <%= @tcp_nodelay%>;
+
+    <% if @gzip == 'on' -%>
+    gzip         on;
+    gzip_disable "MSIE [1-6]\.(?!.*SV1)";
+    <% end -%>
+
+    include /etc/nginx/conf.d/*.conf;
+}

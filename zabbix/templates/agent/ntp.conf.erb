@@ -1,0 +1,4 @@
+# ntpd
+UserParameter=ntp.offset,<%= ntpq_bin %> -pn | /usr/bin/gawk 'BEGIN { offset=1000 } $1 ~ /\*/ { offset=$9a } END { print offset }'
+UserParameter=ntp.jitter,<%= ntpq_bin %> -pn | /usr/bin/gawk 'BEGIN { offset=1000 } $1 ~ /\*/ { offset=$10 } END { print offset }'
+UserParameter=ntp.delay,<%= ntpq_bin %> -pn  | /usr/bin/gawk 'BEGIN { offset=1000 } $1 ~ /\*/ { offset=$8  } END { print offset }'
