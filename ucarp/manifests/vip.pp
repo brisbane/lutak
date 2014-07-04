@@ -8,7 +8,7 @@ define ucarp::vip (
   $password       = '',
   $bind_interface = '',
   $source_address = '',
-  $options        = '--shutdown --preempt',
+  $options        = '--shutdown',
   $template       = 'ucarp/vip.conf.erb',
 ) {
 
