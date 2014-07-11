@@ -1,6 +1,6 @@
 # Class: yum::repo::shibboleth
 #
-# This module manages Filesender repo files for $lsbdistrelease
+# This module manages shibboleth repo files for $lsbdistrelease
 #
 class yum::repo::shibboleth(
   $stage   = 'yumsetup',
