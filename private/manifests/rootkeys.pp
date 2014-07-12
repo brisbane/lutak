@@ -17,9 +17,12 @@ class private::rootkeys {
     owner  => root,
     group  => root,
   }
-  file { '/root/.ssh':
-    ensure => directory,
-    mode   => '0700',
+
+  if ! defined(File['/root/.ssh']) {
+    file { '/root/.ssh':
+      ensure => directory,
+      mode   => '0700',
+    }
   }
   file { '/root/.ssh/id_rsa':
     mode   => '0600',
