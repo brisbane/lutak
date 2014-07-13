@@ -17,7 +17,9 @@ class tomcat::params {
 
   $java_opts        = ''
 
-  $dependency_class = 'tomcat::dependency'
+  $native_enable    = false
+  $native_class     = '::tomcat::native'
+  $dependency_class = '::tomcat::dependency'
   $my_class         = undef
 
   # install package depending on major version
@@ -26,11 +28,13 @@ class tomcat::params {
     $service                 = 'tomcat6'
     $file_sysconfig_path     = '/etc/sysconfig/tomcat6'
     $file_sysconfig_template = 'tomcat/sysconfig.tomcat6.erb'
+    $native_package          = 'tomcat-native'
   } elsif $::osfamily == 'debian' {
     $package                 = 'tomcat6'
     $service                 = 'tomcat6'
     $file_sysconfig_path     = '/etc/default/tomcat6'
     $file_sysconfig_template = 'tomcat/sysconfig.tomcat6.erb'
+    $native_package          = undef
   } else {
     fail("Class['apache::params']: Unsupported operatingsystem: ${::operatingsystem}")
   }
