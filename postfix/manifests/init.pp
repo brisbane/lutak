@@ -160,14 +160,19 @@ vated and unmanaged')
     owner   => $file_owner,
     group   => $file_group,
     mode    => $file_mode,
+    require => Package['postfix'],
     noop    => $noops,
   }
 
-  file { 'postfix_main.cf':
+  file { '/etc/postfix/main.cf':
     path    => $file_maincf,
     content => template($template_maincf),
     notify  => Service[$service],
   }
+
+  # autoload postmaps
+  $postfix_postmaps = hiera_hash('postfix::postmaps', {})
+  create_resources(::Postfix::Postmap, $postfix_postmaps)
 
 }
 # vi:syntax=puppet:filetype=puppet:ts=4:et:nowrap:
