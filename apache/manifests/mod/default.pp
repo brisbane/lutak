@@ -43,7 +43,7 @@ class apache::mod::default {
   apache::mod { 'proxy_connect': }
   apache::mod { 'proxy_ftp': }
   apache::mod { 'rewrite': }
-  apache::mod { 'setenvif': }
+  include ::apache::mod::setenvif
   apache::mod { 'speling': }
   apache::mod { 'status': }
   apache::mod { 'suexec': }
