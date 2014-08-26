@@ -14,6 +14,8 @@ class fhgfs (
   $storage_space_emergency_limit = '10G',
   $version = '2011.04.r21-el6',
   $major_version = '2011',
+  $interfaces_file = '',
+  $net_filter_file = '',
 ) {
   case $major_version {
     default: {
@@ -24,6 +26,9 @@ class fhgfs (
     }
     '2012': {
       require yum::repo::fhgfs2012
+    }
+    '2014': {
+      require yum::repo::fhgfs2014
     }
   }
 

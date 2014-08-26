@@ -11,6 +11,8 @@ class fhgfs::mgmtd (
   $storage_space_low_limit       = $fhgfs::storage_space_low_limit,
   $storage_space_emergency_limit = $fhgfs::storage_space_emergency_limit,
   $version                       = $fhgfs::version,
+  $interfaces_file               = $fhgfs::interfaces_file,
+  $net_filter_file               = $fhgfs::net_filter_file,
 ) inherits fhgfs {
   package { 'fhgfs-mgmtd':
     ensure => $version,

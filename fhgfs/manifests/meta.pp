@@ -7,6 +7,8 @@ class fhgfs::meta (
   $meta_directory = $fhgfs::meta_directory,
   $mgmtd_host = $fhgfs::mgmtd_host,
   $version = $fhgfs::version,
+  $interfaces_file = $fhgfs::interfaces_file,
+  $net_filter_file = $fhgfs::net_filter_file,
 ) inherits fhgfs {
   package { 'fhgfs-meta':
     ensure => $version,

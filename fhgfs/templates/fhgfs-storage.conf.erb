@@ -27,18 +27,18 @@ connStoragePortTCP     = 8003
 connUseSDP             = false
 connUseRDMA            = true
 connBacklogTCP         = 128
-connInterfacesFile     = 
-connNetFilterFile      =
+connInterfacesFile     = <%= @interfaces_file %>
+connNetFilterFile      = <%= @net_filter_file %>
 
-storeStorageDirectory  = <%= storage_directory %>
+storeStorageDirectory  = <%= @storage_directory %>
 storeAllowFirstRunInit = true
 
-tuneNumWorkers         = 8
+tuneNumWorkers         = 16
 tuneWorkerBufSize      = 4m
 tuneFileReadSize       = 32k
 tuneFileWriteSize      = 64k
 
-sysMgmtdHost           = <%= mgmtd_host %>
+sysMgmtdHost           = <%= @mgmtd_host %>
 
 runDaemonized          = true
 

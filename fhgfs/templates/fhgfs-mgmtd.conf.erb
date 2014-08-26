@@ -23,20 +23,20 @@ connPortShift                  = 0
 connMgmtdPortUDP               = 8008
 connMgmtdPortTCP               = 8008
 connBacklogTCP                 = 128
-connInterfacesFile             =
-connNetFilterFile              =
+connInterfacesFile             = <%= @interfaces_file %>
+connNetFilterFile              = <%= @net_filter_file %>
 
-storeMgmtdDirectory            = <%= mgmtd_directory %>
+storeMgmtdDirectory            = <%= @mgmtd_directory %>
 storeAllowFirstRunInit         = true
 
 tuneNumWorkers                 = 4
 tuneMetaNodeAutoRemoveMins     = 0
 tuneStorageNodeAutoRemoveMins  = 0
-tuneClientAutoRemoveMins       = <%= client_auto_remove_mins %>
-tuneMetaSpaceLowLimit          = <%= meta_space_low_limit %>
-tuneMetaSpaceEmergencyLimit    = <%= meta_space_emergency_limit %>
-tuneStorageSpaceLowLimit       = <%= storage_space_low_limit %>
-tuneStorageSpaceEmergencyLimit = <%= storage_space_emergency_limit %>
+tuneClientAutoRemoveMins       = <%= @client_auto_remove_mins %>
+tuneMetaSpaceLowLimit          = <%= @meta_space_low_limit %>
+tuneMetaSpaceEmergencyLimit    = <%= @meta_space_emergency_limit %>
+tuneStorageSpaceLowLimit       = <%= @storage_space_low_limit %>
+tuneStorageSpaceEmergencyLimit = <%= @storage_space_emergency_limit %>
 
 sysAllowNewServers             = true
 sysForcedRoot                  =
