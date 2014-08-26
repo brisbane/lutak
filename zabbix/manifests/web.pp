@@ -44,12 +44,12 @@ class zabbix::web (
 
   File {
     ensure  => file,
-    require => Package[$package],
+    require => Package['zabbix-web'],
   }
 
   package { 'zabbix-web':
     ensure => $version,
-    name   => $package,
+    name   => "${package}-${db}",
   }
 
   file { "${dir_zabbix_php}/zabbix.conf.php":
