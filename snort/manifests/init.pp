@@ -79,9 +79,17 @@ class snort (
     mode    => '0750',
     require => Package['snort'],
   }
+  file { '/etc/init.d/snortd':
+    ensure  => present,
+    owner   => root,
+    group   => root,
+    mode    => '0755',
+    source  => 'puppet:///modules/snort/snortd',
+    notify  => Service['snortd'],
+  }
   service { 'snortd':
     ensure  => running,
     enable  => true,
-    require => File[$logdir, '/etc/snort/rules/local.rules' ],
+    require => File[$logdir, '/etc/snort/rules/local.rules', '/etc/init.d/snortd' ],
   }
 }
