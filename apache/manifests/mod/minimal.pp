@@ -11,5 +11,5 @@ class apache::mod::minimal {
   apache::mod { 'log_config': }
   apache::mod { 'mime': }
   include ::apache::mod::rewrite
-  apache::mod { 'setenvif': }
+  include ::apache::mod::setenvif
 }

@@ -45,7 +45,7 @@
 #   - $next_server_ip [type: string]
 #     Next Server in cobbler config.
 #
-#   - $nameserversa [type: array]
+#   - $nameservers [type: array]
 #     Nameservers for kickstart files to put in resolv.conf upon
 #     installation.
 #
@@ -74,13 +74,16 @@
 #   - $purge_system  [type: bool]
 #     Decides wether or not to purge (remove) from cobbler distro,
 #     repo, profiles and systems which are not managed by puppet.
-#     Default is true.
+#     Default is false.
 #
 #   - default_kickstart [type: string]
 #     Location of the default kickstart. Default depends on $::osfamily.
 #
 #   - webroot [type: string]
 #     Location of Cobbler's web root. Default: '/var/www/cobbler'.
+#
+#   - create_resources [type: bool]
+#     Automatically create resources from hiera hashes. Default: false
 #
 # Actions:
 #   - Install Cobbler
@@ -112,33 +115,36 @@ class cobbler (
   $defaultrootpw      = $::cobbler::params::defaultrootpw,
   $apache_service     = $::cobbler::params::apache_service,
   $allow_access       = $::cobbler::params::allow_access,
-  $purge_distro       = $::cobbler::params::purge_distro,
-  $purge_repo         = $::cobbler::params::purge_repo,
-  $purge_profile      = $::cobbler::params::purge_profile,
-  $purge_system       = $::cobbler::params::purge_system,
+  $purge_distro       = false,
+  $purge_repo         = false,
+  $purge_profile      = false,
+  $purge_system       = false,
   $default_kickstart  = $::cobbler::params::default_kickstart,
   $webroot            = $::cobbler::params::webroot,
-  $auth_module        = $::cobbler::params::auth_module
+  $auth_module        = $::cobbler::params::auth_module,
+  $create_resources   = false,
+  $dependency_class   = $::cobbler::params::dependency_class,
 ) inherits cobbler::params {
 
-  # require apache modules
-  include ::apache
-  include ::apache::mod::wsgi
-  include ::apache::mod::proxy
-  include ::apache::mod::proxy_http
+  # include dependencies
+  if $::cobbler::dependency_class {
+    include $::cobbler::dependency_class
+  }
 
   # install section
   package { $::cobbler::params::tftp_package:     ensure => present, }
   package { $::cobbler::params::syslinux_package: ensure => present, }
-  package { $package_name:
+  package { 'cobbler':
     ensure  => $package_ensure,
+    name    => $package_name,
     require => [ Package[$::cobbler::params::syslinux_package], Package[$::cobbler::params::tftp_package], ],
   }
 
-  service { $service_name :
+  service { 'cobbler':
     ensure  => running,
+    name    => $service_name,
     enable  => true,
-    require => Package[$package_name],
+    require => [ Package['cobbler'], File["${distro_path}/kickstarts"] ],
   }
 
   # file defaults
@@ -150,7 +156,7 @@ class cobbler (
   }
   file { "${::cobbler::params::proxy_config_prefix}/proxy_cobbler.conf":
     content => template('cobbler/proxy_cobbler.conf.erb'),
-    notify  => Service[$apache_service],
+    notify  => Service['httpd'],
   }
   file { $distro_path :
     ensure => directory,
@@ -162,13 +168,13 @@ class cobbler (
   }
   file { '/etc/cobbler/settings':
     content => template('cobbler/settings.erb'),
-    require => Package[$package_name],
-    notify  => Service[$service_name],
+    require => Package['cobbler'],
+    notify  => Service['cobbler'],
   }
   file { '/etc/cobbler/modules.conf':
     content => template('cobbler/modules.conf.erb'),
-    require => Package[$package_name],
-    notify  => Service[$service_name],
+    require => Package['cobbler'],
+    notify  => Service['cobbler'],
   }
   file { "${::cobbler::params::http_config_prefix}/distros.conf": content => template('cobbler/distros.conf.erb'), }
   file { "${::cobbler::params::http_config_prefix}/cobbler.conf": content => template('cobbler/cobbler.conf.erb'), }
@@ -177,40 +183,38 @@ class cobbler (
   exec { 'cobblersync':
     command     => '/usr/bin/cobbler sync',
     refreshonly => true,
+    require     => [ Service['cobbler'], Service['httpd'] ],
   }
 
-  # purge resources
-  if $purge_distro == true {
-    resources { 'cobblerdistro':  purge => true, }
+  # resource defaults
+  resources { 'cobblerdistro':
+    purge   => $purge_distro,
+    require => [ Service['cobbler'], Service['httpd'] ],
   }
-  if $purge_repo == true {
-    resources { 'cobblerrepo':    purge => true, }
+  resources { 'cobblerrepo':
+    purge   => $purge_repo,
+    require => [ Service['cobbler'], Service['httpd'] ],
   }
-  if $purge_profile == true {
-    resources { 'cobblerprofile': purge => true, }
+  resources { 'cobblerprofile':
+    purge   => $purge_profile,
+    require => [ Service['cobbler'], Service['httpd'] ],
   }
-  if $purge_system == true {
-    resources { 'cobblersystem':  purge => true, }
+  resources { 'cobblersystem':
+    purge   => $purge_system,
+    require => [ Service['cobbler'], Service['httpd'] ],
+  }
+
+  # create resources from hiera
+  if ( $create_resources == true ) {
+    create_resources(cobblerdistro,  hiera_hash('cobbler::distros',  {}) )
+    create_resources(cobblerrepo,    hiera_hash('cobbler::repos',    {}) )
+    create_resources(cobblerprofile, hiera_hash('cobbler::profiles', {}) )
+    create_resources(cobblersystem,  hiera_hash('cobbler::systems',  {}) )
   }
 
   # include ISC DHCP only if we choose manage_dhcp
   if $manage_dhcp == '1' {
-    package { 'dhcp':
-      ensure => present,
-    }
-    service { 'dhcpd':
-      ensure  => running,
-      require => Package['dhcp'],
-    }
-    file { '/etc/cobbler/dhcp.template':
-      ensure  => present,
-      owner   => root,
-      group   => root,
-      mode    => '0644',
-      content => template('cobbler/dhcp.template.erb'),
-      require => Package[$package_name],
-      notify  => Exec['cobblersync'],
-    }
+    include ::cobbler::dhcp
   }
 
   # logrotate script

@@ -1,4 +1,7 @@
-# Define: cobbler::add_distro
+#
+# = Define: cobbler::add_distro
+#
+# Adds cobblerdistro coupled with kickstart.
 define cobbler::add_distro (
   $arch,
   $isolink,
@@ -7,7 +10,8 @@ define cobbler::add_distro (
   $ks_template       = "cobbler/${title}.ks.erb",
   $include_kickstart = true,
 ) {
-  include cobbler
+  include ::cobbler
+
   $distro = $title
   $server_ip = $::cobbler::server_ip
   cobblerdistro { $distro :
@@ -17,7 +21,7 @@ define cobbler::add_distro (
     destdir => $::cobbler::distro_path,
     kernel  => "${::cobbler::distro_path}/${distro}/${kernel}",
     initrd  => "${::cobbler::distro_path}/${distro}/${initrd}",
-    require => [ Service[$::cobbler::service_name], Service[$::cobbler::apache_service] ],
+    require => [ Service['cobbler'], Service['httpd'] ],
   }
   $defaultrootpw = $::cobbler::defaultrootpw
   if ($include_kickstart) {
