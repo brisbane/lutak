@@ -23,16 +23,16 @@ class yum::repo::ius (
     default: {}
     /^5.*/: {
       package { 'ius-release':
-        ensure   => '1.0-11.ius.el5',
+        ensure   => '1.0-13.ius.el5',
         provider => 'rpm',
-        source   =>  'http://dl.iuscommunity.org/pub/ius/stable/Redhat/5/x86_64/ius-release-1.0-11.ius.el5.noarch.rpm',
+        source   =>  'http://dl.iuscommunity.org/pub/ius/stable/Redhat/5/x86_64/ius-release-1.0-13.ius.el5.noarch.rpm',
       }
     }
     /^6.*/: {
       package { 'ius-release':
-        ensure   => '1.0-11.ius.el6',
+        ensure   => '1.0-13.ius.el6',
         provider => 'rpm',
-        source   =>  'http://dl.iuscommunity.org/pub/ius/stable/Redhat/6/x86_64/ius-release-1.0-11.ius.el6.noarch.rpm',
+        source   =>  'http://dl.iuscommunity.org/pub/ius/stable/Redhat/6/x86_64/ius-release-1.0-13.ius.el6.noarch.rpm',
       }
     }
   }

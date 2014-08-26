@@ -12,7 +12,7 @@ exclude=<%= @exclude.join(' ') %>
 <% end -%>
 
 [ius-dev-debuginfo]
-name=IUS Community Packages for Enterprise Linux 6 - $basearch - Dev Debug Info 
+name=IUS Community Packages for Enterprise Linux 6 - $basearch - Dev Debug Info
 #baseurl=http://dl.iuscommunity.org/pub/ius/development/Redhat/6/$basearch/debuginfo
 mirrorlist=http://dmirr.iuscommunity.org/mirrorlist/?repo=ius-el6-dev-debuginfo&arch=$basearch
 failovermethod=priority
@@ -27,7 +27,7 @@ exclude=<%= @exclude.join(' ') %>
 [ius-dev-source]
 name=IUS Community Packages for Enterprise Linux 6 - $basearch - Dev Source
 #baseurl=http://dl.iuscommunity.org/pub/ius/development/Redhat/6/SRPMS
-mirrorlist=http://dmirr.iuscommunity.org/mirrorlist/?repo=ius-el6-dev-source&arch=$basearch
+mirrorlist=http://dmirr.iuscommunity.org/mirrorlist/?repo=ius-el6-dev-source&arch=source
 failovermethod=priority
 enabled=0
 gpgcheck=1

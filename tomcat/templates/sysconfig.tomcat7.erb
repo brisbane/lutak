@@ -18,10 +18,10 @@
 #JAVA_HOME="/usr/lib/jvm/java"
 
 # Where your tomcat installation lives
-#CATALINA_BASE="/usr/share/tomcat7"
-#CATALINA_HOME="/usr/share/tomcat7"
-#JASPER_HOME="/usr/share/tomcat7"
-#CATALINA_TMPDIR="/var/cache/tomcat7/temp"
+CATALINA_BASE="/usr/share/tomcat7"
+CATALINA_HOME="/usr/share/tomcat7"
+JASPER_HOME="/usr/share/tomcat7"
+CATALINA_TMPDIR="/var/cache/tomcat7/temp"
 
 # You can pass some parameters to java here if you wish to
 #JAVA_OPTS="-Xminf0.1 -Xmaxf0.3"
@@ -30,7 +30,11 @@ JAVA_OPTS="<%= @java_opts %>"
 <% end -%>
 
 # Use JAVA_OPTS to set java.library.path for libtcnative.so
+<% if @native_enable -%>
+JAVA_OPTS="-Djava.library.path=/usr/lib64"
+<% else -%>
 #JAVA_OPTS="-Djava.library.path=/usr/lib64"
+<% end -%>
 
 # What user should run tomcat
 #TOMCAT_USER="tomcat"
@@ -48,7 +52,10 @@ JAVA_OPTS="<%= @java_opts %>"
 #SHUTDOWN_VERBOSE="false"
 
 # Set the TOMCAT_PID location
-#CATALINA_PID="/var/run/tomcat7.pid"
+CATALINA_PID="/var/run/tomcat7.pid"
+
+# Set the TOMCAT_LOG location
+TOMCAT_LOG="${CATALINA_BASE}/logs/catalina.out"
 
 # Connector port is 8080 for this tomcat7 instance
 #CONNECTOR_PORT="8080"

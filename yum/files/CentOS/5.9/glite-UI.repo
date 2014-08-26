@@ -9,6 +9,7 @@ baseurl=http://glitesoft.cern.ch/EGEE/gLite/R3.2/glite-UI/sl5/x86_64/RPMS.releas
 gpgkey=http://glite.web.cern.ch/glite/glite_key_gd.asc
 gpgcheck=1
 enabled=1
+priority = 21
 
 [glite-UI_updates]
 name=gLite 3.2 User Interface
@@ -16,6 +17,7 @@ baseurl=http://glitesoft.cern.ch/EGEE/gLite/R3.2/glite-UI/sl5/x86_64/RPMS.update
 gpgkey=http://glite.web.cern.ch/glite/glite_key_gd.asc
 gpgcheck=1
 enabled=1
+priority = 21
 
 
 [glite-UI_ext]
@@ -23,3 +25,4 @@ name=gLite 3.2 User Interface
 baseurl=http://glitesoft.cern.ch/EGEE/gLite/R3.2/glite-UI/sl5/x86_64/RPMS.externals/
 gpgcheck=0
 enabled=1
+priority = 21

@@ -16,6 +16,8 @@ class tomcat (
   $file_sysconfig_path     = $::tomcat::params::file_sysconfig_path,
   $file_sysconfig_template = $::tomcat::params::file_sysconfig_template,
   $java_opts               = $::tomcat::params::java_opt,
+  $native_enable           = $::tomcat::params::native_enable,
+  $native_class            = $::tomcat::params::native_class,
   $dependency_class        = $::tomcat::params::dependency_class,
   $my_class                = $::tomcat::params::my_class,
   $noops                   = undef,
@@ -41,6 +43,9 @@ class tomcat (
   ### Extra classes
   if $dependency_class { include $dependency_class }
   if $my_class         { include $my_class         }
+
+  ### Native Extension
+  if ( $native_enable ) { include $native_class }
 
   ### Resources
   package { 'tomcat':

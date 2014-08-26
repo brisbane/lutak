@@ -1,6 +1,6 @@
-# Class: php::mod::pecl::zendopcache
 #
-# fast_shutdown = default is 0 by docs
+# = Class: php::mod::pecl::zendopcache
+#
 class php::mod::pecl::zendopcache (
   $major                   = $php::major,
   $package_ensure          = $php::package_ensure,
@@ -29,17 +29,16 @@ class php::mod::pecl::zendopcache (
   $preferred_memory_model  = '',
   $protect_memory          = '0',
 ) inherits php {
-  package { 'php-pecl-zendopcache':
-    ensure => $package_ensure,
-    name   => "php${major}-pecl-zendopcache",
-  }
+
+  ::php::mod::pecl::mod { 'zendopcache': }
+
   file { '/etc/php.d/opcache.ini':
     ensure  => file,
     owner   => root,
     group   => root,
     mode    => '0644',
     content => template('php/zendopcache.ini.erb'),
-    require => Package['php-pecl-zendopcache'],
+    require => ::Php::Mod::Pecl::Mod['zendopcache'],
   }
 
 }

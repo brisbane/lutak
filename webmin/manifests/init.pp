@@ -6,7 +6,7 @@
 class webmin (
   $ensure        = 'present',
   $package       = 'webmin',
-  $version       = '1.680-1',
+  $version       = '1.690-1',
   $libwrap       = '0',
   $alwaysresolve = '1',
   $allow         = [ '0.0.0.0/0' ],
