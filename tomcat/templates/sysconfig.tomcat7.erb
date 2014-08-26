@@ -31,7 +31,7 @@ JAVA_OPTS="<%= @java_opts %>"
 
 # Use JAVA_OPTS to set java.library.path for libtcnative.so
 <% if @native_enable -%>
-JAVA_OPTS="-Djava.library.path=/usr/lib64"
+JAVA_OPTS="${JAVA_OPTS} -Djava.library.path=/usr/lib64"
 <% else -%>
 #JAVA_OPTS="-Djava.library.path=/usr/lib64"
 <% end -%>
