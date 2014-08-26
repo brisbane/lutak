@@ -22,6 +22,8 @@ class samba::params {
     }
   }
   $package_ensure = 'present'
+  $status         = 'enabled'
+
   # other settings
   $workgroup     = 'WORKGROUP'
   $realm         = ''

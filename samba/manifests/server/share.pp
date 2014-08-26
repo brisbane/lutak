@@ -20,6 +20,10 @@ define samba::server::share (
   $hide_files          = '',
   $veto_files          = '',
   $dont_descend        = '',
+  $printable           = '',
+  $opslocks            = '',
+  $strict_locking      = '',
+  $public              = '',
 ) {
 
   concat::fragment { "smb_conf:${name}":

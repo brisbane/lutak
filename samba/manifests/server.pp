@@ -5,6 +5,7 @@
 class samba::server (
   $major                 = $samba::params::major,
   $package_ensure        = $samba::params::package_ensure,
+  $status                = $samba::params::status,
   $workgroup             = $samba::params::workgroup,
   $realm                 = $samba::params::realm,
   $security              = $samba::params::security,
@@ -27,9 +28,31 @@ class samba::server (
   $ad_password           = '',
 ) inherits samba::params {
 
+  ### Input parameters validation
+  validate_re($status,  ['enabled','disabled','running','stopped','activated','deactivated','unmanaged'], 'Valid values are: enabled, disabled, running, stopped, activated, deactivated and unmanaged')
+
+  $service_enable = $status ? {
+    'enabled'     => true,
+    'disabled'    => false,
+    'running'     => undef,
+    'stopped'     => undef,
+    'activated'   => true,
+    'deactivated' => false,
+    'unmanaged'   => undef,
+  }
+  $service_ensure = $status ? {
+    'enabled'     => 'running',
+    'disabled'    => 'stopped',
+    'running'     => 'running',
+    'stopped'     => 'stopped',
+    'activated'   => undef,
+    'deactivated' => undef,
+    'unmanaged'   => undef,
+  }
+
   Service {
-    ensure  => running,
-    enable  => true,
+    ensure  => $service_ensure,
+    enable  => $service_enable,
   }
 
   # packages
