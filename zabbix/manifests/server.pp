@@ -87,7 +87,6 @@ class zabbix::server (
         }
       }
       'mysql': {
-        include ::mysql::client
         include ::mysql::server
         ::mysql::db { $dbname:
           user     => $dbuser,
