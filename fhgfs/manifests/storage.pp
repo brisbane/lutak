@@ -7,6 +7,8 @@ class fhgfs::storage (
   $storage_directory = $fhgfs::storage_directory,
   $mgmtd_host        = $fhgfs::mgmtd_host,
   $version           = $fhgfs::version,
+  $interfaces_file   = $fhgfs::interfaces_file,
+  $net_filter_file   = $fhgfs::net_filter_file,
 ) inherits fhgfs {
   package { 'fhgfs-storage':
     ensure => $version,

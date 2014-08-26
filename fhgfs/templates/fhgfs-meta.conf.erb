@@ -28,18 +28,18 @@ connUseSDP                = false
 connUseRDMA               = true
 connBacklogTCP            = 128
 connMaxInternodeNum       = 32
-connInterfacesFile        = 
-connNetFilterFile         =
+connInterfacesFile        = <%= @interfaces_file %>
+connNetFilterFile         = <%= @net_filter_file %>
 connNonPrimaryExpiration  = 10000
 
-storeMetaDirectory        = <%= meta_directory %>
+storeMetaDirectory        = <%= @meta_directory %>
 storeAllowFirstRunInit    = true
 storeUseExtendedAttribs   = true
 
 tuneNumWorkers            = 0
 tuneTargetChooser         = randomized
 
-sysMgmtdHost              = <%= mgmtd_host %>
+sysMgmtdHost              = <%= @mgmtd_host %>
 
 runDaemonized             = true
 
