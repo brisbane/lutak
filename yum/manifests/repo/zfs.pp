@@ -8,6 +8,8 @@ class yum::repo::zfs (
   $priority = '99',
   $exclude  = [],
 ) {
+  require ::yum::repo::epel
+
   file { '/etc/yum.repos.d/zfs.repo':
     ensure  => file,
     mode    => '0644',
@@ -24,7 +26,7 @@ class yum::repo::zfs (
       package { 'zfs-release':
         ensure   => present,
         provider => 'rpm',
-        source   => 'http://archive.zfsonlinux.org/epel/zfs-release-1-2.el6.noarch.rpm',
+        source   => 'http://archive.zfsonlinux.org/epel/zfs-release-1-4.el6.noarch.rpm',
       }
     }
   }
