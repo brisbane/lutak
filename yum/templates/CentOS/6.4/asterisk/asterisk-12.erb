@@ -1,0 +1,10 @@
+[asterisk-12]
+name=CentOS-$releasever - Asterisk 12
+baseurl=http://packages.asterisk.org/centos/$releasever/asterisk-12/$basearch/
+enabled=1
+gpgcheck=0
+#gpgkey=http://packages.asterisk.org/RPM-GPG-KEY-Digium
+priority=<%= @priority %>
+<% if @exclude.to_s != '' -%>
+exclude=<%= @exclude.join(' ') %>
+<% end -%>
