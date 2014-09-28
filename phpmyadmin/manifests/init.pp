@@ -13,6 +13,8 @@ class phpmyadmin (
   $manage_config        = true,
   $config_inc_template  = $::phpmyadmin::params::config_inc_template,
   $manage_apache        = false,
+  $allow_access         = [ '127.0.0.1', '::1' ],
+  $allow_setup          = [ '127.0.0.1', '::1' ],
 ) inherits phpmyadmin::params {
 
   ### Internal variables (that map class parameters)
