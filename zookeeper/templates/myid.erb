@@ -1,0 +1,3 @@
+<%  mycurrentid = @myid -%>
+<%  mycurrentid = @hostname.sub(/[-a-zA-Z]*([0-9]+).*/,'\1').sub(/^0*/,'') unless @myid -%>
+<%= mycurrentid %>
