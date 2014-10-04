@@ -2,16 +2,20 @@
 # = Class: kibana
 #
 class kibana (
-  $ensure               = $::kibana::params::ensure,
-  $package              = $::kibana::params::package,
-  $version              = $::kibana::params::version,
-  $template_kibana_conf = undef,
-  $allow_from           = [ '127.0.0.1', '::1' ],
-  $webserver            = undef,
-  $elasticsearch        = 'http://"+window.location.hostname+":9200',
-  $dependency_class     = $::kibana::params::dependency_class,
-  $my_class             = $::kibana::params::my_class,
-  $noops                = undef,
+  $ensure                = $::kibana::params::ensure,
+  $package               = $::kibana::params::package,
+  $version               = $::kibana::params::version,
+  $configdir             = '/etc/kibana',
+  $template              = 'kibana/config.js.erb',
+  $webserver_conf_header = 'kibana/conf.header.erb',
+  $webserver_conf_body   = 'kibana/conf.body.erb',
+  $webserver_conf_footer = 'kibana/conf.footer.erb',
+  $webserver             = undef,
+  $allow_from            = [ '127.0.0.1', '::1' ],
+  $elasticsearch         = 'http://"+window.location.hostname+":9200',
+  $dependency_class      = $::kibana::params::dependency_class,
+  $my_class              = $::kibana::params::my_class,
+  $noops                 = undef,
 ) inherits kibana::params {
 
   ### Input parameters validation
@@ -31,30 +35,6 @@ class kibana (
     $file_ensure    = 'absent'
   }
 
-  # determine how to set up web server
-  case $webserver {
-    'apache': {
-      include ::apache
-      $service_name       = $::apache::service_name
-      $confd_dir          = $::apache::confd_dir
-      $template_webserver = 'kibana/kibana.conf_apache.erb'
-    }
-    'nginx':  {
-      include ::nginx
-      $service_name       = $::nginx::service_name
-      $confd_dir          = $::nginx::confd_dir
-      $template_webserver = 'kibana/kibana.conf_nginx.erb'
-    }
-    default:  {}
-  }
-
-  # which template to use
-  if ( $template_kibana_conf ) {
-    $template_name = $template_kibana_conf
-  } else {
-    $template_name = $template_webserver
-  }
-
   ### Extra classes
   if $dependency_class { include $dependency_class }
   if $my_class         { include $my_class         }
@@ -66,15 +46,55 @@ class kibana (
     noop   => $noops,
   }
 
-  if ( $webserver ) {
-    file { "${confd_dir}/kibana.conf" :
-      ensure  => $file_ensure,
-      owner   => root,
-      group   => root,
-      mode    => '0644',
-      content => template($template_name),
-      require => Package['kibana'],
-      notify  => Service[$service_name],
+  ### Determine how to set up web server
+  case $webserver {
+    'apache': {
+      include ::apache
+      $service_name       = $::apache::service_name
+      $confd_dir          = $::apache::confd_dir
+    }
+    'nginx':  {
+      include ::nginx
+      $service_name       = $::nginx::service
+      $confd_dir          = $::nginx::confd_dir
+    }
+    default:  {}
+  }
+
+  # kibana webserver configuration (uses concat)
+  concat { 'kibana_webserver_config':
+    path    => "${confd_dir}/kibana.conf",
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    notify  => Service[$service_name],
+    require => Package['kibana'],
+  }
+  # fragments
+  concat::fragment { 'kibana_webserver_config_header':
+    target  => 'kibana_webserver_config',
+    content => template($webserver_conf_header),
+    order   => '100',
+  }
+  concat::fragment { 'kibana_webserver_config_footer':
+    target  => 'kibana_webserver_config',
+    content => template($webserver_conf_footer),
+    order   => '300',
+  }
+
+  # autoload locations from kibana::locations (from hiera), or set default
+  $kibana_locations = hiera_hash('kibana::locations', {})
+  if ( $kibana_locations != {} ) {
+    create_resources(::Kibana::Location, $kibana_locations)
+  } else {
+    ::kibana::location { 'kibana':
+      index              => 'kibana-int',
+      path_config_js     => '/etc/kibana/config.js',
+      configdir          => $configdir,
+      template           => $template,
+      webserver_template => $webserver_conf_body,
+      allow_from         => $allow_from,
+      elasticsearch      => $elasticsearch,
     }
   }
 
