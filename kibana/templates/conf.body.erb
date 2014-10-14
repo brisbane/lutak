@@ -12,6 +12,8 @@
         deny  all;
     }
 <% elsif @webserver == 'apache' -%>
+Alias /<%= @name %>/config.js <%= @path_config_js_real %>
+Alias /<%= @name %> /usr/share/kibana
 <Location /<%= @name %>>
     Order deny,allow
     Deny from all
@@ -21,4 +23,5 @@
     Allow from <%= single_ip %>
 <% end -%>
 </Location>
+
 <% end -%>
