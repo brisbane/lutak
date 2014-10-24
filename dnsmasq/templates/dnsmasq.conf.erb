@@ -13,8 +13,11 @@
 # Never forward plain names (without a dot or domain part)
 domain-needed
 # Never forward addresses in the non-routed address spaces.
+<% if @bogus_priv -%>
 bogus-priv
-
+<% else -%>
+#bogus-priv
+<% end %>
 
 # Uncomment this to filter useless windows-originated DNS requests
 # which can trigger dial-on-demand links needlessly.
@@ -63,13 +66,17 @@ no-poll
 # Add other name servers here, with domain specs if they are for
 # non-public domains.
 #server=/localnet/192.168.0.1
+<% unless @servers.empty? -%>
+<% @servers.each do |server| -%>
+server=<%= server %>
+<% end -%><% end -%>
 
 # Example of routing PTR queries to nameservers: this will send all 
 # address->name queries for 192.168.3/24 to nameserver 10.1.2.3
 #server=/3.168.192.in-addr.arpa/10.1.2.3
-<% unless @servers.empty? -%>
-<% @servers.each do |server| -%>
-server=<%= server %>
+<% unless @servers_ptr.empty? -%>
+<% @servers_ptr.each do |server_ptr| -%>
+server=<%= server_ptr %>
 <% end -%><% end -%>
 
 # Add local-only domains here, queries in these domains are answered

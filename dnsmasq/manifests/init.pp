@@ -6,10 +6,12 @@
 class dnsmasq (
   $resolv_file      = '',
   $strict_order     = false,
+  $bogus_priv       = true,
   $no_resolv        = false,
   $no_poll          = false,
   $no_hosts         = false,
   $servers          = [],
+  $servers_ptr      = [],
   $cache_size       = undef,
   $bind_interfaces  = false,
   $interfaces       = [ 'lo' ],
