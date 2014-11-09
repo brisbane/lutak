@@ -1,32 +1,13 @@
-# Class: nginx
+#
+# = Class: nginx
 #
 # This module manages NGINX.
 #
-# Parameters:
-#
-# There are no default parameters for this class. All module parameters are
-# managed via the nginx::params class
-#
-# Actions:
-#
-# Requires:
-#  puppetlabs-stdlib - https://github.com/puppetlabs/puppetlabs-stdlib
-#
-#  Packaged NGINX
-#    - RHEL: EPEL or custom package
-#    - Debian/Ubuntu: Default Install or custom package
-#    - SuSE: Default Install or custom package
-#
-# Sample Usage:
-#
-# The module works with sensible defaults:
-#
-# node default {
-#   include nginx
-# }
 class nginx (
   $manage_service     = $::nginx::params::manage_service,
+  $service            = $::nginx::params::service,
   $conf_dir           = $::nginx::params::conf_dir,
+  $confd_dir          = $::nginx::params::confd_dir,
   $log_dir            = $::nginx::params::log_dir,
   $pid_file           = $::nginx::params::pid_file,
   $daemon_user        = $::nginx::params::daemon_user,
@@ -53,10 +34,14 @@ class nginx (
   # install nginx
   package { 'nginx': ensure => present, }
 
-  # create dirs
-  file { $conf_dir: ensure => directory, }
-  file { "${conf_dir}/conf.d":
+  # create conf dirs
+  file { '/etc/nginx':
+    ensure => directory,
+    path   => $conf_dir,
+  }
+  file { '/etc/nginx/conf.d':
     ensure  => directory,
+    path    => $confd_dir,
     recurse => true,
     purge   => true,
   }
@@ -66,15 +51,18 @@ class nginx (
     content => template('nginx/nginx.conf.erb'),
   }
 
+  # logrotate
+  file { '/etc/logrotate.d/nginx':
+    content => template('nginx/logrotate.erb'),
+  }
+
   # manage nginx service
   if $manage_service == true {
     service { 'nginx':
-      ensure     => running,
-      enable     => true,
-      subscribe  => [
-        File["${conf_dir}/nginx.conf"],
-        File["${conf_dir}/conf.d"],
-      ],
+      ensure    => running,
+      enable    => true,
+      subscribe => File["${conf_dir}/nginx.conf"],
+      require   => Package['nginx'],
     }
   }
 }
