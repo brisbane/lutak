@@ -113,7 +113,7 @@ mail_owner = postfix
 #inet_interfaces = all
 #inet_interfaces = $myhostname
 #inet_interfaces = $myhostname, localhost
-inet_interfaces = <%= interfaces.join(', ') %>
+inet_interfaces = <%= @interfaces.join(', ') %>
 
 # Enable IPv4, and IPv6 if supported
 inet_protocols = all
@@ -219,6 +219,13 @@ mydestination = <%= @mydestination.join(', ') %>
 # local_recipient_maps settings are OK.
 #
 unknown_local_recipient_reject_code = 550
+<% unless @recipient_canonical_maps.nil? -%>
+
+# recipient_canonical_maps: List of lookup tables used to map recipient
+# email addresses to their desired rewritten form. Operates the same as
+# canonical_maps but only for recipient addresses.
+recipient_canonical_maps = hash:<%= @recipient_canonical_maps %>
+<% end -%>
 
 # TRUST AND RELAY CONTROL
 
@@ -264,6 +271,9 @@ unknown_local_recipient_reject_code = 550
 #mynetworks = 168.100.189.0/28, 127.0.0.0/8
 #mynetworks = $config_directory/mynetworks
 #mynetworks = hash:/etc/postfix/network_table
+<% unless @mynetworks.empty? -%>
+mynetworks = <%= @mynetworks.join(', ') %>
+<% end -%>
 
 # The relay_domains parameter restricts what destinations this system will
 # relay mail to.  See the smtpd_recipient_restrictions description in
@@ -678,3 +688,19 @@ sample_directory = /usr/share/doc/postfix-2.6.6/samples
 # readme_directory: The location of the Postfix README files.
 #
 readme_directory = /usr/share/doc/postfix-2.6.6/README_FILES
+<% unless @smtpd_client_restrictions.empty? -%>
+
+# smtpd_client_restrictions: Optional restrictions that the Postfix SMTP
+# server applies in the context of a client connection request.
+# The default is to allow all connection requests. 
+smtpd_client_restrictions = <%= @smtpd_client_restrictions.join(', ') %>
+<% end -%>
+<% unless @smtpd_recipient_restrictions.empty? -%>
+
+# smtpd_recipient_restrictions: Optional restrictions that the Postfix SMTP
+# server applies in the context of a client RCPT TO command, after
+# smtpd_relay_restrictions. See SMTPD_ACCESS_README, section
+# "Delayed evaluation of SMTP access restriction lists" for a discussion of 
+# evaluation context and time. 
+smtpd_recipient_restrictions = <%= @smtpd_recipient_restrictions.join(', ') %>
+<% end -%>

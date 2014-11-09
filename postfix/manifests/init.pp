@@ -60,6 +60,25 @@
 #   Type: array, default: [ '$myhostname', 'localhost.$mydomain', 'localhost' ]
 #   Defines list of hostnames/domains which will be used as 'mydestination'
 #
+# [*mynetworks*]
+#   Type: array, default: []
+#   Specifies the list of "trusted" SMTP clients that have more privileges.
+#
+# [*recipient_canonical_maps*]
+#   Type: string, default: undef
+#   Specifies the path to a file that stores recipient canonical maps.
+#   File must be hashed.
+#
+# [*smtpd_client_restrictions*]
+#   Type: array, default: []
+#   Optional restrictions that the Postfix SMTP server applies in the context
+#   of a client connection request.
+#
+# [*smtpd_recipient_restrictions*]
+#   Type: array, default: []
+#   Optional restrictions that the Postfix SMTP server applies in the context
+#   of a client RCPT TO command, after smtpd_relay_restrictions.
+#
 # [*smtpd_banner*]
 #   Type: string, default: '$myhostname ESMTP $mail_name'
 #   Sets HELLO banner that will MTA show to its clients.
@@ -78,22 +97,26 @@
 #   If true no real change is done is done by the module on the system.
 #
 class postfix (
-  $ensure          = present,
-  $package         = $::postfix::params::package,
-  $version         = undef,
-  $service         = $::postfix::params::service,
-  $status          = 'enabled',
-  $file_mode       = $::postfix::params::file_mode,
-  $file_owner      = $::postfix::params::file_owner,
-  $file_group      = $::postfix::params::file_group,
-  $file_maincf     = $::postfix::params::file_maincf,
-  $template_maincf = $::postfix::params::template_maincf,
-  $interfaces      = [ 'localhost' ],
-  $mydestination   = [ '$myhostname', 'localhost.$mydomain', 'localhost' ],
-  $smtpd_banner    = '$myhostname ESMTP $mail_name',
-  $relayhost       = 'UNSET',
-  $my_class        = undef,
-  $noops           = undef,
+  $ensure                       = present,
+  $package                      = $::postfix::params::package,
+  $version                      = undef,
+  $service                      = $::postfix::params::service,
+  $status                       = 'enabled',
+  $file_mode                    = $::postfix::params::file_mode,
+  $file_owner                   = $::postfix::params::file_owner,
+  $file_group                   = $::postfix::params::file_group,
+  $file_maincf                  = $::postfix::params::file_maincf,
+  $template_maincf              = $::postfix::params::template_maincf,
+  $interfaces                   = [ 'localhost' ],
+  $mydestination                = [ '$myhostname', 'localhost.$mydomain', 'localhost' ],
+  $mynetworks                   = [],
+  $recipient_canonical_maps     = undef,
+  $smtpd_client_restrictions    = [],
+  $smtpd_recipient_restrictions = [],
+  $smtpd_banner                 = '$myhostname ESMTP $mail_name',
+  $relayhost                    = 'UNSET',
+  $my_class                     = undef,
+  $noops                        = undef,
   ) inherits postfix::params {
 
   ### Input parameters validation
