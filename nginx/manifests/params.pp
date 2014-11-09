@@ -18,9 +18,11 @@ class nginx::params {
   $manage_service = true
 
   # general settings
-  $conf_dir = '/etc/nginx'
-  $log_dir  = '/var/log/nginx'
-  $pid_file = '/var/run/nginx.pid'
+  $conf_dir  = '/etc/nginx'
+  $confd_dir = '/etc/nginx/conf.d'
+  $log_dir   = '/var/log/nginx'
+  $pid_file  = '/var/run/nginx.pid'
+  $service   = 'nginx'
 
   if $::osfamily == 'redhat' or $::operatingsystem == 'amazon' {
     $daemon_user = 'nginx'
