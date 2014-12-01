@@ -30,7 +30,7 @@ class geoip (
 
   # fetch and manage GeoIP.dat
   exec { 'fetch_geoip':
-    command => '/bin/touch /usr/share/GeoIP/GeoIP.dat && /usr/bin/perl /usr/share/doc/GeoIP-1.4.8/fetch-geoipdata.pl > /dev/null 2>&1',
+    command => '/bin/touch /usr/share/GeoIP/GeoIP.dat && /usr/bin/perl /usr/share/doc/GeoIP-*/fetch-geoipdata.pl > /dev/null 2>&1',
     unless  => '/usr/bin/test -s /usr/share/GeoIP/GeoIP.dat',
     require => File['/usr/share/GeoIP'],
   }
@@ -40,7 +40,7 @@ class geoip (
 
   # fetch and manage GeoLiteCity.dat
   exec { 'fetch_geolitecity':
-    command => '/bin/touch /usr/share/GeoIP/GeoLiteCity.dat && /usr/bin/perl /usr/share/doc/GeoIP-1.4.8/fetch-geoipdata-city.pl > /dev/null 2>&1',
+    command => '/bin/touch /usr/share/GeoIP/GeoLiteCity.dat && /usr/bin/perl /usr/share/doc/GeoIP-*/fetch-geoipdata-city.pl > /dev/null 2>&1',
     unless  => '/usr/bin/test -s /usr/share/GeoIP/GeoLiteCity.dat',
     require => File['/usr/share/GeoIP'],
   }
