@@ -3,9 +3,11 @@
 # This module manages logstash repo files for $operatingsystemrelease
 #
 class yum::repo::logstash (
-  $stage    = 'yumsetup',
-  $priority = '99',
-  $exclude  = [],
+  $stage     = 'yumsetup',
+  $priority  = '99',
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
   $version  = '1.3',
 ){
   require yum::repo::base

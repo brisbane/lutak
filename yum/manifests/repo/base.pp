@@ -5,9 +5,11 @@
 
 # CentOS
 class yum::repo::base (
-  $stage    = 'yumsetup',
-  $priority = '1',
-  $exclude  = [],
+  $stage     = 'yumsetup',
+  $priority  = '1',
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ){
 
   case $::operatingsystem {

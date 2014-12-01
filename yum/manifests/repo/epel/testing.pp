@@ -3,9 +3,11 @@
 # This module manages EPEL testing repo files for $lsbdistrelease
 #
 class yum::repo::epel::testing (
-  $stage    = 'yumsetup',
-  $priority = '11',
-  $exclude  = [],
+  $stage     = 'yumsetup',
+  $priority  = '11',
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ) {
   require yum::repo::epel
 

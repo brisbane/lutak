@@ -42,9 +42,11 @@
 #    | digium     | 1.8-certified |
 #
 class yum::repo::asterisk (
-  $stage    = 'yumsetup',
-  $priority = '5',
-  $exclude  = [],
+  $stage     = 'yumsetup',
+  $priority  = '5',
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
   $repotype = 'asterisk',
   $version  = '11',
 ) {

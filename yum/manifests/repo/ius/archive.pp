@@ -3,9 +3,11 @@
 # This module adds IUS archive repo to $lsbdistrelease
 #
 class yum::repo::ius::archive (
-  $stage    = 'yumsetup',
-  $priority = '61',
-  $exclude  = [],
+  $stage     = 'yumsetup',
+  $priority  = '61',
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ){
   require yum::repo::ius
 

@@ -4,8 +4,10 @@
 #
 class yum::repo::sam (
   $stage   = 'yumsetup',
-  $priority = '10',
-  $exclude  = [],
+  $priority  = '10',
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ){
   require yum::repo::base
 

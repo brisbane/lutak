@@ -3,9 +3,11 @@
 # This module manages elrepo repo files for $operatingsystemrelease
 #
 class yum::repo::elrepo (
-  $stage    = 'yumsetup',
-  $priority = '99',
-  $exclude  = [],
+  $stage     = 'yumsetup',
+  $priority  = '99',
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ){
   require yum::repo::base
 

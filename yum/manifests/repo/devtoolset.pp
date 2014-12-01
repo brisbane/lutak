@@ -3,9 +3,11 @@
 # This module manages CERN devtoolset repo files for $lsbdistrelease
 #
 class yum::repo::devtoolset(
-  $stage    = 'yumsetup',
-  $priority = 1,
-  $exclude  = [],
+  $stage     = 'yumsetup',
+  $priority  = 1,
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ){
   require yum::repo::base
 

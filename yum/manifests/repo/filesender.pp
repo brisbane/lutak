@@ -4,7 +4,9 @@
 #
 class yum::repo::filesender(
   $stage   = 'yumsetup',
-  $exclude  = [],
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ){
   require yum::repo::base
 

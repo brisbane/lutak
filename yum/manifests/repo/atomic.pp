@@ -3,9 +3,11 @@
 # This module manages ATOMIC repo files for $operatingsystemrelease
 #
 class yum::repo::atomic (
-  $stage    = 'yumsetup',
-  $priority = '21',
-  $exclude  = [ 'php*' ],
+  $stage     = 'yumsetup',
+  $priority  = '21',
+  $exclude   = [ 'php*' ],
+  $include   = [],
+  $debuginfo = false,
 ) {
   require yum::repo::base
 
@@ -31,7 +33,7 @@ class yum::repo::atomic (
       package { 'atomic-release' :
         ensure   => '1.0-19.el6.art',
         provider => 'rpm',
-        source   => 'http://www3.atomicorp.com/channels/atomic/centos/6/x86_64/RPMS/atomic-release-1.0-19.el6.art.noarch.rpm',
+        source   => 'http://www6.atomicorp.com/channels/atomic/centos/6/x86_64/RPMS/atomic-release-1.0-19.el6.art.noarch.rpm',
       }
     }
     /^18.*/: {

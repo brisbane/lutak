@@ -3,9 +3,11 @@
 # This module manages Base repo files for $operatingsystemrelease
 #
 class yum::repo::rpmforge (
-  $stage    = 'yumsetup',
-  $priority = '51',
-  $exclude  = [ 'fortune*', 'atftp-server' ],
+  $stage     = 'yumsetup',
+  $priority  = '51',
+  $exclude   = [ 'fortune*', 'atftp-server' ],
+  $include   = [],
+  $debuginfo = false,
 ){
   require yum::repo::base
 

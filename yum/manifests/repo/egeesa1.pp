@@ -3,7 +3,10 @@
 # This module manages egeesa1 (SAM) repo files
 #
 class yum::repo::egeesa1(
-  $stage = 'yumsetup',
+  $stage     = 'yumsetup',
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ){
   require yum::repo::base
 

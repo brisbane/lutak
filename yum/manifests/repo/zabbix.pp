@@ -5,7 +5,8 @@
 class yum::repo::zabbix (
   $stage     = 'yumsetup',
   $priority  = '1',
-  $exclude   = [ ],
+  $exclude   = [],
+  $include   = [],
   $debuginfo = false,
 ) {
   file { '/etc/yum.repos.d/zabbix.repo':

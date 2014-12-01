@@ -4,9 +4,11 @@
 # This class manages ZFS repo files for $lsbdistrelease
 #
 class yum::repo::zfs (
-  $stage    = 'yumsetup',
-  $priority = '99',
-  $exclude  = [],
+  $stage     = 'yumsetup',
+  $priority  = '99',
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ) {
   require ::yum::repo::epel
 

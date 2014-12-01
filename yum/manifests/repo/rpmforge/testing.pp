@@ -3,9 +3,11 @@
 # This module adds RPMForge testing repo to $lsbdistrelease
 #
 class yum::repo::rpmforge::testing (
-  $stage    = 'yumsetup',
-  $priority = '53',
-  $exclude  = [],
+  $stage     = 'yumsetup',
+  $priority  = '53',
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ){
   require yum::repo::rpmforge
 

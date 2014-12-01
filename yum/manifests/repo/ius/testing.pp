@@ -3,9 +3,11 @@
 # This module adds IUS testing repo to $lsbdistrelease
 #
 class yum::repo::ius::testing (
-  $stage    = 'yumsetup',
-  $priority = '62',
-  $exclude  = [],
+  $stage     = 'yumsetup',
+  $priority  = '62',
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ){
   require yum::repo::ius
 

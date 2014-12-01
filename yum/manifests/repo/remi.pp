@@ -6,6 +6,7 @@ class yum::repo::remi (
   $stage     = 'yumsetup',
   $priority  = '91',
   $exclude   = [],
+  $include   = [],
   $debuginfo = false,
 ) {
   file { '/etc/yum.repos.d/remi.repo':
