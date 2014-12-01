@@ -5,9 +5,11 @@
 
 # CentOS
 class yum::repo::elrepo::extras (
-  $stage    = 'yumsetup',
-  $priority = '99',
-  $exclude  = '',
+  $stage     = 'yumsetup',
+  $priority  = '99',
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ){
   require yum::repo::elrepo
 

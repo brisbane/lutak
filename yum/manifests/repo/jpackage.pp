@@ -3,9 +3,11 @@
 # This module manages JPackage repo files for $lsbdistrelease
 #
 class yum::repo::jpackage (
-  $stage    = 'yumsetup',
-  $exclude  = [],
-  $priority = '10',
+  $stage     = 'yumsetup',
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
+  $priority  = '10',
 ){
   require ::yum::repo::base
 

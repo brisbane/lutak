@@ -5,9 +5,11 @@
 
 # CentOS
 class yum::repo::base::contrib (
-  $stage    = 'yumsetup',
-  $priority = '4',
-  $exclude  = [],
+  $stage     = 'yumsetup',
+  $priority  = '4',
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ){
   require yum::repo::base
 

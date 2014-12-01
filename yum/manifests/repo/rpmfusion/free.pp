@@ -4,10 +4,12 @@
 # This module manages rpmfusion repo files for $operatingsystemrelease
 #
 class yum::repo::rpmfusion::free (
-  $stage    = 'yumsetup',
-  $priority = '99',
+  $stage     = 'yumsetup',
+  $priority  = '99',
   $testing  = false,
-  $exclude  = [],
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ){
   require ::yum::repo::base
 

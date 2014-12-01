@@ -6,6 +6,7 @@ class yum::repo::remi::test(
   $stage     = 'yumsetup',
   $priority  = '91',
   $exclude   = [],
+  $include   = [],
   $debuginfo = false,
 ) {
   require ::yum::repo::remi

@@ -3,9 +3,11 @@
 # This module manages EPEL bacula repo files for $lsbdistrelease
 #
 class yum::repo::epel::bacula (
-  $stage    = 'yumsetup',
-  $priority = '12',
-  $exclude  = '',
+  $stage     = 'yumsetup',
+  $priority  = '12',
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ) {
   require yum::repo::epel
 

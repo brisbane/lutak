@@ -4,7 +4,9 @@
 #
 class yum::repo::virtualbox (
   $stage   = 'yumsetup',
-  $exclude  = [],
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ) {
 
   exec {'vboxrepokeyimport':

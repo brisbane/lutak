@@ -5,9 +5,11 @@
 
 # CentOS
 class yum::repo::base::debuginfo (
-  $stage    = 'yumsetup',
-  $priority = '2',
-  $exclude  = [],
+  $stage     = 'yumsetup',
+  $priority  = '2',
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ){
   require yum::repo::base
 

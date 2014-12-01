@@ -5,9 +5,11 @@
 
 # CentOS
 class yum::repo::russian::updates::testing (
-  $stage    = 'yumsetup',
-  $priority = '99',
-  $exclude  = '',
+  $stage     = 'yumsetup',
+  $priority  = '99',
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ){
   require yum::repo::russian::updates
 

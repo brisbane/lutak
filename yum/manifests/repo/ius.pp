@@ -3,9 +3,11 @@
 # This module manages IUS repo files for $lsbdistrelease
 #
 class yum::repo::ius (
-  $stage    = 'yumsetup',
-  $priority = '61',
-  $exclude  = [],
+  $stage     = 'yumsetup',
+  $priority  = '61',
+  $exclude   = [],
+  $include   = [],
+  $debuginfo = false,
 ){
   require yum::repo::base
 
