@@ -1,5 +1,5 @@
 #
-# cleangroups.rb
+# drop_offending_strings.rb
 #
 
 module Puppet::Parser::Functions
