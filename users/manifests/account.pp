@@ -4,14 +4,15 @@
 # This define adds user account to local system
 #
 define users::account (
-  $ensure   = present,
-  $comment  = '',
-  $uid      = '',
-  $groups   = '',
-  $shell    = '/bin/bash',
-  $password = '',
-  $sshkeys  = [],
-  $recurse  = false,
+  $ensure     = present,
+  $comment    = '',
+  $uid        = '',
+  $groups     = '',
+  $shell      = '/bin/bash',
+  $password   = '',
+  $sshkeys    = [],
+  $recurse    = false,
+  $membership = inclusive,
 ) {
 
   $username = $name
@@ -31,9 +32,9 @@ define users::account (
 
   # parse groups, in case we use multiple OS-es
   if is_array( $groups ) {
-    $parsed_groups = $groups
+    $parsed_groups = drop_offending_strings($groups,'^!',true)
   } elsif is_hash ( $groups ) {
-    $parsed_groups = $groups[$::osfamily]
+    $parsed_groups = drop_offending_strings($groups[$::osfamily],'^!',true)
   } else {
     $parsed_groups = undef
   }
@@ -51,6 +52,7 @@ define users::account (
     uid        => $uid,
     gid        => $uid,
     groups     => $parsed_groups,
+    membership => $membership,
     comment    => "${comment} ",
     home       => "/home/${username}",
     shell      => $parsed_shell,
