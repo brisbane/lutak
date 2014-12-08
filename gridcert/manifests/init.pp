@@ -13,7 +13,7 @@ class gridcert {
     source  => [
       'puppet:///private/gridcert/hostcert.pem',
     ],
-    require => Package['lcg-CA'],
+    require => Package['ca-policy-egi-core'],
   }
   file { '/etc/grid-security/hostkey.pem':
     ensure  => file,
@@ -23,6 +23,6 @@ class gridcert {
     source  => [
       'puppet:///private/gridcert/hostkey.pem',
     ],
-    require => Package['lcg-CA'],
+    require => Package['ca-policy-egi-core'],
   }
 }
