@@ -1,9 +1,9 @@
 # Class: gridcert::package
 #
-# This module installs lcg-CA package
+# This module installs ca-policy-egi-core package
 #
 class gridcert::package {
-  package { 'lcg-CA':
+  package { 'ca-policy-egi-core':
     ensure  => latest,
   }
 }

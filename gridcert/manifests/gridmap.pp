@@ -12,6 +12,6 @@ class gridcert::gridmap (
     group   => root,
     mode    => '0644',
     source  => $location,
-    require => Package['lcg-CA'],
+    require => Package['ca-policy-egi-core'],
   }
 }
