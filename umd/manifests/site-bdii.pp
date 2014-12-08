@@ -3,7 +3,7 @@
 # This modules installs UMD Site BDII
 #
 class umd::site-bdii (
-  $bdii_version = '1.0.0-1.sl6',
+  $bdii_version = 'present',
 ) inherits umd {
   package { 'emi-bdii-site':
     ensure  => $bdii_version,

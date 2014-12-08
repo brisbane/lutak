@@ -6,7 +6,6 @@ class umd::storm (
   $storm_version = '1.2.0-4.el6',
   $storm_frontend_version = '1.1.0-2.el6',
   $storm_https_version = '1.0.0-3.el6',
-  $apel_version = '1.0.0-0.sl6',
   $bdii_version = '1.0.1-1.el6',
 ) inherits umd {
   require gridcert
@@ -21,12 +20,6 @@ class umd::storm (
   }
   package { 'emi-storm-gridhttps-mp':
     ensure  => $storm_https_version,
-  }
-  package { 'storm-pre-assembled-configuration':
-    ensure  => present,
-  }
-  package { 'emi-apel':
-    ensure  => $apel_version,
   }
   package { 'emi-bdii-site':
     ensure  => $bdii_version,
@@ -48,9 +41,9 @@ class umd::storm (
     require => Package['emi-storm-backend-mp'],
   }
   exec { 'creamce-yaim':
-    command => '/opt/glite/yaim/bin/yaim -c -s /opt/glite/yaim/etc/site-info.def -n se_storm_backend -n se_storm_frontend -n se_storm_gridftp -n se_storm_gridhttps -n APEL -n BDII_site && rpm -q emi-storm-backend-mp > /opt/glite/yaim/etc/emi-storm-backend-mp.info',
+    command => '/opt/glite/yaim/bin/yaim -c -s /opt/glite/yaim/etc/site-info.def -n se_storm_backend -n se_storm_frontend -n se_storm_gridftp -n se_storm_gridhttps -n BDII_site && rpm -q emi-storm-backend-mp > /opt/glite/yaim/etc/emi-storm-backend-mp.info',
     unless  => 'test -f /opt/glite/yaim/etc/emi-storm-backend-mp.info',
-    require => [ File['/opt/glite/yaim/etc/users.conf'], File['/opt/glite/yaim/etc/groups.conf'], Package['emi-storm-backend-mp'], Package['emi-storm-frontend-mp'], Package['emi-storm-globus-gridftp-mp'], Package['emi-storm-gridhttps-mp'], Package['emi-apel'], Package['emi-bdii-site'] ],
+    require => [ File['/opt/glite/yaim/etc/users.conf'], File['/opt/glite/yaim/etc/groups.conf'], Package['emi-storm-backend-mp'], Package['emi-storm-frontend-mp'], Package['emi-storm-globus-gridftp-mp'], Package['emi-storm-gridhttps-mp'], Package['emi-bdii-site'] ],
     timeout => 0,
   }
 }
