@@ -14,6 +14,7 @@ class tsm::params {
   $autorestart      = true
   $dependency_class = 'tsm::dependency'
   $my_class         = undef
+  $manual           = false
 
   $backup_server    = 'backup.example.com'
   $archive_server   = 'archive.example.com'

@@ -121,9 +121,11 @@ class tsm (
   $file_dsm_sys      = $::tsm::params::file_dsm_sys,
   $dependency_class  = $::tsm::params::dependency_class,
   $my_class          = $::tsm::params::my_class,
+  $manual            = $::tsm::params::manual,
   $backup_options    = $::tsm::params::backup_options,
   $archive_options   = $::tsm::params::archive_options,
   $noops             = undef,
+  $virtualmountpoint = [],
 ) inherits tsm::params {
 
   ### Input parameters validation
@@ -195,7 +197,6 @@ class tsm (
   if $dependency_class { include $dependency_class }
   if $my_class         { include $my_class         }
 
-
   package { 'tsm-client':
     ensure => $package_ensure,
     name   => $package,
@@ -225,9 +226,21 @@ class tsm (
     noop    => $noops,
   }
 
-  file { $file_dsm_sys :
-    content => template('tsm/dsm.sys.erb'),
+  # Ugly hack - giving ability to append to dsm.sys by including tsm::manual
+  concat { $file_dsm_sys:
+    owner => $file_owner,
+    group => $file_group,
+    mode  => $file_mode,
+    noop  => $noops,
   }
+
+  concat::fragment{ 'dsm.sys':
+    target  => $file_dsm_sys,
+    content => template('tsm/dsm.sys.erb'),
+    order   => '01',
+  }
+
+  if $manual == true       { include tsm::manual }
 
   file { $file_backup_excl :
     content => template('tsm/dsm-inclexcl.backup.erb'),

@@ -38,6 +38,10 @@ SErvername  <%= @backup_server %>
 <% @backup_options.sort.each do |key, value| -%>
       <%= key %>   <%= value %>
 <% end -%>
+<% @virtualmountpoint.each do |virtual_mp| -%>
+      include            <%= virtual_mp %>
+      virtualmountpoint  <%= virtual_mp %>
+<% end -%>
 
 
 *******************************************
@@ -67,4 +71,8 @@ SErvername  <%= @archive_server %>
       errorlogname       /var/log/tsm-client/dsm-archiveerror.log
 <% @archive_options.sort.each do |key, value| -%>
       <%= key %>   <%= value %>
+<% end -%>
+<% @virtualmountpoint.each do |virtual_mp| -%>
+      include            <%= virtual_mp %>
+      virtualmountpoint  <%= virtual_mp %>
 <% end -%>
