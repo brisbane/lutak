@@ -3,8 +3,8 @@
 # This modules installs Torque WN
 #
 class umd::wn (
-  $wn_version = '3.0.0-1.el6',
-  $torque_client_version = '1.0.0-2.sl6',
+  $wn_version = 'present',
+  $torque_client_version = 'present',
 ) inherits umd {
   include munge
   require gridcert::package
@@ -32,25 +32,25 @@ class umd::wn (
     ensure  => $torque_client_version,
   }
   file { '/opt/glite/yaim/etc/users.conf':
-    ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0644',
-    source  => 'puppet:///files/umd/users.conf',
+    ensure => file,
+    owner  => root,
+    group  => root,
+    mode   => '0644',
+    source => 'puppet:///files/umd/users.conf',
   }
   file { '/opt/glite/yaim/etc/groups.conf':
-    ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0644',
-    source  => 'puppet:///files/umd/groups.conf',
+    ensure => file,
+    owner  => root,
+    group  => root,
+    mode   => '0644',
+    source => 'puppet:///files/umd/groups.conf',
   }
   file { '/opt/glite/yaim/etc/wn-list.conf':
-    ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0644',
-    source  => 'puppet:///files/umd/wn-wn-list.conf',
+    ensure => file,
+    owner  => root,
+    group  => root,
+    mode   => '0644',
+    source => 'puppet:///files/umd/wn-wn-list.conf',
   }
   exec { 'wn-yaim':
     command => 'rm -f /var/lib/torque/mom_priv/config; /opt/glite/yaim/bin/yaim -c -s /opt/glite/yaim/etc/site-info.def -n WN -n TORQUE_client && rpm -q emi-wn > /opt/glite/yaim/etc/emi-wn.info',
@@ -59,32 +59,32 @@ class umd::wn (
     timeout => 0,
   }
   file { '/opt/glite/yaim/functions/local/config_torque_client':
-    ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0644',
-    source  => 'puppet:///modules/umd/config_torque_client',
+    ensure => file,
+    owner  => root,
+    group  => root,
+    mode   => '0644',
+    source => 'puppet:///modules/umd/config_torque_client',
   }
   file { '/etc/profile.d/glite_local.sh':
-    ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0644',
-    source  => 'puppet:///modules/umd/glite_local.sh',
+    ensure => file,
+    owner  => root,
+    group  => root,
+    mode   => '0644',
+    source => 'puppet:///modules/umd/glite_local.sh',
   }
   file { '/etc/profile.d/glite_local.csh':
-    ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0644',
-    source  => 'puppet:///modules/umd/glite_local.csh',
+    ensure => file,
+    owner  => root,
+    group  => root,
+    mode   => '0644',
+    source => 'puppet:///modules/umd/glite_local.csh',
   }
   file { '/usr/local/libexec/cp_1.sh':
-    ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0755',
-    source  => 'puppet:///modules/umd/cp_1.sh',
+    ensure => file,
+    owner  => root,
+    group  => root,
+    mode   => '0755',
+    source => 'puppet:///modules/umd/cp_1.sh',
   }
 
 }
