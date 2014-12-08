@@ -1,0 +1,125 @@
+Migration from 0.4.0 to 1.2.0-patched
+====================================================
+This commit represents big upgrade on apache module.
+
+Modules has been upgraded from 0.4.0 to version
+1.2.0 (patched).
+
+
+
+There are couple of things that one has to do for safe migration.
+
+
+1) Change all your '::apache::vhost' defines to '::apache::vhostsimple'
+-----------------------------------------------------------------------
+
+Apache has made vhost defined types pretty complex, but it lacks one
+crucial feature: defining template. 
+
+If you want to manage your own templates, and don't want ::apache::vhost
+to build it via concat from various other templates, then you're in a 
+world of hurt.
+
+That's why I created ::apache::vhostsimple wich is basically a port
+of vhost from 0.4.0.
+
+
+2) Remove all 'configure_firewall' params from your vhostsimple defines
+-----------------------------------------------------------------------
+
+
+3) mod_extract_forwarded is obsoleted (in favor of mod_rpaf)
+-----------------------------------------------------------------------
+
+Initial support was added by jsosic to version 0.4.0, but instead of
+adding support to 1.2.0 - in an effort to stay as close to mainline
+as possible, I suggest moving from mod_extract_forwarded to mod_rpaf.
+
+
+4) ::apache::mod::minimal is removed
+-----------------------------------------------------------------------
+
+There is a better approach to minimizing modules now, and these are 
+the settings that should be put into hiera:
+
+apache::default_mods: - 'alias'
+                      - 'auth_basic'
+                      - 'authn_alias'
+                      - 'authz_user'
+                      - 'dir'
+                      - 'headers'
+                      - 'mime'
+                      - 'rewrite'
+                      - 'setenvif'
+
+5) 'apache::namevirtualhost' isn't a class but a define now
+-----------------------------------------------------------------------
+
+Nothing is needed for this change expect to remove:
+  include ::apache::namevirtulhost
+
+from manifests. Since it's a define now, namevirtualhost directives
+are automatically added with vhost (or vhostsimple) definitions.
+
+If on the other hand you push vhosts as a file, you need to add following
+definitions manually into your manifest:
+
+  if ! defined(Apache::Namevirtualhost['*:80'])  { ::apache::namevirtualhost { '*:80':  } }
+  if ! defined(Apache::Namevirtualhost['*:443']) { ::apache::namevirtualhost { '*:443': } }
+
+in order to populate namevirtualhosts.conf
+
+
+6) Apache module manages users by default now
+-----------------------------------------------------------------------
+
+If you don't want a module to manager user under which apache runs,
+set these options in hiera:
+
+  apache::manage_user:  false
+  apache::manage_group: false
+
+
+7) maxrequestsperchild setting
+-----------------------------------------------------------------------
+
+Setting is now moved to apache::mod::prefork, so you should change hiera from:
+
+  apache::maxrequestsperchild:  50
+
+to:
+
+  apache::mod::prefork::maxrequestsperchild:  50
+
+
+8) RHEL style httpd.conf
+-----------------------------------------------------------------------
+
+New module removes all comments/docs from httpd.conf, and if you wish to
+keep the redhat style httpd.conf with extended comments, set this in hiera:
+
+  apache::conf_template: 'apache/rhel.httpd.conf.erb'
+
+
+9) Support for umask and ulimit
+-----------------------------------------------------------------------
+
+Support for umask and ulimit has been retained.
+
+  /etc/apache2/envvars (Debian)
+  /etc/sysconfig/httpd (RHEL)
+
+9) Changes you have to apply to custom templates
+-----------------------------------------------------------------------
+@options is not neccesary an array any more, so for templates to
+apply properly, please change this in your custom templates:
+    Options <%= @options %>
+
+to:
+    Options <%= options.to_a.join(' ') %>
+
+
+10) Class ::apache::nessus removed from module
+-----------------------------------------------------------------------
+To stay as close to upstream as possible and to ease future migrations
+this class has been removed. Put it at your local module and rename.

@@ -1,21 +1,37 @@
-<% if @passenger_version != '' -%>
+# The Passanger Apache module configuration file is being
+# managed by Puppet and changes will be overwritten.
 <IfModule mod_passenger.c>
-   PassengerRoot /usr/lib/ruby/gems/1.8/gems/passenger-<%= @passenger_version %>
-   PassengerRuby /usr/bin/ruby
-   PassengerTempDir /var/run/rubygem-passenger
+  <%- if @passenger_root -%>
+  PassengerRoot "<%= @passenger_root %>"
+  <%- end -%>
+  <%- if @passenger_ruby -%>
+  PassengerRuby "<%= @passenger_ruby %>"
+  <%- end -%>
+  <%- if @passenger_default_ruby -%>
+  PassengerDefaultRuby "<%= @passenger_default_ruby %>"
+  <%- end -%>
+  <%- if @passenger_high_performance -%>
+  PassengerHighPerformance <%= @passenger_high_performance %>
+  <%- end -%>
+  <%- if @passenger_max_pool_size -%>
+  PassengerMaxPoolSize <%= @passenger_max_pool_size %>
+  <%- end -%>
+  <%- if @passenger_pool_idle_time -%>
+  PassengerPoolIdleTime <%= @passenger_pool_idle_time %>
+  <%- end -%>
+  <%- if @passenger_max_requests -%>
+  PassengerMaxRequests <%= @passenger_max_requests %>
+  <%- end -%>
+  <%- if @passenger_stat_throttle_rate -%>
+  PassengerStatThrottleRate <%= @passenger_stat_throttle_rate %>
+  <%- end -%>
+  <%- if @rack_autodetect -%>
+  RackAutoDetect <%= @rack_autodetect %>
+  <%- end -%>
+  <%- if @rails_autodetect -%>
+  RailsAutoDetect <%= @rails_autodetect %>
+  <%- end -%>
+  <%- if @passenger_use_global_queue -%>
+  PassengerUseGlobalQueue <%= @passenger_use_global_queue %>
+  <%- end -%>
 </IfModule>
-<% end -%>
-
-# Deploying a Ruby on Rails application: an example
-
-# Suppose you have a Rails application in /somewhere. Add a virtual host to
-# your Apache configuration file and set its DocumentRoot to /somewhere/public:
-#
-#    <VirtualHost *:80>
-#       ServerName www.yourhost.com
-#       DocumentRoot /somewhere/public    # <-- be sure to point to 'public'!
-#       <Directory /somewhere/public>
-#          AllowOverride all              # <-- relax Apache security settings
-#          Options -MultiViews            # <-- MultiViews must be turned off
-#       </Directory>
-#    </VirtualHost>

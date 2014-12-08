@@ -1,13 +1,24 @@
-# Class: apache::mod::deflate
-class apache::mod::deflate {
-  apache::mod { 'deflate': }
-  file { '/etc/httpd/conf.d/deflate.conf':
+class apache::mod::deflate (
+  $types = [
+    'text/html text/plain text/xml',
+    'text/css',
+    'application/x-javascript application/javascript application/ecmascript',
+    'application/rss+xml'
+  ],
+  $notes = {
+    'Input'  => 'instream',
+    'Output' => 'outstream',
+    'Ratio'  => 'ratio'
+  }
+) {
+  ::apache::mod { 'deflate': }
+
+  file { 'deflate.conf':
     ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0644',
-    source  => 'puppet:///modules/apache/deflate.conf',
+    path    => "${::apache::mod_dir}/deflate.conf",
+    content => template('apache/mod/deflate.conf.erb'),
+    require => Exec["mkdir ${::apache::mod_dir}"],
+    before  => File[$::apache::mod_dir],
     notify  => Service['httpd'],
-    require => Package['httpd'],
   }
 }
