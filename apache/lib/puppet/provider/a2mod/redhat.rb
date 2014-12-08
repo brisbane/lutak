@@ -1,5 +1,9 @@
-Puppet::Type.type(:a2mod).provide(:redhat) do
+require 'puppet/provider/a2mod'
+
+Puppet::Type.type(:a2mod).provide(:redhat, :parent => Puppet::Provider::A2mod) do
   desc "Manage Apache 2 modules on RedHat family OSs"
+
+  commands :apachectl => "apachectl"
 
   confine :osfamily => :redhat
   defaultfor :osfamily => :redhat
@@ -30,18 +34,13 @@ Puppet::Type.type(:a2mod).provide(:redhat) do
     File.delete(modfile)
   end
 
-  def exists?
-    File.exists?(modfile) and File.read(modfile).match(libfile)
-  end
-
   def self.instances
-    modules = []
-    Dir.glob("#{modpath}/*.load").each do |file|
-      m = file.match(/(\w+)\.load$/)
-      modules << m[1] if m
-    end
+    modules = apachectl("-M").lines.collect { |line|
+      m = line.match(/(\w+)_module \(shared\)$/)
+      m[1] if m
+    }.compact
 
-    modules.map  do |mod|
+    modules.map do |mod|
       new(
         :name     => mod,
         :ensure   => :present,
@@ -51,7 +50,7 @@ Puppet::Type.type(:a2mod).provide(:redhat) do
   end
 
   def modfile
-    modfile ||= "#{self.class.modpath}/#{resource[:loadfile]}.load"
+    modfile ||= "#{self.class.modpath}/#{resource[:name]}.load"
   end
 
   # Set libfile path: If absolute path is passed, then maintain it. Else, make it default from 'modules' dir.

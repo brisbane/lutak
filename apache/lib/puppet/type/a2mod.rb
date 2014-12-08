@@ -4,6 +4,7 @@ Puppet::Type.newtype(:a2mod) do
     ensurable
 
     newparam(:name) do
+       Puppet.warning "The a2mod provider is deprecated, please use apache::mod instead"
        desc "The name of the module to be managed"
 
        isnamevar
@@ -22,12 +23,6 @@ Puppet::Type.newtype(:a2mod) do
       # http://httpd.apache.org/docs/2.2/mod/module-dict.html#ModuleIdentifier
 
       defaultto { "#{resource[:name]}_module" }
-    end
-
-    newparam(:loadfile) do
-      desc "The name of loadfile"                                                                                                           
-
-      defaultto { "#{@resource[:name]}" }
     end
 
     autorequire(:package) { catalog.resource(:package, 'httpd')}
