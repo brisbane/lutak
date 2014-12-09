@@ -9,12 +9,12 @@ class geoip::params {
       $package_ensure = 'present'
     }
     /^5.*/: {
-      $geoip_version  = '1.4.5'
-      $package_ensure = '1.4.5-1.el5'
+      $geoip_version  = '1.4.8'
+      $package_ensure = '1.4.8-1.el5'
     }
     /^6.*/: {
-      $geoip_version  = '1.4.8'
-      $package_ensure = '1.4.8-1.el6'
+      $geoip_version  = '1.5.1'
+      $package_ensure = '1.5.1-5.el6'
     }
   }
 }
