@@ -12,9 +12,10 @@
 #
 class rsyslog (
   $purge_dotd = false,
+  $version    = present,
 ) {
 
-  package { 'rsyslog': ensure => present }
+  package { 'rsyslog': ensure => $version }
 
   file { '/etc/rsyslog.d':
     ensure  => directory,

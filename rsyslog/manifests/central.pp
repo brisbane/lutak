@@ -7,6 +7,7 @@ class rsyslog::central (
   $service          = 'rsyslog-central',
   $syslogd_options  = '-c 5',
   $config_file      = '/etc/rsyslog-central.conf',
+  $config_template  = 'rsyslog/central.conf.erb',
   $datadir          = '/var/lib/syslog',
   $user             = 'rsyslog',
   $group            = 'rsyslog',
@@ -15,10 +16,33 @@ class rsyslog::central (
   $tcp_port         = '10514',
   $udp_port         = '514',
   $file_create_mode = '0640',
-  $dir_create_mode  = '0700',
+  $dir_create_mode  = '0750',
   $umask            = '0077',
+  $status           = 'enabled',
 ) {
   include ::rsyslog
+
+  ### Input parameters validation
+  validate_re($status,  ['enabled','disabled','running','stopped','activated','deactivated','unmanaged'], 'Valid values are: enabled, disabled, running, stopped, activated, deactivated and unmanaged')
+
+  $service_enable = $status ? {
+    'enabled'     => true,
+    'disabled'    => false,
+    'running'     => undef,
+    'stopped'     => undef,
+    'activated'   => true,
+    'deactivated' => false,
+    'unmanaged'   => undef,
+  }
+  $service_ensure = $status ? {
+    'enabled'     => 'running',
+    'disabled'    => 'stopped',
+    'running'     => 'running',
+    'stopped'     => 'stopped',
+    'activated'   => undef,
+    'deactivated' => undef,
+    'unmanaged'   => undef,
+  }
 
   File {
     owner => root,
@@ -43,7 +67,7 @@ class rsyslog::central (
   }
 
   file { $config_file :
-    content => template('rsyslog/central.conf.erb'),
+    content => template($config_template),
     notify  => Service[$service],
   }
 
@@ -64,12 +88,22 @@ class rsyslog::central (
     shell      => '/sbin/nologin',
   }
 
+  file { '/etc/rsyslog-central.d':
+    ensure  => directory,
+    owner   => root,
+    group   => root,
+    mode    => '0755',
+    purge   => $::purge_dotd,
+    require => Package['rsyslog'],
+  }
+
   service { $service :
-    ensure  => running,
-    enable  => true,
+    ensure  => $service_ensure,
+    enable  => $service_enable,
     require => [
       Group[$group],
       User[$user],
+      File['/etc/rsyslog-central.d'],
     ],
   }
 
