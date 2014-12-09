@@ -48,6 +48,9 @@ class puppet::params {
   # environments
   $environments = ['production', 'test', 'dev']
 
+  # set to true to use directory environments
+  $dir_environments = false
+
   # subnets that are allowed to access "/files"
   $fileserver_clients = ['127.0.0.0/8']
 

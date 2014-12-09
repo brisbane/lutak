@@ -18,6 +18,7 @@ class puppet::master (
   $dbpassword         = 'puppet',
   $dbserver           = 'localhost',
   $environments       = $puppet::params::environments,
+  $dir_environments   = $puppet::params::dir_environments,
   $envmanifest        = false,
   $modulepath         = $puppet::modulepath,
   $report_age         = $puppet::report_age,
@@ -74,8 +75,8 @@ class puppet::master (
 
       # rack application setup
       file { '/etc/puppet/rack':
-        ensure  => directory,
-        mode    => '0755',
+        ensure => directory,
+        mode   => '0755',
       }
       file { '/etc/puppet/rack/config.ru':
         ensure  => file,
