@@ -11,6 +11,20 @@ class yum::repo::atomic (
 ) {
   require yum::repo::base
 
+  file { '/etc/pki/rpm-gpg/RPM-GPG-KEY.art.txt':
+    ensure => file,
+    mode   => '0644',
+    owner  => root,
+    group  => root,
+    source => 'puppet:///modules/yum/keys/RPM-GPG-KEY.art.txt',
+  }
+  file { '/etc/pki/rpm-gpg/RPM-GPG-KEY.atomicorp.txt':
+    ensure => file,
+    mode   => '0644',
+    owner  => root,
+    group  => root,
+    source => 'puppet:///modules/yum/keys/RPM-GPG-KEY.atomicorp.txt',
+  }
   file { '/etc/yum.repos.d/atomic.repo' :
     ensure  => file,
     mode    => '0644',
@@ -38,9 +52,9 @@ class yum::repo::atomic (
     }
     /^18.*/: {
       package { 'atomic-release' :
-        ensure   => '1.0-18.fc18.art',
+        ensure   => '1.0-19.fc18.art',
         provider => 'rpm',
-        source   => 'https://www.atomicorp.com/channels/atomic/fedora/18/x86_64/RPMS/atomic-release-1.0-18.fc18.art.noarch.rpm',
+        source   => 'https://www3.atomicorp.com/channels/atomic/fedora/18/x86_64/RPMS/atomic-release-1.0-19.fc18.art.noarch.rpm',
       }
     }
   }

@@ -3,13 +3,23 @@
 # This module manages yum packages
 #
 class yum::conf (
-  $stage         = 'yumconf',
-  $yum_proxy     = 'UNDEF',
+  $stage      = 'yumconf',
+  $yum_proxy  = 'UNDEF',
+  $http_proxy = 'UNDEF',
+  $http_port  = '80',
   $purge_repos_d = true,
 ) {
   case $::operatingsystemrelease {
     default: {}
-    /^5.*/: {}
+    /^5.*/: {
+      file { '/etc/yum.conf' :
+        ensure  => file,
+        owner   => root,
+        group   => root,
+        mode    => '0644',
+        content => template('yum/el5.yum.conf.erb'),
+      }
+    }
     /^6.*/: {
       file { '/etc/yum.conf' :
         ensure  => file,
@@ -18,6 +28,16 @@ class yum::conf (
         mode    => '0644',
         content => template('yum/el6.yum.conf.erb'),
       }
+    }
+  }
+
+  if ( $http_proxy != 'UNDEF' ) {
+    file { '/etc/rpm/macros.proxy' :
+      ensure  => file,
+      owner   => root,
+      group   => root,
+      mode    => '0644',
+      content => template('yum/macros.proxy.erb'),
     }
   }
 
@@ -35,5 +55,4 @@ class yum::conf (
     force   => true,
     require => Package['yum'],
   }
-
 }
