@@ -48,12 +48,12 @@ sub init () {
     $| = 1;
     $Debug = 0;
     while (@ARGV and $ARGV[0] =~ /^--?d(ebug)?$/) {
-	$Debug++;
-	shift(@ARGV);
+        $Debug++;
+        shift(@ARGV);
     }
     if ($Debug) {
-	$TOM::Log::Handler = \&TOM::Log::log_to_stderr;
-	log_filter("debug");
+        $TOM::Log::Handler = \&TOM::Log::log_to_stderr;
+        log_filter("debug");
     }
     $pid = pf_get(PIDFILE);
     error_die("another instance is running: %d", $pid) if $pid;
@@ -61,14 +61,14 @@ sub init () {
     $Today = strftime("%Y-%m-%d", localtime(time()));
     log_debug("today is %s", $Today);
     unless (-d PURGEDIR) {
-	log_debug("mkdir %s", PURGEDIR);
-	mkdir(PURGEDIR) or error_die("cannot mkdir(%s): %s", PURGEDIR, $!);
+        log_debug("mkdir %s", PURGEDIR);
+        mkdir(PURGEDIR) or error_die("cannot mkdir(%s): %s", PURGEDIR, $!);
     }
     log_debug("cd %s", PURGEDIR);
     chdir(PURGEDIR) or error_die("cannot chdir(%s): %s", PURGEDIR, $!);
     unless (-d $Today) {
-	log_debug("mkdir %s", $Today);
-	mkdir($Today) or error_die("cannot mkdir(%s): %s", $Today, $!);
+        log_debug("mkdir %s", $Today);
+        mkdir($Today) or error_die("cannot mkdir(%s): %s", $Today, $!);
     }
 }
 
@@ -80,15 +80,15 @@ sub compress () {
     my($name, $status);
 
     foreach $name (@{ dir_read(".") }) {
-	next if $name eq $Today;
-	next unless -d $name;
-	log_debug("compressing %s", $name);
-	$status = proc_run(command => [ "tar", "czf", "$name.tgz", $name ]);
-	error_die("tar failed: %d", $status) if $status;
-	log_debug("removing %s", $name);
-	$status = proc_run(command => [ "rm", "-fr", $name ]);
-	error_die("rm failed: %d", $status) if $status;
-	log_debug("created %s (%d bytes)", "$name.tgz", -s "$name.tgz");
+        next if $name eq $Today;
+        next unless -d $name;
+        log_debug("compressing %s", $name);
+        $status = proc_run(command => [ "tar", "czf", "$name.tgz", $name ]);
+        error_die("tar failed: %d", $status) if $status;
+        log_debug("removing %s", $name);
+        $status = proc_run(command => [ "rm", "-fr", $name ]);
+        error_die("rm failed: %d", $status) if $status;
+        log_debug("created %s (%d bytes)", "$name.tgz", -s "$name.tgz");
     }
 }
 
@@ -101,30 +101,30 @@ sub cleanup () {
 
     # phase 0: collect names and sizes
     foreach $name (@{ dir_read(".") }) {
-	next if $name eq $Today;
-	next unless -f $name;
-	$size{$name} = -s _;
+        next if $name eq $Today;
+        next unless -f $name;
+        $size{$name} = -s _;
     }
     @names = sort(keys(%size));
 
     # phase 1: cleanup if too old
     while (@names > MAXDAYS) {
-	$name = shift(@names);
-	log_debug("removing %s (too old)", $name);
-	unlink($name) or error_die("cannot unlink(%s): %s", $name, $!);
+        $name = shift(@names);
+        log_debug("removing %s (too old)", $name);
+        unlink($name) or error_die("cannot unlink(%s): %s", $name, $!);
     }
 
     # phase 2: cleanup if too big
     $size = 0;
     foreach $name (@names) {
-	$size += $size{$name};
+        $size += $size{$name};
     }
     log_debug("total size is %d", $size);
     while ($size > MAXSIZE) {
-	$name = shift(@names);
-	log_debug("removing %s (too big)", $name);
-	unlink($name) or error_die("cannot unlink(%s): %s", $name, $!);
-	$size -= $size{$name};
+        $name = shift(@names);
+        log_debug("removing %s (too big)", $name);
+        unlink($name) or error_die("cannot unlink(%s): %s", $name, $!);
+        $size -= $size{$name};
     }
 }
 
@@ -138,16 +138,17 @@ sub purge ($$$$) {
 
     $uri = sprintf("stomp://%s:%d", $host, $port);
     $auth = sprintf("plain name=%s pass=%s", $name, $pass);
-    @msak = ("msak", "--drain");
+    @msak = ("stompclt");
+    push(@msak, "--timeout-inactivity", 10);
     push(@msak, "--incoming-broker-uri", $uri);
     push(@msak, "--incoming-broker-auth", $auth);
-    push(@msak, "--outgoing-queue", $Today);
-    push(@msak, "--subscribe", "destination:/queue/ActiveMQ.DLQ");
+    push(@msak, "--outgoing-queue", "path=$Today");
+    push(@msak, "--subscribe", "destination=/queue/ActiveMQ.DLQ");
     push(@msak, "--statistics") if $Debug;
     push(@msak, "--debug") if $Debug > 1;
     log_debug("purging %s", $uri);
     $status = proc_run(command => \@msak);
-    error_die("msak failed: %d", $status) if $status;
+    error_die("stompclt failed: %d", $status) if $status;
 }
 
 #
@@ -160,6 +161,7 @@ END {
 
 #
 # just do it
+#
 #
 
 init();

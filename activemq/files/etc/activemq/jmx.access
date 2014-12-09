@@ -1,6 +1,0 @@
-#
-# jmxremote access file
-#
-admin readwrite
-monitor readonly
-

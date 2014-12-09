@@ -34,22 +34,11 @@ class activemq (
   include apache::mod::ssl
 
   # tom-mig-devel repo for activemq
-  yumrepo { 'tom-mig-devel':
-    baseurl  => 'http://rpm.hellasgrid.gr/mash/centos6-tom-mig-devel/$basearch',
-    descr    => 'Tom Mig Devel El 6 - $basearch',
-    enabled  => '1',
-    gpgcheck => '0',
-    priority => '99',
-    name     => 'tom-mig-devel',
-  }
-  file { '/etc/yum.repos.d/tom-mig-devel.repo':
-    ensure  => file,
-  }
+  include yum::repo::tommigdevel
 
   # mbcg-utils package
   package { 'mbcg-utils':
     ensure     => latest,
-    require    => Yumrepo[ 'tom-mig-devel' ],
   }
 
   # activemq package
@@ -88,7 +77,7 @@ class activemq (
   }
   file { '/etc/activemq/groups.properties.d/static':
     ensure  => file,
-    source  => 'puppet:///modules/activemq/etc/activemq/groups.properties.d/static',
+    source  => 'puppet:///private/etc/activemq/groups.properties.d/static',
     owner   => root,
     group   => root,
     mode    => '0644',
@@ -96,7 +85,7 @@ class activemq (
   }
   file { '/etc/activemq/dns.properties.d/static':
     ensure  => file,
-    source  => 'puppet:///modules/activemq/etc/activemq/dns.properties.d/static',
+    source  => 'puppet:///private/etc/activemq/dns.properties.d/static',
     owner   => root,
     group   => root,
     mode    => '0644',
@@ -111,12 +100,28 @@ class activemq (
     require => File['/etc/activemq/users.properties.d'],
   }
   file { '/etc/security/limits.d/activemq.conf':
-    ensure  => file,
-    source  => 'puppet:///modules/activemq/etc/security/limits.d/activemq.conf',
-    owner   => root,
-    group   => root,
-    mode    => '0644',
+    ensure => file,
+    source => 'puppet:///modules/activemq/etc/security/limits.d/activemq.conf',
+    owner  => root,
+    group  => root,
+    mode   => '0644',
   }
+  file { '/etc/cron.d/glite-apel':
+    ensure => file,
+    source => 'puppet:///modules/activemq/etc/cron.d/glite-apel',
+    owner  => root,
+    group  => root,
+    mode   => '0644',
+  }
+file { '/etc/cron.d/purge-broker':
+    ensure => file,
+    source => 'puppet:///modules/activemq/etc/cron.d/purge-broker',
+    owner  => root,
+    group  => root,
+    mode   => '0644',
+  }
+
+
   # Storege device
   if $additional_storage == None {
     file { '/usr/share/activemq/tmp':
@@ -217,7 +222,7 @@ class activemq (
   # activeMQ httpd config
   file { '/etc/httpd/conf.d/activemq-webconsole.conf':
     ensure  => file,
-    source  => 'puppet:///modules/activemq/etc/httpd/conf.d/activemq-webconsole.conf',
+    source  => 'puppet:///private/etc/httpd/conf.d/activemq-webconsole.conf',
     owner   => root,
     group   => root,
     mode    => '0644',
@@ -226,26 +231,16 @@ class activemq (
   }
   file { '/etc/httpd/conf.d/activemq-httpd.conf':
     ensure  => file,
-    source  => 'puppet:///modules/activemq/etc/httpd/conf.d/activemq-httpd.conf',
+    source  => 'puppet:///private/etc/httpd/conf.d/activemq-httpd.conf',
     owner   => root,
     group   => root,
     mode    => '0644',
     require => Package['httpd'],
     notify  => Service['httpd'],
   }
-#  Not sure whether we need this one (pkoro)
-#  file { '/etc/httpd/conf.d/activemq-jmx4perl.conf':
-#    ensure  => file,
-#    source  => 'puppet:///modules/activemq/etc/httpd/conf.d/activemq-jmx4perl.conf',
-#    owner   => root,
-#    group   => root,
-#    mode    => '0644',
-#    require => Service['httpd'],
-#    notify  => Service['httpd'],
-#  }
   file { '/etc/httpd/activemq-webconsole.users':
     ensure  => file,
-    source  => 'puppet:///modules/activemq/etc/httpd/activemq-webconsole.users',
+    source  => 'puppet:///private/etc/httpd/activemq-webconsole.users',
     owner   => root,
     group   => root,
     mode    => '0644',
@@ -286,7 +281,7 @@ class activemq (
     owner   => root,
     group   => root,
     mode    => '0644',
-    source  => 'puppet:///modules/activemq/etc/activemq/jmx.access',
+    source  => 'puppet:///private/etc/activemq/jmx.access',
     require => Package['activemq'],
     notify  => Service['activemq'],
   }
@@ -304,7 +299,7 @@ class activemq (
     owner   => root,
     group   => root,
     mode    => '0644',
-    content => template('activemq/etc/activemq/activemq-wrapper.conf.erb'),
+    content => template('srce/activemq/etc/activemq/activemq-wrapper.conf.erb'),
     require => Package['activemq'],
     notify  => Service['activemq'],
   }
@@ -313,7 +308,7 @@ class activemq (
     owner   => root,
     group   => root,
     mode    => '0644',
-    content => template('activemq/etc/activemq/activemq.xml.erb'),
+    content => template('srce/activemq/etc/activemq/activemq.xml.erb'),
     require => Package['activemq'],
     notify  => Service['activemq'],
   }
@@ -336,10 +331,9 @@ class activemq (
   }
 
   exec { '/var/lib/activemq/bin/update-jaas':
-    subscribe   => File['/var/lib/activemq/bin/update-jaas'],
+    subscribe   => File['/var/lib/activemq/bin/update-jaas','/etc/activemq/groups.properties.d/static','/etc/activemq/dns.properties.d/static','/etc/activemq/users.properties.d/static'],
     refreshonly => true,
     require     => File['/var/lib/activemq/bin/update-jaas'],
-    notify      => Service['activemq'],
   }
 
 }
