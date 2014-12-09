@@ -20,9 +20,9 @@ set vendorclass = option vendor-class-identifier;
 
 <% unless @dhcp_interfaces == '' or @dhcp_interfaces.nil? -%>
 <% @dhcp_interfaces.each do |iface| -%>
-subnet <%= instance_variable_get("@ipaddress_#{iface}").match(/\d+\.\d+\.\d+/) %>.0 netmask 255.255.255.0 {
+subnet <%= instance_variable_get("@network_#{iface}") %> netmask <%= instance_variable_get("@netmask_#{iface}") %> {
     option domain-name          "<%= @domain %>";
-    option subnet-mask          255.255.255.0;
+    option subnet-mask          <%= instance_variable_get("@netmask_#{iface}") %>;
     option domain-name-servers  <%=
 if @nameservers.kind_of?(Array)
    @nameservers.join(", ")
