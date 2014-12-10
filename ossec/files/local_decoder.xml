@@ -48,3 +48,29 @@
 <decoder name="oidentd">
   <program_name>oidentd</program_name>
 </decoder>
+
+<decoder name="named_client">
+  <prematch> client </prematch>
+  <regex offset="after_prematch">^(\d+.\d+.\d+.\d+)#</regex>
+  <order>srcip</order>
+</decoder>
+
+<decoder name="named-query-plain">
+  <parent>named_client</parent>
+  <regex>client (\S+)#\d+: query: (\S+) IN </regex>
+  <order>srcip,url</order>
+</decoder>
+
+<decoder name="bind-query-external">
+ <parent>named_client</parent>
+ <prematch>view external: query:</prematch>
+ <regex> (\S+)#\S+: view external: query: (\S+) IN \S+ + \((\S+)\)</regex>
+ <order>srcip, url, dstip</order>
+</decoder>
+
+<decoder name="bind-query-internal">
+ <parent>named_client</parent>
+ <prematch>view internal: query:</prematch>
+ <regex> (\S+)#\S+: view internal: query: (\S+) IN \S+ + \((\S+)\)</regex>
+ <order>srcip, url, dstip</order>
+</decoder>
