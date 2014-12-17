@@ -3,17 +3,18 @@
 # This module manages snort package
 #
 class snort (
-  $logdir         = $snort::params::logdir,
-  $interfaces     = $snort::params::interfaces,
-  $home_net       = $snort::params::home_net,
-  $dns_servers    = $snort::params::dns_servers,
-  $smtp_servers   = $snort::params::smtp_servers,
-  $http_servers   = $snort::params::http_servers,
-  $sql_servers    = $snort::params::sql_servers,
-  $ftp_servers    = $snort::params::ftp_servers,
-  $telnet_servers = $snort::params::telnet_servers,
-  $oinkcode       = $snort::params::oinkcode,
-  $ppork_ignore   = $snort::params::ppork_ignore,
+  $snort_conf_template = 'snort/snort.conf.erb',
+  $logdir              = $::snort::params::logdir,
+  $interfaces          = $::snort::params::interfaces,
+  $home_net            = $::snort::params::home_net,
+  $dns_servers         = $::snort::params::dns_servers,
+  $smtp_servers        = $::snort::params::smtp_servers,
+  $http_servers        = $::snort::params::http_servers,
+  $sql_servers         = $::snort::params::sql_servers,
+  $ftp_servers         = $::snort::params::ftp_servers,
+  $telnet_servers      = $::snort::params::telnet_servers,
+  $oinkcode            = $::snort::params::oinkcode,
+  $ppork_ignore        = $::snort::params::ppork_ignore,
   ) inherits snort::params {
   package { 'snort':
     ensure  => present,
@@ -23,7 +24,7 @@ class snort (
     owner   => root,
     group   => root,
     mode    => '0644',
-    content => template('snort/snort.conf.erb'),
+    content => template($snort_conf_template),
     require => Package['snort'],
     notify  => Service['snortd'],
   }
@@ -80,12 +81,12 @@ class snort (
     require => Package['snort'],
   }
   file { '/etc/init.d/snortd':
-    ensure  => present,
-    owner   => root,
-    group   => root,
-    mode    => '0755',
-    source  => 'puppet:///modules/snort/snortd',
-    notify  => Service['snortd'],
+    ensure => present,
+    owner  => root,
+    group  => root,
+    mode   => '0755',
+    source => 'puppet:///modules/snort/snortd',
+    notify => Service['snortd'],
   }
   service { 'snortd':
     ensure  => running,
