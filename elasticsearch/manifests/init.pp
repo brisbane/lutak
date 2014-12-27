@@ -23,6 +23,7 @@ class elasticsearch (
   $file_config             = $::elasticsearch::params::file_config,
   $template_sysconfig      = 'elasticsearch/sysconfig.yml.erb',
   $path_sysconfig          = $::elasticsearch::params::path_sysconfig,
+  $es_heap_size            = '4g',
   $es_heap_newsize         = undef,
   $es_direct_size          = undef,
   $es_java_opts            = undef,
