@@ -1,0 +1,19 @@
+# Roots of the synchronization
+root = <%= @source %>
+root = <%= @destination %>
+
+# ignore list
+<% if ! @ignore.empty? then -%>
+<% @ignore.each do |ignore_single| -%>
+ignore = <%= ignore_single %>
+<% end -%>
+<% end -%>
+# end of ignore
+
+# do not ignore 
+<% if ! @ignorenot.empty? then -%>
+<% @ignorenot.each do |ignorenot_single| -%>
+ignorenot = <%= ignorenot_single %>
+<% end -%>
+<% end -%>
+# end of do not ignore
