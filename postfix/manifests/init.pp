@@ -56,6 +56,10 @@
 #   Type: array, default: ['localhost']
 #   Defines list of interfaces postfix will bind to.
 #
+# [*inet_protocols*]
+#   Type: string, default: 'ipv4'
+#   Defines the protocols postfix will support
+#
 # [*mydestination*]
 #   Type: array, default: [ '$myhostname', 'localhost.$mydomain', 'localhost' ]
 #   Defines list of hostnames/domains which will be used as 'mydestination'
@@ -108,6 +112,7 @@ class postfix (
   $file_maincf                  = $::postfix::params::file_maincf,
   $template_maincf              = $::postfix::params::template_maincf,
   $interfaces                   = [ 'localhost' ],
+  $inet_protocols               = 'ipv4',
   $mydestination                = [ '$myhostname', 'localhost.$mydomain', 'localhost' ],
   $mynetworks                   = [],
   $recipient_canonical_maps     = undef,
