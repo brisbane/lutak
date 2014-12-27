@@ -8,6 +8,8 @@ class zabbix::agent::rabbitmq (
   $dir_zabbix_agent_libdir = $::zabbix::agent::dir_zabbix_agent_libdir,
   $username                = 'use_hiera',
   $password                = 'use_hiera',
+  $rabbitmq_hostname       = 'localhost',
+  $rabbitmq_port           = '15672',
   $node                    = $::fqdn,
 ) inherits zabbix::agent {
 
@@ -29,32 +31,32 @@ class zabbix::agent::rabbitmq (
   }
 
   file { "${dir_zabbix_agent_libdir}/api.py" :
-    ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0755',
-    source  => 'puppet:///modules/zabbix/agent/rabbitmq/api.py',
+    ensure => file,
+    owner  => root,
+    group  => root,
+    mode   => '0755',
+    source => 'puppet:///modules/zabbix/agent/rabbitmq/api.py',
   }
   file { "${dir_zabbix_agent_libdir}/list_rabbit_nodes.sh" :
-    ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0755',
-    source  => 'puppet:///modules/zabbix/agent/rabbitmq/list_rabbit_nodes.sh',
+    ensure => file,
+    owner  => root,
+    group  => root,
+    mode   => '0755',
+    source => 'puppet:///modules/zabbix/agent/rabbitmq/list_rabbit_nodes.sh',
   }
   file { "${dir_zabbix_agent_libdir}/list_rabbit_queues.sh" :
-    ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0755',
-    source  => 'puppet:///modules/zabbix/agent/rabbitmq/list_rabbit_queues.sh',
+    ensure => file,
+    owner  => root,
+    group  => root,
+    mode   => '0755',
+    source => 'puppet:///modules/zabbix/agent/rabbitmq/list_rabbit_queues.sh',
   }
   file { "${dir_zabbix_agent_libdir}/rabbitmq-status.sh" :
-    ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0755',
-    source  => 'puppet:///modules/zabbix/agent/rabbitmq/rabbitmq-status.sh',
+    ensure => file,
+    owner  => root,
+    group  => root,
+    mode   => '0755',
+    source => 'puppet:///modules/zabbix/agent/rabbitmq/rabbitmq-status.sh',
   }
   file { "${dir_zabbix_agent_libdir}/.rab.auth" :
     ensure  => file,
