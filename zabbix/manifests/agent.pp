@@ -38,10 +38,10 @@ class zabbix::agent (
   }
 
   service { 'zabbix-agent':
-    ensure   => running,
-    name     => $service,
-    enable   => true,
-    require  => Package['zabbix-agent'],
+    ensure  => running,
+    name    => $service,
+    enable  => true,
+    require => Package['zabbix-agent'],
   }
 
   file { 'zabbix_agentd.conf':
@@ -75,6 +75,7 @@ class zabbix::agent (
 
   user { 'zabbix':
     require => Package['zabbix-agent'],
+    groups  => ['adm'],
   }
 
   # autoload configs from zabbix::agent::configs from hiera
