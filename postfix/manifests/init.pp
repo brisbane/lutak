@@ -112,7 +112,7 @@ class postfix (
   $file_maincf                  = $::postfix::params::file_maincf,
   $template_maincf              = $::postfix::params::template_maincf,
   $interfaces                   = [ 'localhost' ],
-  $inet_protocols               = 'ipv4',
+  $inet_protocols               = 'all',
   $mydestination                = [ '$myhostname', 'localhost.$mydomain', 'localhost' ],
   $mynetworks                   = [],
   $recipient_canonical_maps     = undef,
