@@ -149,8 +149,8 @@ vated and unmanaged')
   # join cluster
   if $cluster_ip != '' {
     exec { 'join_couchbase_cluster':
-      command => "/opt/couchbase/bin/couchbase-cli server-add -c ${cluster_ip}:8091 --server-add=${::ipaddress}:8091 -u ${server_user} -p ${server_pass}",
-      unless  => "/opt/couchbase/bin/couchbase-cli server-list -c ${::ipaddress}:8091 >/dev/null -u ${server_user} -p ${server_pass}",
+      command => "/opt/couchbase/bin/couchbase-cli server-add -c ${cluster_ip}:8091 --server-add=${::ipaddress}:8091 -u ${admin_username} -p ${admin_password}",
+      unless  => "/opt/couchbase/bin/couchbase-cli server-list -c ${::ipaddress}:8091 >/dev/null -u ${admin_username} -p ${admin_password}",
       require => Service['couchbase-server'],
     }
   }
