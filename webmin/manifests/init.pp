@@ -6,7 +6,7 @@
 class webmin (
   $ensure        = 'present',
   $package       = 'webmin',
-  $version       = '1.690-1',
+  $version       = latest,
   $libwrap       = '0',
   $alwaysresolve = '1',
   $allow         = [ '0.0.0.0/0' ],
@@ -51,28 +51,28 @@ class webmin (
 
   # webmin.acl
   concat { '/etc/webmin/webmin.acl':
-    owner   => root,
-    group   => root,
-    mode    => '0600',
-    notify  => Service['webmin'],
+    owner  => root,
+    group  => root,
+    mode   => '0600',
+    notify => Service['webmin'],
   }
-  concat::fragment { 'webmin_acl:header':
-    target  => '/etc/webmin/webmin.acl',
-    source  => 'puppet:///modules/webmin/webmin.acl',
-    order   => '100',
+  ::concat::fragment { 'webmin_acl:header':
+    target => '/etc/webmin/webmin.acl',
+    source => 'puppet:///modules/webmin/webmin.acl',
+    order  => '100',
   }
 
   # miniserv.users
   concat { '/etc/webmin/miniserv.users':
-    owner   => root,
-    group   => root,
-    mode    => '0600',
-    notify  => Service['webmin'],
+    owner  => root,
+    group  => root,
+    mode   => '0600',
+    notify => Service['webmin'],
   }
-  concat::fragment { 'miniserv_users:header':
-    target  => '/etc/webmin/miniserv.users',
-    source  => 'puppet:///modules/webmin/miniserv.users',
-    order   => '100',
+  ::concat::fragment { 'miniserv_users:header':
+    target => '/etc/webmin/miniserv.users',
+    source => 'puppet:///modules/webmin/miniserv.users',
+    order  => '100',
   }
 
 
