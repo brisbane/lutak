@@ -1,7 +1,7 @@
 # This file is being maintained by Puppet.
 # DO NOT EDIT
 <% if @search[0] != 'UNSET' -%>
-search<% search.each do |search_domain| %> <%= search_domain %><% end %>
+search<% @search.each do |search_domain| %> <%= search_domain %><% end %>
 <% end -%>
 <% if @sortlist[0] != 'UNSET' -%>
 sortlist<% @sortlist.each do |sortlist_address| %> <%= sortlist_address%><% end %>
