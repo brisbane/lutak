@@ -6,6 +6,7 @@
 class dnsmasq (
   $resolv_file      = '',
   $strict_order     = false,
+  $port             = false,
   $bogus_priv       = true,
   $no_resolv        = false,
   $no_poll          = false,
@@ -16,6 +17,7 @@ class dnsmasq (
   $bind_interfaces  = false,
   $interfaces       = [ 'lo' ],
   $listen_addresses = [ '127.0.0.1' ],
+  $maxopenfiles     = undef,
 ) {
 
   # if servers are specified, apply this class before
@@ -41,10 +43,15 @@ class dnsmasq (
     notify  => Service['dnsmasq'],
   }
 
-  service { 'dnsmasq':
-    ensure  => running,
-    enable  => true,
+  file { '/etc/sysconfig/dnsmasq':
+    content => template('dnsmasq/dnsmasq.sysconfig.erb'),
+    require => Package['dnsmasq'],
+    notify  => Service['dnsmasq'],
   }
 
+  service { 'dnsmasq':
+    ensure => running,
+    enable => true,
+  }
 
 }
