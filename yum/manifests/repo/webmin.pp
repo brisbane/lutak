@@ -3,12 +3,12 @@
 # This module manages Webmin repo files for $lsbdistrelease
 #
 class yum::repo::webmin (
-  $stage   = 'yumsetup',
+  $stage     = 'yumsetup',
   $exclude   = [],
   $include   = [],
   $debuginfo = false,
 ){
-  require yum::repo::base
+  require ::yum::repo::base
 
   exec {'webminrepokeyimport':
     command => '/bin/rpm --import http://www.webmin.com/jcameron-key.asc',
