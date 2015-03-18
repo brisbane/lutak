@@ -107,10 +107,8 @@ define users::account (
   }
 
   # add sshkeys to user account if keys are defined at hiera
-  if $sshkeys {
-    ::users::sshkey { $sshkeys :
-      user => $username,
-    }
+  ::users::sshkey { $sshkeys :
+    user => $username,
   }
 
 }
