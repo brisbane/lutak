@@ -24,16 +24,23 @@ class yum::repo::elrepo (
     default: {}
     /^5.*/: {
       package { 'elrepo-release' :
-        ensure   => '5-3.el5.elrepo',
+        ensure   => present,
         provider => 'rpm',
         source   => 'http://elrepo.org/elrepo-release-5-3.el5.elrepo.noarch.rpm',
       }
     }
     /^6.*/: {
       package { 'elrepo-release' :
-        ensure   => '6-6.el6.elrepo',
+        ensure   => present,
         provider => 'rpm',
         source   => 'http://elrepo.org/elrepo-release-6-6.el6.elrepo.noarch.rpm',
+      }
+    }
+    /^7.*/: {
+      package { 'elrepo-release' :
+        ensure   => present,
+        provider => 'rpm',
+        source   => 'http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm',
       }
     }
   }

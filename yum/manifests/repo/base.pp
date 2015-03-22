@@ -27,41 +27,58 @@ class yum::repo::base (
         content => template("yum/${::operatingsystem}/${::operatingsystemrelease}/CentOS-Base.erb"),
         require => Package['centos-release'],
       }
-      case $::operatingsystemrelease {
-        default: {
-          $nameaddon = ''
-        }
-        /^5.*/: {
-          $nameaddon = ''
-          package { 'centos-release':
-            ensure   => present,
-            provider => rpm,
-            source   => 'http://mirror.centos.org/centos-5/5.8/os/x86_64/CentOS/centos-release-5-8.el5.centos.x86_64.rpm',
-          }
-          package { 'centos-release-notes':
-            ensure   => present,
-            provider => rpm,
-            source   => 'http://mirror.centos.org/centos/5.8/os/x86_64/CentOS/centos-release-notes-5.8-0.x86_64.rpm',
-          }
-        }
-        /^6.*/: {
-          $nameaddon = '-plugin'
-          package { 'centos-release':
-            ensure   => present,
-            provider => rpm,
-            source   => 'http://mirror.centos.org/centos-6/6.3/os/x86_64/CentOS/Packages/centos-release-6-3.el6.centos.9.x86_64.rpm',
-          }
+
+      if ( $debuginfo ) {
+        file { '/etc/yum.repos.d/CentOS-Debuginfo.repo':
+          ensure  => file,
+          mode    => '0644',
+          owner   => root,
+          group   => root,
+          content => template("yum/${::operatingsystem}/${::operatingsystemrelease}/CentOS-Debuginfo.erb"),
+          require => Package['centos-release'],
         }
       }
-      # yum helpers
-      package { 'yum-utils': }
-      package { "yum${nameaddon}-changelog": }
-      package { "yum${nameaddon}-downloadonly": }
-      package { "yum${nameaddon}-merge-conf": }
-      package { "yum${nameaddon}-priorities": }
-      package { "yum${nameaddon}-protectbase": }
-      package { "yum${nameaddon}-upgrade-helper": }
-      package { "yum${nameaddon}-versionlock": }
+
+      case $::operatingsystemrelease {
+        default: {
+        }
+        /^5.*/: {
+          package { 'centos-release': }
+          package { 'centos-release-notes': }
+          # yum helpers
+          package { 'yum-utils': }
+          package { 'yum-changelog': }
+          package { 'yum-downloadonly': }
+          package { 'yum-merge-conf': }
+          package { 'yum-priorities': }
+          package { 'yum-protectbase': }
+          package { 'yum-upgrade-helper': }
+          package { 'yum-versionlock': }
+        }
+        /^6.*/: {
+          package { 'centos-release': }
+          # yum helpers
+          package { 'yum-utils': }
+          package { 'yum-plugin-changelog': }
+          package { 'yum-plugin-downloadonly': }
+          package { 'yum-plugin-merge-conf': }
+          package { 'yum-plugin-priorities': }
+          package { 'yum-plugin-protectbase': }
+          package { 'yum-plugin-upgrade-helper': }
+          package { 'yum-plugin-versionlock': }
+        }
+        /^7.*/: {
+          package { 'centos-release': }
+          # yum helpers
+          package { 'yum-utils': }
+          package { 'yum-plugin-changelog': }
+          package { 'yum-plugin-merge-conf': }
+          package { 'yum-plugin-priorities': }
+          package { 'yum-plugin-protectbase': }
+          package { 'yum-plugin-upgrade-helper': }
+          package { 'yum-plugin-versionlock': }
+        }
+      }
     }
     'Fedora': {
       file { '/etc/yum.repos.d/fedora.repo':
@@ -98,14 +115,20 @@ class yum::repo::base (
           }
         }
       }
-      # yum helpers
-      package { 'yum-utils': }
-      package { "yum${nameaddon}-changelog": }
-      package { "yum${nameaddon}-merge-conf": }
-      package { "yum${nameaddon}-priorities": }
-      package { "yum${nameaddon}-protectbase": }
-      package { "yum${nameaddon}-upgrade-helper": }
-      package { "yum${nameaddon}-versionlock": }
+      case $::operatingsystemrelease {
+        default: {
+        }
+        /^18.*/: {
+          # yum helpers
+          package { 'yum-utils': }
+          package { 'yum-plugin-changelog': }
+          package { 'yum-plugin-merge-conf': }
+          package { 'yum-plugin-priorities': }
+          package { 'yum-plugin-protectbase': }
+          package { 'yum-plugin-upgrade-helper': }
+          package { 'yum-plugin-versionlock': }
+        }
+      }
     }
   }
 }

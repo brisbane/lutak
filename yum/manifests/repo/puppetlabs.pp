@@ -8,6 +8,8 @@ class yum::repo::puppetlabs (
   $exclude   = [],
   $include   = [],
   $debuginfo = false,
+  $source    = false,
+  $devel     = false,
 ) {
   require yum::repo::base
 
@@ -35,6 +37,13 @@ class yum::repo::puppetlabs (
         ensure   => '6-11',
         provider => 'rpm',
         source   => 'http://yum.puppetlabs.com/el/6/products/x86_64/puppetlabs-release-6-11.noarch.rpm',
+      }
+    }
+    /^7.*/: {
+      package { 'puppetlabs-release' :
+        ensure   => '7-11',
+        provider => 'rpm',
+        source   => 'http://yum.puppetlabs.com/el/7/products/x86_64/puppetlabs-release-7-11.noarch.rpm',
       }
     }
     /^18.*/: {
