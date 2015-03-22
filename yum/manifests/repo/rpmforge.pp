@@ -36,5 +36,12 @@ class yum::repo::rpmforge (
         source   => 'http://apt.sw.be/redhat/el6/en/i386/rpmforge/RPMS/rpmforge-release-0.5.3-1.el6.rf.i686.rpm',
       }
     }
+    /^7.*/: {
+      package {'rpmforge-release':
+        ensure   => '0.5.3-1.el7.rf',
+        provider => 'rpm',
+        source   => 'http://apt.sw.be/redhat/el7/en/x86_64/rpmforge/RPMS/rpmforge-release-0.5.3-1.el7.rf.x86_64.rpm',
+      }
+    }
   }
 }
